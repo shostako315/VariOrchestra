@@ -1738,19 +1738,11 @@ function renderConcerts() {
   updateTxnConcertOptions();
 }
 
-// showConcertDetail: see new version below
+// (removed duplicate)
 
-// (replaced)) {
-  document.getElementById('concert-id').value = data.id||'';
-  document.getElementById('concert-title').value = data.title||'';
-  document.getElementById('concert-date').value = data.date||'';
-  document.getElementById('concert-venue').value = data.venue||'武蔵野市民文化会館';
-  document.getElementById('concert-type').value = data.type||'定期演奏会';
-  document.getElementById('concert-program').value = data.program||'';
-  document.getElementById('concert-capacity').value = data.capacity||'';
-  document.getElementById('concert-note').value = data.note||'';
-  openModal('concert-modal');
-}
+// (removed duplicate)
+
+
 // (replaced)
 async function saveConcert() {
   const id = document.getElementById('concert-id').value || Date.now().toString();

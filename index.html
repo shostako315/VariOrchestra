@@ -1,0 +1,3689 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>VariOrchestra ERP</title>
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="VariOrchestra">
+<meta name="theme-color" content="#0A0A0A" id="theme-color-meta">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&family=Noto+Sans+JP:wght@300;400;500&family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0A0A0A;--bg2:#111111;--surface:#181818;--surface2:#202020;--surface3:#282828;
+  --border:#2A2A2A;--border2:#383838;
+  --gold:#C8A752;--gold2:#E2C06A;--gold-dim:rgba(200,167,82,0.12);
+  --blue:#5B9CF6;--green:#4CC97A;--red:#E85555;--yellow:#E8B840;--purple:#9B7FE8;
+  --text:#F5F0E8;--text2:#B8B0A0;--text3:#706860;
+  --mono:'IBM Plex Mono',monospace;
+}
+[data-theme="light"]{
+  --bg:#F8F6F2;--bg2:#FFFFFF;--surface:#FFFFFF;--surface2:#F2EEE8;--surface3:#EAE5DD;
+  --border:#E0D8CC;--border2:#C8BEAE;
+  --gold:#A07820;--gold2:#C09030;--gold-dim:rgba(160,120,32,0.08);
+  --blue:#2563EB;--green:#16A34A;--red:#DC2626;--yellow:#D97706;--purple:#7C3AED;
+  --text:#1A1510;--text2:#4A4035;--text3:#8A7A68;
+}
+[data-theme="light"] body{background:#F8F6F2;}
+[data-theme="light"] .sidebar{background:#FFFFFF;border-right-color:#E0D8CC;}
+[data-theme="light"] .sidebar-logo{border-bottom-color:#E0D8CC;}
+[data-theme="light"] .nav-item:hover{background:#F2EEE8;}
+[data-theme="light"] .nav-item.active{background:rgba(160,120,32,0.08);}
+[data-theme="light"] .sidebar-bottom{border-top-color:#E0D8CC;}
+[data-theme="light"] .bottom-nav{background:rgba(255,255,255,0.95);border-top-color:#E0D8CC;}
+[data-theme="light"] .mobile-header{background:rgba(255,255,255,0.95);border-bottom-color:#E0D8CC;}
+[data-theme="light"] .api-drawer{background:#FFFFFF;border-top-color:#C8BEAE;}
+[data-theme="light"] .card{background:#FFFFFF;border-color:#E0D8CC;box-shadow:0 1px 4px rgba(0,0,0,0.06);}
+[data-theme="light"] .card-header{background:#FFFFFF;border-bottom-color:#E0D8CC;}
+[data-theme="light"] .kpi{background:#FFFFFF;border-color:#E0D8CC;box-shadow:0 1px 4px rgba(0,0,0,0.06);}
+[data-theme="light"] th{background:#F2EEE8;color:#8A7A68;border-bottom-color:#E0D8CC;}
+[data-theme="light"] td{border-bottom-color:#E0D8CC;}
+[data-theme="light"] tr:hover td{background:rgba(160,120,32,0.03);}
+[data-theme="light"] .ai-panel{background:#F2EEE8;border-color:#E0D8CC;}
+[data-theme="light"] .ai-reasoning{background:#FFFFFF;border-color:#E0D8CC;}
+[data-theme="light"] .ai-gen-btn{border-color:#E0D8CC;color:#4A4035;}
+[data-theme="light"] .ai-gen-btn:hover{border-color:#A07820;color:#A07820;}
+[data-theme="light"] .btn-outline{color:#4A4035;border-color:#C8BEAE;}
+[data-theme="light"] .btn-outline:hover{border-color:#A07820;color:#A07820;}
+[data-theme="light"] input,[data-theme="light"] select,[data-theme="light"] textarea{background:#F8F6F2;border-color:#E0D8CC;color:#1A1510;}
+[data-theme="light"] input:focus,[data-theme="light"] select:focus,[data-theme="light"] textarea:focus{border-color:#A07820;}
+[data-theme="light"] .api-input{background:#F2EEE8;border-color:#E0D8CC;color:#1A1510;}
+[data-theme="light"] .api-btn{border-color:#E0D8CC;color:#8A7A68;}
+[data-theme="light"] .api-btn.active{border-color:#A07820;color:#A07820;}
+[data-theme="light"] .checklist li{border-bottom-color:#E0D8CC;}
+[data-theme="light"] .check-box{border-color:#C8BEAE;background:#FFFFFF;}
+[data-theme="light"] .progress-wrap{background:#E0D8CC;}
+[data-theme="light"] .timeline::before{background:#E0D8CC;}
+[data-theme="light"] .tl-item::before{background:#FFFFFF;border-color:#C8BEAE;}
+[data-theme="light"] .badge-gray{background:rgba(0,0,0,0.06);color:#8A7A68;}
+[data-theme="light"] .tabs{border-bottom-color:#E0D8CC;}
+[data-theme="light"] .tab{color:#8A7A68;}
+[data-theme="light"] .tab.active{color:#A07820;border-bottom-color:#A07820;}
+[data-theme="light"] .concert-card{background:#FFFFFF;border-color:#E0D8CC;}
+[data-theme="light"] .modal{background:#FFFFFF;border-color:#E0D8CC;}
+[data-theme="light"] .modal-header{border-bottom-color:#E0D8CC;}
+[data-theme="light"] .modal-footer{border-top-color:#E0D8CC;}
+[data-theme="light"] #password-screen{background:#F8F6F2;}
+[data-theme="light"] .pw-card{background:#FFFFFF;border-color:#E0D8CC;}
+[data-theme="light"] .pw-input{background:#F2EEE8;border-color:#E0D8CC;color:#1A1510;}
+[data-theme="light"] .save-indicator{background:#FFFFFF;}
+[data-theme="light"] .sync-bar{background:#FFFFFF;border-bottom-color:#E0D8CC;}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;background:var(--bg);}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP',sans-serif;font-weight:400;min-height:100vh;overflow-x:hidden;transition:background 0.3s,color 0.3s;}
+body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(ellipse 80% 50% at 20% 0%,rgba(200,167,82,0.04) 0%,transparent 60%),radial-gradient(ellipse 60% 40% at 80% 100%,rgba(200,167,82,0.03) 0%,transparent 60%),url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:1;}
+.app{display:flex;min-height:100vh;position:relative;z-index:1;}
+
+/* SYNC STATUS BAR */
+.sync-bar{
+  position:fixed;top:0;left:220px;right:0;z-index:90;
+  background:var(--bg2);border-bottom:1px solid var(--border);
+  padding:6px 24px;
+  display:flex;align-items:center;justify-content:space-between;
+  font-family:var(--mono);font-size:11px;
+  transition:background 0.3s;
+}
+.sync-dot{width:6px;height:6px;border-radius:50%;background:var(--text3);margin-right:6px;transition:background 0.3s;}
+.sync-dot.ok{background:var(--green);box-shadow:0 0 6px var(--green);}
+.sync-dot.err{background:var(--red);}
+.sync-dot.loading{background:var(--yellow);animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+.sync-status{display:flex;align-items:center;color:var(--text3);}
+.sync-actions{display:flex;gap:8px;}
+.sync-btn{background:transparent;border:1px solid var(--border2);color:var(--text3);font-size:10px;padding:3px 8px;cursor:pointer;font-family:var(--mono);transition:all 0.15s;border-radius:2px;}
+.sync-btn:hover{border-color:var(--gold);color:var(--gold);}
+@media(max-width:768px){.sync-bar{left:0;top:56px;}}
+
+/* SIDEBAR */
+.sidebar{width:220px;min-width:220px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;transition:background 0.3s,border-color 0.3s;}
+.sidebar-logo{padding:28px 24px 20px;border-bottom:1px solid var(--border);position:relative;}
+.sidebar-logo::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),transparent);}
+.sidebar-logo .orch{font-family:'Shippori Mincho',serif;font-size:20px;color:var(--gold);letter-spacing:0.05em;line-height:1.2;}
+.sidebar-logo .sub{font-size:10px;color:var(--text3);letter-spacing:0.2em;text-transform:uppercase;margin-top:4px;}
+.nav{flex:1;padding:16px 0;overflow-y:auto;}
+.nav-section{font-size:9px;color:var(--text3);letter-spacing:0.25em;text-transform:uppercase;padding:12px 24px 6px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 24px;color:var(--text2);font-size:13px;cursor:pointer;transition:all 0.15s;border-left:2px solid transparent;}
+.nav-item:hover{color:var(--text);background:var(--surface);}
+.nav-item.active{color:var(--gold);border-left-color:var(--gold);background:var(--gold-dim);}
+.nav-item .icon{width:16px;text-align:center;font-size:14px;}
+.nav-badge{margin-left:auto;background:var(--red);color:#fff;font-size:10px;border-radius:10px;padding:1px 6px;font-family:var(--mono);}
+.sidebar-bottom{padding:16px 24px;border-top:1px solid var(--border);}
+.api-mini{font-size:10px;color:var(--text3);letter-spacing:0.1em;margin-bottom:6px;}
+.api-selector{display:flex;gap:6px;margin-bottom:8px;}
+.api-btn{flex:1;padding:5px;border:1px solid var(--border2);background:transparent;color:var(--text2);font-size:10px;cursor:pointer;border-radius:2px;transition:all 0.15s;font-family:'Noto Sans JP',sans-serif;}
+.api-btn.active{border-color:var(--gold);color:var(--gold);}
+.api-input{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-size:11px;padding:6px 8px;border-radius:2px;font-family:var(--mono);outline:none;}
+.api-input:focus{border-color:var(--gold);}
+.theme-toggle{width:36px;height:20px;background:var(--surface2);border:1px solid var(--border2);border-radius:10px;cursor:pointer;position:relative;transition:all 0.2s;flex-shrink:0;}
+.theme-toggle::after{content:'';position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:var(--gold);transition:transform 0.2s;}
+[data-theme="light"] .theme-toggle::after{transform:translateX(16px);}
+
+/* MAIN */
+.main{margin-left:220px;flex:1;padding:32px;padding-top:56px;min-height:100vh;}
+.page-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+.page-title{font-family:'Shippori Mincho',serif;font-size:28px;font-weight:400;color:var(--text);letter-spacing:0.02em;position:relative;padding-bottom:8px;}
+.page-title::after{content:'';position:absolute;bottom:0;left:0;width:40px;height:1px;background:var(--gold);}
+.page-subtitle{font-size:13px;color:var(--text3);margin-top:4px;}
+.page-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+
+/* BUTTONS */
+.btn{padding:8px 18px;border-radius:2px;font-family:'Noto Sans JP',sans-serif;font-size:13px;cursor:pointer;transition:all 0.15s;border:1px solid transparent;}
+.btn-gold{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#0A0A0A;border-color:var(--gold);font-weight:500;letter-spacing:0.05em;}
+.btn-gold:hover{background:linear-gradient(135deg,#F0D080,var(--gold2));box-shadow:0 0 20px rgba(200,167,82,0.25);}
+.btn-outline{background:transparent;color:var(--text2);border-color:var(--border2);}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold);}
+.btn-danger{background:transparent;color:var(--red);border-color:var(--red);opacity:0.7;}
+.btn-danger:hover{opacity:1;}
+.btn-sm{padding:5px 12px;font-size:12px;}
+.btn:disabled{opacity:0.4;cursor:not-allowed;}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:1px;overflow:hidden;transition:border-color 0.2s,background 0.3s;}
+.card:hover{border-color:var(--border2);}
+.card-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+.card-title{font-family:'Shippori Mincho',serif;font-size:16px;background:linear-gradient(135deg,var(--gold2),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:0.05em;}
+.card-body{padding:20px;}
+
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:20px;position:relative;overflow:hidden;transition:border-color 0.2s;}
+.kpi:hover{border-color:var(--border2);}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.kpi.gold::before{background:linear-gradient(90deg,var(--gold2),var(--gold));}
+.kpi.blue::before{background:var(--blue);}
+.kpi.green::before{background:var(--green);}
+.kpi.red::before{background:var(--red);}
+.kpi.yellow::before{background:var(--yellow);}
+.kpi-label{font-size:10px;color:var(--text3);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:10px;}
+.kpi-value{font-family:'Shippori Mincho',serif;font-size:32px;color:var(--text);letter-spacing:-0.01em;line-height:1;font-weight:300;}
+.kpi-unit{font-size:14px;color:var(--text2);margin-left:4px;}
+.kpi-sub{font-size:11px;color:var(--text3);margin-top:8px;}
+.kpi-change.up{color:var(--green);font-size:11px;margin-top:4px;}
+.kpi-change.warn{color:var(--yellow);font-size:11px;margin-top:4px;}
+
+/* GRIDS */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+.grid-65{display:grid;grid-template-columns:1.8fr 1fr;gap:20px;}
+
+/* TABLE */
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{background:var(--surface2);color:var(--text3);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;padding:10px 14px;text-align:left;border-bottom:1px solid var(--border2);font-weight:400;white-space:nowrap;}
+td{padding:11px 14px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,0.02);}
+[data-theme="light"] tr:hover td{background:rgba(160,120,32,0.03);}
+
+/* BADGES */
+.badge{display:inline-block;padding:2px 8px;border-radius:2px;font-size:10px;letter-spacing:0.1em;font-family:var(--mono);}
+.badge-green{background:rgba(76,201,122,0.15);color:var(--green);}
+.badge-yellow{background:rgba(232,184,64,0.15);color:var(--yellow);}
+.badge-red{background:rgba(232,85,85,0.15);color:var(--red);}
+.badge-blue{background:rgba(91,156,246,0.15);color:var(--blue);}
+.badge-gray{background:rgba(160,160,192,0.1);color:var(--text3);}
+.badge-gold{background:rgba(200,167,82,0.15);color:var(--gold);}
+
+/* PROGRESS */
+.progress-wrap{background:var(--surface2);border-radius:2px;height:6px;overflow:hidden;}
+.progress-bar{height:100%;border-radius:2px;transition:width 0.5s ease;}
+.progress-gold{background:var(--gold);}
+.progress-blue{background:var(--blue);}
+.progress-green{background:var(--green);}
+.progress-red{background:var(--red);}
+
+/* CHECKLIST */
+.checklist{list-style:none;}
+.checklist li{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text2);}
+.checklist li:last-child{border-bottom:none;}
+.check-box{width:16px;height:16px;min-width:16px;border:1px solid var(--border2);border-radius:2px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;margin-top:1px;transition:all 0.15s;}
+.check-box.done{background:var(--green);border-color:var(--green);color:#fff;}
+.check-box.urgent{border-color:var(--red);}
+.check-text.done{text-decoration:line-through;color:var(--text3);}
+.check-meta{font-size:10px;color:var(--text3);margin-left:auto;white-space:nowrap;}
+
+/* AI PANEL */
+.ai-panel{background:var(--surface2);border:1px solid var(--border2);border-radius:1px;padding:20px;position:relative;}
+.ai-panel::before{content:'';position:absolute;top:0;left:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--gold),transparent);}
+.ai-panel-header{display:flex;align-items:center;gap:8px;margin-bottom:16px;}
+.ai-indicator{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:aipulse 2s infinite;}
+@keyframes aipulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+.ai-title{font-size:12px;color:var(--text3);letter-spacing:0.1em;}
+.ai-provider{font-family:var(--mono);font-size:10px;color:var(--gold);margin-left:auto;}
+.ai-output{font-size:13px;color:var(--text2);line-height:1.8;min-height:60px;white-space:pre-wrap;}
+.ai-reasoning{margin-top:12px;padding:12px;background:var(--surface);border:1px solid var(--border);border-radius:2px;font-size:11px;color:var(--text3);font-family:var(--mono);line-height:1.7;}
+.ai-reasoning-title{font-size:9px;letter-spacing:0.2em;color:var(--text3);text-transform:uppercase;margin-bottom:6px;}
+.ai-gen-btn{margin-top:12px;width:100%;padding:9px;background:transparent;border:1px solid var(--border2);color:var(--text2);font-size:12px;font-family:'Noto Sans JP',sans-serif;cursor:pointer;border-radius:1px;transition:all 0.2s;letter-spacing:0.05em;}
+.ai-gen-btn:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-dim);}
+.ai-gen-btn:disabled{opacity:0.4;cursor:not-allowed;}
+
+/* TIMELINE */
+.timeline{position:relative;padding-left:20px;}
+.timeline::before{content:'';position:absolute;left:6px;top:0;bottom:0;width:1px;background:var(--border2);}
+.tl-item{position:relative;margin-bottom:16px;padding-left:16px;}
+.tl-item::before{content:'';position:absolute;left:-14px;top:5px;width:8px;height:8px;border-radius:50%;border:2px solid var(--border2);background:var(--bg);}
+.tl-item.done::before{background:var(--green);border-color:var(--green);}
+.tl-item.active::before{background:var(--gold);border-color:var(--gold);}
+.tl-item.urgent::before{background:var(--red);border-color:var(--red);}
+.tl-date{font-size:10px;color:var(--text3);font-family:var(--mono);margin-bottom:2px;}
+.tl-text{font-size:13px;color:var(--text2);}
+
+/* FORM */
+.form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+.form-label{font-size:10px;color:var(--text3);letter-spacing:0.15em;text-transform:uppercase;}
+.form-input{background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'Noto Sans JP',sans-serif;font-weight:400;font-size:13px;padding:9px 12px;border-radius:2px;outline:none;transition:border-color 0.15s;width:100%;}
+.form-input:focus{border-color:var(--gold);}
+.form-input::placeholder{color:var(--text3);}
+select.form-input option{background:var(--surface2);}
+textarea.form-input{resize:vertical;min-height:72px;}
+
+/* TABS */
+.tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:24px;}
+.tab{padding:10px 20px;font-size:13px;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;margin-bottom:-1px;}
+.tab:hover{color:var(--text2);}
+.tab.active{color:var(--gold);border-bottom-color:var(--gold);}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:500;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--surface);border:1px solid var(--border2);border-radius:3px;width:600px;max-width:92vw;max-height:85vh;overflow-y:auto;animation:modalIn 0.2s ease;}
+@keyframes modalIn{from{opacity:0;transform:scale(0.97);}to{opacity:1;transform:scale(1);}}
+.modal-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.modal-title{font-family:'Shippori Mincho',serif;font-size:20px;color:var(--gold);}
+.modal-close{background:transparent;border:none;color:var(--text3);font-size:20px;cursor:pointer;padding:4px;}
+.modal-body{padding:24px;}
+.modal-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;}
+
+/* PAGES */
+.page{display:none;}
+.page.active{display:block;animation:fadeIn 0.2s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+
+/* CONCERT CARD */
+.concert-card{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:20px;transition:border-color 0.2s;cursor:pointer;}
+.concert-card:hover{border-color:var(--border2);}
+.concert-card .concert-no{font-family:var(--mono);font-size:10px;color:var(--text3);margin-bottom:8px;}
+.concert-card .concert-title{font-family:'Shippori Mincho',serif;font-size:18px;color:var(--text);margin-bottom:4px;}
+.concert-card .concert-meta{display:flex;gap:16px;font-size:12px;color:var(--text2);flex-wrap:wrap;}
+.concert-progress-row{display:flex;gap:12px;margin-top:14px;}
+.concert-progress-item{flex:1;}
+.concert-progress-label{font-size:10px;color:var(--text3);margin-bottom:4px;}
+
+/* MONEY */
+.money-positive{color:var(--green);}
+.money-negative{color:var(--red);}
+
+/* EMPTY STATE */
+.empty-state{padding:40px;text-align:center;color:var(--text3);font-size:13px;}
+.empty-state .empty-icon{font-size:32px;margin-bottom:12px;opacity:0.4;}
+
+/* MOBILE */
+.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(10,10,10,0.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--border);z-index:200;padding-bottom:env(safe-area-inset-bottom);}
+.bottom-nav-inner{display:flex;justify-content:space-around;}
+.bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 4px 8px;color:var(--text3);font-size:9px;cursor:pointer;gap:4px;border-top:2px solid transparent;transition:all 0.15s;-webkit-tap-highlight-color:transparent;}
+.bnav-item .icon{font-size:18px;line-height:1;}
+.bnav-item.active{color:var(--gold);border-top-color:var(--gold);}
+.mobile-header{display:none;position:fixed;top:0;left:0;right:0;background:rgba(10,10,10,0.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border);z-index:150;padding:12px 16px;align-items:center;justify-content:space-between;}
+.mobile-header .orch{font-family:'Shippori Mincho',serif;font-size:18px;color:var(--gold);}
+.mobile-api-btn{background:transparent;border:1px solid var(--border2);color:var(--text3);font-size:11px;padding:4px 10px;border-radius:2px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;}
+.api-drawer{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border2);border-radius:12px 12px 0 0;z-index:300;padding:20px;padding-bottom:calc(20px + env(safe-area-inset-bottom));transform:translateY(100%);transition:transform 0.25s ease;}
+.api-drawer.open{transform:translateY(0);}
+.api-drawer-title{font-size:12px;color:var(--text3);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:14px;text-align:center;}
+.api-drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:290;}
+.api-drawer-overlay.open{display:block;}
+
+/* SAVE INDICATOR */
+.save-indicator{position:fixed;bottom:80px;right:16px;background:var(--surface2);border:1px solid var(--green);color:var(--green);font-size:11px;padding:6px 12px;border-radius:2px;z-index:500;opacity:0;transition:opacity 0.3s;pointer-events:none;font-family:var(--mono);}
+.save-indicator.show{opacity:1;}
+@media(min-width:769px){.save-indicator{bottom:20px;}}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+
+/* PASSWORD SCREEN */
+#password-screen{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;transition:background 0.3s;}
+#password-screen::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(200,167,82,0.06) 0%,transparent 70%);pointer-events:none;}
+.pw-card{position:relative;width:100%;max-width:360px;background:var(--surface);border:1px solid var(--border2);border-radius:2px;padding:40px 36px;text-align:center;}
+.pw-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.pw-logo{font-family:'Shippori Mincho',serif;font-size:11px;color:var(--text3);letter-spacing:0.4em;text-transform:uppercase;margin-bottom:6px;}
+.pw-title{font-family:'Shippori Mincho',serif;font-size:28px;font-weight:300;background:linear-gradient(135deg,var(--gold2),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:0.05em;margin-bottom:32px;}
+.pw-input{width:100%;background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:'Noto Sans JP',sans-serif;font-size:16px;font-weight:300;padding:12px 16px;border-radius:1px;outline:none;text-align:center;letter-spacing:0.2em;transition:border-color 0.2s;margin-bottom:16px;}
+.pw-input:focus{border-color:var(--gold);}
+.pw-input::placeholder{letter-spacing:0.05em;color:var(--text3);}
+.pw-btn{width:100%;padding:12px;background:linear-gradient(135deg,var(--gold2),var(--gold));color:#0A0A0A;border:none;font-family:'Shippori Mincho',serif;font-size:18px;letter-spacing:0.2em;cursor:pointer;border-radius:1px;transition:all 0.2s;}
+.pw-btn:hover{box-shadow:0 0 24px rgba(200,167,82,0.3);}
+.pw-error{margin-top:12px;font-size:12px;color:var(--red);min-height:16px;}
+.pw-hint{margin-top:20px;font-size:11px;color:var(--text3);}
+
+@media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:768px){
+  .sidebar{display:none;}
+  .bottom-nav{display:block;}
+  .mobile-header{display:flex;}
+  .api-drawer{display:block;}
+  .sync-bar{display:none;}
+  .main{margin-left:0;padding:16px;padding-top:calc(56px + 16px);padding-bottom:calc(64px + 16px + env(safe-area-inset-bottom));}
+  .page-header{flex-direction:column;gap:12px;margin-bottom:20px;padding-bottom:16px;}
+  .page-title{font-size:22px;}
+  .page-actions{width:100%;flex-direction:column;}
+  .page-actions .btn{width:100%;}
+  .kpi-grid{grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px;}
+  .kpi{padding:14px;}.kpi-value{font-size:26px;}
+  .grid-2,.grid-3,.grid-65{grid-template-columns:1fr;gap:14px;}
+  .card-body{padding:14px;}.card-header{padding:12px 14px;}
+  td,th{padding:10px;font-size:12px;}
+  .tabs{overflow-x:auto;white-space:nowrap;flex-wrap:nowrap;}
+  .tab{padding:10px 14px;font-size:12px;}
+  .ai-panel{padding:14px;}
+  .modal{width:100%;max-width:100%;border-radius:12px 12px 0 0;position:fixed;bottom:0;}
+  .modal-overlay{align-items:flex-end;}
+  .check-meta{display:none;}
+  .form-input{font-size:16px;}
+  .btn{padding:10px 16px;font-size:13px;}
+  .btn-sm{padding:8px 14px;}
+}
+</style>
+</head>
+<body>
+
+<!-- PASSWORD -->
+<div id="password-screen">
+  <div class="pw-card">
+    <div class="pw-logo">VariOrchestra</div>
+    <div class="pw-title">Management System</div>
+    <input type="password" class="pw-input" id="pw-input" placeholder="パスワードを入力" onkeydown="if(event.key==='Enter')checkPassword()">
+    <button class="pw-btn" onclick="checkPassword()">入 場</button>
+    <div class="pw-error" id="pw-error"></div>
+    <div class="pw-hint">authorized personnel only</div>
+  </div>
+</div>
+
+<!-- SYNC BAR -->
+<div class="sync-bar" id="sync-bar">
+  <div class="sync-status">
+    <div class="sync-dot" id="sync-dot"></div>
+    <span id="sync-label" style="color:var(--text3);">Sheets未接続</span>
+  </div>
+  <div class="sync-actions">
+    <button class="sync-btn" onclick="syncAll()">↑↓ 全同期</button>
+    <button class="sync-btn" onclick="showPage('settings')">⚙ 設定</button>
+  </div>
+</div>
+
+<!-- MOBILE -->
+<div class="mobile-header">
+  <div class="orch">VariOrchestra</div>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div class="theme-toggle" onclick="toggleTheme()"></div>
+    <button class="mobile-api-btn" onclick="toggleApiDrawer()">⚙ API</button>
+  </div>
+</div>
+<div class="api-drawer-overlay" id="api-drawer-overlay" onclick="toggleApiDrawer()"></div>
+<div class="api-drawer" id="api-drawer">
+  <div class="api-drawer-title">AI ENGINE</div>
+  <div class="api-selector" style="margin-bottom:12px;">
+    <button class="api-btn active" id="mbtn-gemini" onclick="setApi('gemini')">Gemini</button>
+    <button class="api-btn" id="mbtn-claude" onclick="setApi('claude')">Claude</button>
+  </div>
+  <input type="password" class="api-input" id="apiKeyInputMobile" placeholder="API Key..." style="margin-bottom:12px;">
+  <button class="btn btn-gold" style="width:100%;" onclick="saveDrawerKey()">保存して閉じる</button>
+</div>
+<div class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <div class="bnav-item active" id="bnav-dashboard" onclick="showPage('dashboard')"><span class="icon">◈</span><span>Home</span></div>
+    <div class="bnav-item" id="bnav-concerts" onclick="showPage('concerts')"><span class="icon">♩</span><span>公演</span></div>
+    <div class="bnav-item" id="bnav-players" onclick="showPage('players')"><span class="icon">♪</span><span>奏者</span></div>
+    <div class="bnav-item" id="bnav-finance" onclick="showPage('finance')"><span class="icon">¥</span><span>財務</span></div>
+    <div class="bnav-item" id="bnav-marketing" onclick="showPage('marketing')"><span class="icon">◉</span><span>マーケ</span></div>
+  </div>
+</div>
+
+<div class="save-indicator" id="save-indicator">✓ 保存しました</div>
+
+<div class="app">
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="orch">VariOrchestra</div>
+    <div class="sub">Management System</div>
+  </div>
+  <div class="nav">
+    <div class="nav-section">Overview</div>
+    <div class="nav-item active" onclick="showPage('dashboard')"><span class="icon">◈</span><span>Dashboard</span></div>
+    <div class="nav-section">Operations</div>
+    <div class="nav-item" onclick="showPage('concerts')"><span class="icon">♩</span><span>公演管理</span></div>
+    <div class="nav-item" onclick="showPage('players')"><span class="icon">♪</span><span>奏者管理</span></div>
+    <div class="nav-item" onclick="showPage('scheduler')"><span class="icon">📅</span><span>スケジュール調整</span></div>
+    <div class="nav-section">Revenue</div>
+    <div class="nav-item" onclick="showPage('bizdev')"><span class="icon">◎</span><span>企業営業</span></div>
+    <div class="nav-item" onclick="showPage('tickets')"><span class="icon">◇</span><span>集客管理</span></div>
+    <div class="nav-item" onclick="showPage('sponsors')"><span class="icon">◆</span><span>協賛管理</span></div>
+    <div class="nav-section">Finance</div>
+    <div class="nav-item" onclick="showPage('finance')"><span class="icon">¥</span><span>財務レポート</span></div>
+    <div class="nav-section">Marketing</div>
+    <div class="nav-item" onclick="showPage('marketing')"><span class="icon">◉</span><span>マーケティング</span></div>
+    <div class="nav-section">Settings</div>
+    <div class="nav-item" onclick="showPage('settings')"><span class="icon">⊙</span><span>設定</span></div>
+  </div>
+  <div class="sidebar-bottom">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+      <span style="font-size:10px;color:var(--text3);letter-spacing:0.1em;">THEME</span>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-size:11px;color:var(--text3);" id="theme-label-text">DARK</span>
+        <div class="theme-toggle" onclick="toggleTheme()"></div>
+      </div>
+    </div>
+    <div class="api-mini">AI ENGINE</div>
+    <div class="api-selector">
+      <button class="api-btn active" id="btn-gemini" onclick="setApi('gemini')">Gemini</button>
+      <button class="api-btn" id="btn-claude" onclick="setApi('claude')">Claude</button>
+    </div>
+    <input type="password" class="api-input" id="apiKeyInput" placeholder="API Key...">
+  </div>
+</nav>
+
+<main class="main">
+
+<!-- ════ DASHBOARD ════ -->
+<div id="page-dashboard" class="page active">
+  <div class="page-header">
+    <div>
+      <div class="page-title">Dashboard</div>
+      <div class="page-subtitle" id="dash-date"></div>
+    </div>
+    <div class="page-actions">
+      <button class="btn btn-outline btn-sm" onclick="syncAll()">↑↓ Sheets同期</button>
+      <button class="btn btn-gold btn-sm" onclick="generateAI('dashboard')">AI分析を更新</button>
+    </div>
+  </div>
+  <div class="kpi-grid">
+    <div class="kpi gold"><div class="kpi-label">次回公演まで</div><div class="kpi-value" id="kpi-days">—<span class="kpi-unit">日</span></div><div class="kpi-sub" id="kpi-next-concert">—</div></div>
+    <div class="kpi blue"><div class="kpi-label">奏者確定率</div><div class="kpi-value" id="kpi-player-pct">—<span class="kpi-unit">%</span></div><div class="kpi-sub" id="kpi-player-sub">—</div></div>
+    <div class="kpi green"><div class="kpi-label">今期収入</div><div class="kpi-value" id="kpi-income">—<span class="kpi-unit">万</span></div><div class="kpi-sub">FY2025</div></div>
+    <div class="kpi yellow"><div class="kpi-label">今期収支</div><div class="kpi-value" id="kpi-balance">—<span class="kpi-unit">万</span></div><div class="kpi-sub">収入−支出</div></div>
+  </div>
+  <div class="grid-65" style="margin-bottom:20px;">
+    <div class="card">
+      <div class="card-header"><div class="card-title">今週のアクションアイテム</div></div>
+      <div class="card-body" style="padding:0;">
+        <ul class="checklist" id="action-list">
+          <li><div class="check-box urgent" onclick="toggleCheck(this)">!</div><div><div class="check-text">第1回定期 SNS公開（今夜）</div></div><div class="check-meta">今日</div></li>
+          <li><div class="check-box urgent" onclick="toggleCheck(this)">!</div><div><div class="check-text">管楽器パート声掛け（Hr./Tp./Tb.）</div></div><div class="check-meta">3/25</div></li>
+          <li><div class="check-box" onclick="toggleCheck(this)"></div><div><div class="check-text">コンサル人脈へのチケット個別DM</div></div><div class="check-meta">3/28</div></li>
+          <li><div class="check-box" onclick="toggleCheck(this)"></div><div><div class="check-text">企業パッケージ商品設計（S/M/L）</div></div><div class="check-meta">今週中</div></li>
+          <li><div class="check-box" onclick="toggleCheck(this)"></div><div><div class="check-text">プログラムノート 初稿作成</div></div><div class="check-meta">4/1</div></li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <div class="ai-panel">
+        <div class="ai-panel-header"><div class="ai-indicator"></div><div class="ai-title">AI ADVISOR</div><div class="ai-provider" id="ai-provider-label">Gemini</div></div>
+        <div class="ai-output" id="ai-dashboard-output">APIキーを設定してAI分析を有効にしてください。</div>
+        <div class="ai-reasoning" id="ai-dashboard-reason" style="display:none;"><div class="ai-reasoning-title">▸ 判断根拠</div><div id="ai-dashboard-reason-text"></div></div>
+        <button class="ai-gen-btn" onclick="generateAI('dashboard')">▸ AIに詳細分析を依頼</button>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-title">準備タイムライン</div></div>
+    <div class="card-body">
+      <div class="grid-2">
+        <div class="timeline">
+          <div class="tl-item done"><div class="tl-date">2025/03/22</div><div class="tl-text">SNS・HP公開準備完了</div></div>
+          <div class="tl-item active"><div class="tl-date">今夜</div><div class="tl-text">SNS一斉公開 ★</div></div>
+          <div class="tl-item urgent"><div class="tl-date">2025/03/25</div><div class="tl-text">管楽器奏者 声掛け完了</div></div>
+          <div class="tl-item"><div class="tl-date">2025/03/28</div><div class="tl-text">個別DM 第1弾</div></div>
+          <div class="tl-item"><div class="tl-date">2025/04/05</div><div class="tl-text">全奏者確定・リハ日程通知</div></div>
+        </div>
+        <div class="timeline">
+          <div class="tl-item"><div class="tl-date">2025/04/12</div><div class="tl-text">チラシ・プログラム冊子 入稿</div></div>
+          <div class="tl-item"><div class="tl-date">2025/04/19</div><div class="tl-text">第1回リハーサル</div></div>
+          <div class="tl-item"><div class="tl-date">2025/04/26</div><div class="tl-text">第2回リハーサル（通し）</div></div>
+          <div class="tl-item active"><div class="tl-date">2025/05/02</div><div class="tl-text">本番 ★ 武蔵野市民文化会館</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ 公演管理 ════ -->
+<div id="page-concerts" class="page">
+  <div class="page-header">
+    <div><div class="page-title">公演管理</div><div class="page-subtitle">チクルス進捗・タスク・収支シミュレーション</div></div>
+    <div class="page-actions">
+      <button class="btn btn-outline btn-sm" onclick="loadFromSheets('concerts')">↓ 読込</button>
+      <button class="btn btn-gold btn-sm" onclick="openConcertModal()">＋ 公演追加</button>
+    </div>
+  </div>
+  <div id="concerts-list" class="grid-3" style="margin-bottom:24px;">
+    <div class="empty-state"><div class="empty-icon">♩</div>読込中...</div>
+  </div>
+  <!-- Concert detail panel (tabbed) -->
+  <div id="concert-detail-panel" style="display:none;">
+    <!-- Detail header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0;padding-bottom:12px;border-bottom:1px solid var(--border);">
+      <div id="concert-detail-header" style="font-family:'Shippori Mincho',serif;font-size:20px;color:var(--gold);"></div>
+      <button class="btn btn-outline btn-sm" onclick="closeConcertDetail()">閉じる</button>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs" style="margin-top:0;" id="concert-tabs">
+      <div class="tab active" onclick="switchConcertTab(this,'ct-tasks')">タスク</div>
+      <div class="tab" onclick="switchConcertTab(this,'ct-cast')">出演者アサイン</div>
+      <div class="tab" onclick="switchConcertTab(this,'ct-sim')">収支シミュレーション</div>
+    </div>
+
+    <!-- TAB: タスク -->
+    <div id="ct-tasks">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">タスクチェックリスト</div>
+          <button class="btn btn-outline btn-sm" onclick="openModal('task-modal')">＋ タスク追加</button>
+        </div>
+        <div class="card-body" style="padding:0;">
+          <ul class="checklist" id="concert-tasks"></ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: 出演者アサイン -->
+    <div id="ct-cast" style="display:none;">
+      <!-- KPIs -->
+      <div class="kpi-grid" style="margin-bottom:16px;" id="cast-kpi-grid">
+        <div class="kpi blue"><div class="kpi-label">アサイン済</div><div class="kpi-value" id="cast-total">0<span class="kpi-unit">名</span></div></div>
+        <div class="kpi green"><div class="kpi-label">確定</div><div class="kpi-value" id="cast-confirmed">0<span class="kpi-unit">名</span></div></div>
+        <div class="kpi yellow"><div class="kpi-label">交渉中</div><div class="kpi-value" id="cast-negotiating">0<span class="kpi-unit">名</span></div></div>
+        <div class="kpi gold"><div class="kpi-label">謝礼合計</div><div class="kpi-value" id="cast-fee-total">0<span class="kpi-unit">万</span></div></div>
+      </div>
+
+      <div class="grid-65">
+        <!-- Cast table -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">出演者一覧</div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+              <select class="form-input" style="width:auto;padding:4px 8px;font-size:12px;" id="cast-part-filter" onchange="renderCast()">
+                <option value="">全パート</option>
+                <option>Vn.I</option><option>Vn.II</option><option>Va.</option><option>Vc.</option><option>Cb.</option>
+                <option>Fl.</option><option>Ob.</option><option>Cl.</option><option>Fg.</option>
+                <option>Hr.</option><option>Tp.</option><option>Tb.</option><option>Perc.</option><option>Pf.</option>
+              </select>
+              <button class="btn btn-gold btn-sm" onclick="openCastingModal()">＋ 奏者をアサイン</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>氏名</th>
+                  <th>パート</th>
+                  <th>役割</th>
+                  <th>声掛け</th>
+                  <th>返答</th>
+                  <th>謝礼（円）</th>
+                  <th>備考</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="cast-tbody"></tbody>
+            </table>
+          </div>
+          <!-- Part section summary -->
+          <div id="cast-part-summary" style="padding:12px 20px;border-top:1px solid var(--border);font-size:12px;color:var(--text3);"></div>
+        </div>
+
+        <!-- Right panel: unassigned musicians + AI suggest -->
+        <div>
+          <div class="card" style="margin-bottom:16px;">
+            <div class="card-header"><div class="card-title">マスターから追加</div></div>
+            <div style="padding:12px 16px;">
+              <input class="form-input" id="cast-search" placeholder="氏名・パートで検索..." oninput="renderUnassigned()" style="margin-bottom:10px;">
+              <div id="unassigned-list" style="max-height:280px;overflow-y:auto;"></div>
+            </div>
+          </div>
+          <div class="ai-panel">
+            <div class="ai-panel-header"><div class="ai-indicator"></div><div class="ai-title">AI 出演者提案</div><div class="ai-provider">Gemini</div></div>
+            <div class="ai-output" id="cast-ai-output">AIがマスターのデータをもとに最適な出演者構成を提案します。</div>
+            <button class="ai-gen-btn" onclick="generateCastAI()">▸ 出演者構成を提案</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 出演履歴クロス表 -->
+      <div class="card" style="margin-top:20px;">
+        <div class="card-header"><div class="card-title">奏者別 出演履歴</div><span style="font-size:11px;color:var(--text3);">全公演にわたる参加実績</span></div>
+        <div class="table-wrap" id="history-cross-wrap">
+          <div class="empty-state"><div class="empty-icon">♩</div>複数公演のデータが揃うと表示されます</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: 収支シミュレーション -->
+    <div id="ct-sim" style="display:none;">
+
+      <!-- チケット区分 -->
+      <div class="card" style="margin-bottom:16px;">
+        <div class="card-header">
+          <div class="card-title">チケット区分設定</div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <span id="ticket-total-seats" style="font-family:var(--mono);font-size:12px;color:var(--text3);">合計 — 席</span>
+            <button class="btn btn-outline btn-sm" onclick="addTicketTier()">＋ 区分追加</button>
+          </div>
+        </div>
+        <div class="card-body" style="padding:0;">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:32px;"></th>
+                <th>区分名</th>
+                <th>席種</th>
+                <th>単価（円）</th>
+                <th>設定席数</th>
+                <th>販売枚数（実績）</th>
+                <th>売上予測</th>
+                <th style="width:40px;"></th>
+              </tr>
+            </thead>
+            <tbody id="ticket-tiers-tbody"></tbody>
+          </table>
+          <!-- Summary bar -->
+          <div id="ticket-tiers-summary" style="padding:12px 20px;border-top:1px solid var(--border);display:flex;gap:24px;flex-wrap:wrap;font-size:12px;color:var(--text3);"></div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <!-- 収支シミュレーション -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">収支シミュレーション</div>
+            <button class="btn btn-outline btn-sm" onclick="importCastFees()">← アサインから反映</button>
+          </div>
+          <div class="card-body">
+            <!-- 収入セクション -->
+            <div style="font-size:10px;color:var(--text3);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px;">収入</div>
+            <div id="sim-income-breakdown" style="margin-bottom:12px;"></div>
+            <div style="display:flex;justify-content:space-between;padding:8px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:12px;">
+              <span style="font-size:13px;color:var(--text2);">チケット収入合計（満席時）</span>
+              <span class="money-positive" id="sim-income" style="font-family:var(--mono);font-weight:500;">—</span>
+            </div>
+            <!-- 招待・その他補正 -->
+            <div class="grid-2" style="gap:8px;margin-bottom:12px;">
+              <div class="form-group" style="margin-bottom:0;">
+                <div class="form-label">招待席数</div>
+                <input class="form-input" id="sim-invite" type="number" value="0" oninput="calcSim()" placeholder="0">
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <div class="form-label">その他収入（円）</div>
+                <input class="form-input" id="sim-other-income" type="number" value="0" oninput="calcSim()" placeholder="協賛等">
+              </div>
+            </div>
+
+            <!-- 支出セクション -->
+            <div style="font-size:10px;color:var(--text3);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px;margin-top:4px;">支出</div>
+            <div class="grid-2" style="gap:8px;margin-bottom:12px;">
+              <div class="form-group" style="margin-bottom:0;"><div class="form-label">奏者謝礼合計（円）</div><input class="form-input" id="sim-players" type="number" value="0" oninput="calcSim()"></div>
+              <div class="form-group" style="margin-bottom:0;"><div class="form-label">ホール費（円）</div><input class="form-input" id="sim-hall" type="number" value="200000" oninput="calcSim()"></div>
+              <div class="form-group" style="margin-bottom:0;"><div class="form-label">制作・印刷費（円）</div><input class="form-input" id="sim-other" type="number" value="80000" oninput="calcSim()"></div>
+              <div class="form-group" style="margin-bottom:0;"><div class="form-label">広告・宣伝費（円）</div><input class="form-input" id="sim-promo" type="number" value="50000" oninput="calcSim()"></div>
+            </div>
+
+            <!-- 結果 -->
+            <div style="background:var(--surface2);border:1px solid var(--border);padding:14px;border-radius:1px;">
+              <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px;"><span style="color:var(--text2);">総収入（満席時）</span><span class="money-positive" id="sim-total-income" style="font-family:var(--mono);">—</span></div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px;"><span style="color:var(--text2);">総支出</span><span class="money-negative" id="sim-expense" style="font-family:var(--mono);">—</span></div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:10px;font-size:13px;"><span style="color:var(--text2);">損益分岐点</span><span id="sim-bie" style="font-family:var(--mono);color:var(--yellow);">—</span></div>
+              <div style="border-top:1px solid var(--border);padding-top:10px;display:flex;justify-content:space-between;align-items:center;">
+                <span style="color:var(--text);font-size:14px;">満席時収支</span>
+                <span id="sim-balance" style="font-family:var(--mono);font-size:22px;">—</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 謝礼内訳 + 進捗 -->
+        <div>
+          <div class="card" style="margin-bottom:16px;">
+            <div class="card-header"><div class="card-title">謝礼内訳（アサインより）</div></div>
+            <div class="card-body" id="sim-fee-breakdown">
+              <div style="font-size:13px;color:var(--text3);">出演者タブでアサインすると自動反映されます</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">販売進捗</div></div>
+            <div class="card-body" id="sim-sales-progress">
+              <div style="font-size:13px;color:var(--text3);">チケット区分に実績枚数を入力してください</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ 奏者管理 ════ -->
+<div id="page-players" class="page">
+  <div class="page-header">
+    <div><div class="page-title">奏者管理</div><div class="page-subtitle">マスター・連絡先・謝礼・声掛け文生成</div></div>
+    <div class="page-actions">
+      <button class="btn btn-outline btn-sm" onclick="loadFromSheets('musicians')">↓ 読込</button>
+      <button class="btn btn-gold btn-sm" onclick="openPlayerModal()">＋ 奏者追加</button>
+    </div>
+  </div>
+  <div class="kpi-grid">
+    <div class="kpi blue"><div class="kpi-label">登録奏者数</div><div class="kpi-value" id="p-total">—</div></div>
+    <div class="kpi green"><div class="kpi-label">確定済み</div><div class="kpi-value" id="p-confirmed">—</div></div>
+    <div class="kpi yellow"><div class="kpi-label">交渉中</div><div class="kpi-value" id="p-negotiating">—</div></div>
+    <div class="kpi red"><div class="kpi-label">未確定</div><div class="kpi-value" id="p-pending">—</div></div>
+  </div>
+  <div class="grid-65">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">奏者マスター</div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <select class="form-input" style="width:auto;padding:4px 8px;font-size:12px;" id="part-filter" onchange="renderPlayers()">
+            <option value="">全パート</option>
+            <option>Vn.I</option><option>Vn.II</option><option>Va.</option><option>Vc.</option><option>Cb.</option>
+            <option>Fl.</option><option>Ob.</option><option>Cl.</option><option>Fg.</option>
+            <option>Hr.</option><option>Tp.</option><option>Tb.</option><option>Perc.</option><option>Pf.</option>
+          </select>
+          <select class="form-input" style="width:auto;padding:4px 8px;font-size:12px;" id="status-filter" onchange="renderPlayers()">
+            <option value="">全ステータス</option>
+            <option value="確定">確定</option><option value="交渉中">交渉中</option><option value="未確定">未確定</option>
+          </select>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>氏名</th><th>パート</th><th>役割</th><th>謝礼</th><th>所属</th><th>ステータス</th><th>操作</th></tr></thead>
+          <tbody id="player-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div>
+      <div class="ai-panel">
+        <div class="ai-panel-header"><div class="ai-indicator"></div><div class="ai-title">声掛け文 AI生成</div><div class="ai-provider">Gemini</div></div>
+        <div class="form-group"><div class="form-label">対象奏者</div><input class="form-input" id="kakegoe-name" placeholder="氏名"></div>
+        <div class="form-group"><div class="form-label">パート・役割</div><input class="form-input" id="kakegoe-part" placeholder="例：Hr. 首席"></div>
+        <div class="form-group"><div class="form-label">公演</div>
+          <select class="form-input" id="kakegoe-concert">
+            <option>第1回定期演奏会（2025/5/2）</option>
+          </select>
+        </div>
+        <div class="form-group"><div class="form-label">経由ルート</div><input class="form-input" id="kakegoe-route" placeholder="直接 / ○○さん紹介"></div>
+        <button class="ai-gen-btn" onclick="generateKakegoe()">▸ 声掛け文を生成</button>
+        <div id="kakegoe-output" style="display:none;margin-top:12px;padding:12px;background:var(--surface);border:1px solid var(--border);border-radius:2px;font-size:13px;color:var(--text2);line-height:1.8;white-space:pre-wrap;"></div>
+        <button id="kakegoe-copy" class="btn btn-outline btn-sm" style="display:none;margin-top:8px;" onclick="copyText('kakegoe-output')">コピー</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ スケジュール調整 ════ -->
+<div id="page-scheduler" class="page">
+  <div class="page-header">
+    <div><div class="page-title">スケジュール調整</div><div class="page-subtitle">奏者可用性管理・候補日程の最適化</div></div>
+    <div class="page-actions">
+      <button class="btn btn-outline btn-sm" onclick="loadFromSheets('schedule')">↓ 読込</button>
+      <button class="btn btn-outline btn-sm" onclick="openModal('sched-modal')">＋ 空き入力</button>
+      <button class="btn btn-gold btn-sm" onclick="generateSchedAI()">AI最適日程</button>
+    </div>
+  </div>
+  <div class="grid-2" style="margin-bottom:20px;">
+    <div class="card">
+      <div class="card-header"><div class="card-title">候補日設定</div></div>
+      <div class="card-body">
+        <div class="form-group"><div class="form-label">第1候補</div><input type="date" class="form-input" id="cand1" value="2025-05-02" onchange="renderScheduler()"></div>
+        <div class="form-group"><div class="form-label">第2候補</div><input type="date" class="form-input" id="cand2" value="2025-05-09" onchange="renderScheduler()"></div>
+        <div class="form-group" style="margin-bottom:0;"><div class="form-label">第3候補</div><input type="date" class="form-input" id="cand3" value="2025-05-16" onchange="renderScheduler()"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">集計</div></div>
+      <div class="card-body" id="sched-summary"><div style="font-size:13px;color:var(--text3);">データ入力後に集計が表示されます</div></div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:20px;">
+    <div class="card-header"><div class="card-title">奏者別 可用性</div><span style="font-size:11px;color:var(--text3);">● 可　◐ 調整中　○ 不参加</span></div>
+    <div class="card-body" style="padding:0;overflow-x:auto;" id="sched-grid-wrap">
+      <div class="empty-state"><div class="empty-icon">📅</div>空き状況を入力してください</div>
+    </div>
+  </div>
+  <div class="ai-panel" id="sched-ai-panel" style="display:none;">
+    <div class="ai-panel-header"><div class="ai-indicator"></div><div class="ai-title">AI 最適日程提案</div><div class="ai-provider">Gemini</div></div>
+    <div class="ai-output" id="sched-ai-output"></div>
+  </div>
+</div>
+
+<!-- ════ 企業営業 ════ -->
+<div id="page-bizdev" class="page">
+  <div class="page-header">
+    <div><div class="page-title">企業営業</div><div class="page-subtitle">イベント受託・パッケージ・パイプライン</div></div>
+    <div class="page-actions">
+      <button class="btn btn-outline btn-sm" onclick="openModal('pkg-modal')">⚙ パッケージ編集</button>
+      <button class="btn btn-gold btn-sm" onclick="openBizDealModal()">＋ 案件追加</button>
+    </div>
+  </div>
+  <div class="kpi-grid">
+    <div class="kpi green"><div class="kpi-label">今期受注</div><div class="kpi-value" id="biz-won">—<span class="kpi-unit">万</span></div></div>
+    <div class="kpi blue"><div class="kpi-label">商談中</div><div class="kpi-value" id="biz-active">—<span class="kpi-unit">件</span></div></div>
+    <div class="kpi yellow"><div class="kpi-label">パイプライン</div><div class="kpi-value" id="biz-pipe">—<span class="kpi-unit">万</span></div></div>
+    <div class="kpi gold"><div class="kpi-label">年間目標</div><div class="kpi-value" id="biz-target">500<span class="kpi-unit">万</span></div></div>
+  </div>
+  <div class="grid-65">
+    <div>
+      <div class="card" style="margin-bottom:20px;">
+        <div class="card-header">
+          <div class="card-title">パッケージ定価表</div>
+          <button class="btn btn-outline btn-sm" onclick="openModal('pkg-modal')">編集</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>プラン名</th><th>編成</th><th>時間</th><th>単価</th><th>説明</th></tr></thead>
+            <tbody id="pkg-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">案件パイプライン</div>
+          <select class="form-input" style="width:auto;padding:4px 8px;font-size:12px;" id="biz-filter" onchange="renderBizDeals()">
+            <option value="">全ステータス</option>
+            <option>リード</option><option>商談中</option><option>提案済</option><option>受注済</option><option>失注</option>
+          </select>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>企業名</th><th>担当者</th><th>プラン</th><th>金額</th><th>ステータス</th><th>次アクション</th><th>操作</th></tr></thead>
+            <tbody id="biz-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="ai-panel" style="margin-bottom:16px;">
+        <div class="ai-panel-header"><div class="ai-indicator"></div><div class="ai-title">営業戦略 AI</div><div class="ai-provider">Gemini</div></div>
+        <div class="ai-output" id="biz-ai-output">AIボタンでターゲット企業・戦略を生成します。</div>
+        <button class="ai-gen-btn" onclick="generateAI('bizdev')">▸ ターゲット企業リストを生成</button>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">営業メモ</div><button class="btn btn-outline btn-sm" onclick="saveBizMemo()">保存</button></div>
+        <div class="card-body"><textarea class="form-input" id="biz-memo" style="min-height:120px;" placeholder="営業方針・メモを自由記入..."></textarea></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ 集客管理 ════ -->
+<div id="page-tickets" class="page">
+  <div class="page-header">
+    <div><div class="page-title">集客管理</div><div class="page-subtitle">チケット販売・施策ロードマップ</div></div>
+  </div>
+  <div class="kpi-grid">
+    <div class="kpi green"><div class="kpi-label">販売枚数</div><div class="kpi-value" id="tkt-sold">0<span class="kpi-unit">枚</span></div><div class="kpi-sub" id="tkt-goal-sub">目標—枚</div></div>
+    <div class="kpi blue"><div class="kpi-label">達成率</div><div class="kpi-value" id="tkt-pct">—<span class="kpi-unit">%</span></div></div>
+    <div class="kpi gold"><div class="kpi-label">チケット単価</div><div class="kpi-value" id="tkt-price">—<span class="kpi-unit">円</span></div></div>
+    <div class="kpi yellow"><div class="kpi-label">損益分岐</div><div class="kpi-value" id="tkt-bie">—<span class="kpi-unit">枚</span></div><div class="kpi-sub" id="tkt-bie-sub">—</div></div>
+  </div>
+  <div class="grid-65">
+    <div class="card">
+      <div class="card-header"><div class="card-title">施策ロードマップ</div></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>施策</th><th>ターゲット</th><th>期限</th><th>想定効果</th><th>状況</th><th>操作</th></tr></thead>
+          <tbody id="roadmap-tbody"></tbody>
+        </table>
+      </div>
+      <div style="padding:12px 20px;border-top:1px solid var(--border);">
+        <button class="btn btn-outline btn-sm" onclick="openModal('roadmap-modal')">＋ 施策追加</button>
+      </div>
+    </div>
+    <div class="ai-panel">
+      <div class="ai-panel-header"><div class="ai-indicator"></div><div class="ai-title">集客AI分析</div><div class="ai-provider">Gemini</div></div>
+      <div class="ai-output" id="ticket-ai-output">AIボタンで集客戦略・DM文を生成します。</div>
+      <button class="ai-gen-btn" onclick="generateAI('tickets')">▸ 集客戦略・DM文を生成</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════ 協賛管理 ════ -->
+<div id="page-sponsors" class="page">
+  <div class="page-header">
+    <div><div class="page-title">協賛管理</div><div class="page-subtitle">スポンサー候補・影響度管理</div></div>
+  </div>
+  <div class="card" style="margin-bottom:20px;">
+    <div class="card-header">
+      <div class="card-title">協賛ポリシー</div>
+      <button class="btn btn-outline btn-sm" onclick="editPolicy()">編集</button>
+    </div>
+    <div class="card-body" id="sponsor-policy-view">
+      <div style="font-size:13px;color:var(--text2);line-height:1.9;" id="sponsor-policy-text">読込中...</div>
+    </div>
+    <div class="card-body" id="sponsor-policy-edit" style="display:none;">
+      <textarea class="form-input" id="sponsor-policy-input" style="min-height:100px;"></textarea>
+      <div style="display:flex;gap:8px;margin-top:10px;">
+        <button class="btn btn-gold btn-sm" onclick="savePolicy()">保存</button>
+        <button class="btn btn-outline btn-sm" onclick="cancelPolicyEdit()">キャンセル</button>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">協賛候補リスト</div>
+      <button class="btn btn-gold btn-sm" onclick="openModal('sponsor-modal')">＋ 候補追加</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>企業名</th><th>業種</th><th>想定金額</th><th>リスク</th><th>ステータス</th><th>備考</th><th>操作</th></tr></thead>
+        <tbody id="sponsor-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ════ 財務レポート ════ -->
+<div id="page-finance" class="page">
+  <div class="page-header">
+    <div><div class="page-title">財務レポート</div><div class="page-subtitle">収支明細・カテゴリ集計・Sheets同期</div></div>
+    <div class="page-actions">
+      <button class="btn btn-outline btn-sm" onclick="loadFromSheets('finance')">↓ 読込</button>
+      <button class="btn btn-outline btn-sm" onclick="generateAI('finance')">AI財務分析</button>
+      <button class="btn btn-gold btn-sm" onclick="openModal('txn-modal')">＋ 取引追加</button>
+    </div>
+  </div>
+  <div class="kpi-grid">
+    <div class="kpi green"><div class="kpi-label">今期収入</div><div class="kpi-value" id="fin-income">—<span class="kpi-unit">万</span></div></div>
+    <div class="kpi red"><div class="kpi-label">今期支出</div><div class="kpi-value" id="fin-expense">—<span class="kpi-unit">万</span></div></div>
+    <div class="kpi gold"><div class="kpi-label">収支</div><div class="kpi-value" id="fin-balance">—<span class="kpi-unit">万</span></div></div>
+    <div class="kpi blue"><div class="kpi-label">来期目標売上</div><div class="kpi-value">300<span class="kpi-unit">万</span></div></div>
+  </div>
+  <div class="grid-2" style="margin-bottom:20px;">
+    <div class="card"><div class="card-header"><div class="card-title">収入カテゴリ</div></div><div class="card-body" id="income-cats"></div></div>
+    <div class="card"><div class="card-header"><div class="card-title">支出カテゴリ</div></div><div class="card-body" id="expense-cats"></div></div>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-title">取引明細</div><span id="txn-count" style="font-family:var(--mono);font-size:11px;color:var(--text3);">0件</span></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>日付</th><th>区分</th><th>カテゴリ</th><th>摘要</th><th>公演</th><th>金額</th><th>操作</th></tr></thead>
+        <tbody id="txn-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="ai-panel" id="fin-ai-panel" style="display:none;margin-top:20px;">
+    <div class="ai-panel-header"><div class="ai-indicator"></div><div class="ai-title">AI 財務分析</div><div class="ai-provider">Gemini</div></div>
+    <div class="ai-output" id="fin-ai-output"></div>
+  </div>
+</div>
+
+<!-- ════ マーケティング ════ -->
+<div id="page-marketing" class="page">
+  <div class="page-header">
+    <div><div class="page-title">マーケティング</div><div class="page-subtitle">SNS・メール・コンテンツ戦略</div></div>
+  </div>
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab(this,'mk-sns')">SNS生成</div>
+    <div class="tab" onclick="switchTab(this,'mk-email')">メール・DM</div>
+    <div class="tab" onclick="switchTab(this,'mk-strategy')">コンテンツ戦略</div>
+  </div>
+  <div id="mk-sns">
+    <div class="grid-65">
+      <div class="card">
+        <div class="card-header"><div class="card-title">投稿文生成</div></div>
+        <div class="card-body">
+          <div class="form-group"><div class="form-label">公演名</div><input class="form-input" id="mk-concert" value="第1回定期演奏会"></div>
+          <div class="form-group"><div class="form-label">プログラム</div><input class="form-input" id="mk-program" value="Beethoven Sym.1 / Brahms Sym.1"></div>
+          <div class="form-group"><div class="form-label">コンセプト</div><textarea class="form-input" id="mk-concept">ベートーヴェンとブラームス、二つの「始まり」。武蔵野から始まるチクルス。</textarea></div>
+          <div class="form-group"><div class="form-label">トーン</div>
+            <select class="form-input" id="mk-tone"><option>知性的・格調高く</option><option>熱量・エモーショナル</option><option>ビジネス向け</option></select>
+          </div>
+          <button class="btn btn-gold" onclick="generateSNS()" id="mk-gen-btn">生成する</button>
+        </div>
+      </div>
+      <div id="mk-results"></div>
+    </div>
+  </div>
+  <div id="mk-email" style="display:none;">
+    <div class="card">
+      <div class="card-header"><div class="card-title">個別DM・メール文生成</div></div>
+      <div class="card-body">
+        <div class="grid-2">
+          <div>
+            <div class="form-group"><div class="form-label">送り先属性</div><select class="form-input" id="email-target"><option>コンサル・金融業界の知人</option><option>音楽関係者</option><option>企業イベント担当者</option></select></div>
+            <div class="form-group"><div class="form-label">チャネル</div><select class="form-input" id="email-channel"><option>LINE</option><option>メール</option><option>SNS DM</option></select></div>
+            <button class="btn btn-gold" onclick="generateEmail()">生成する</button>
+          </div>
+          <div id="email-output" class="ai-panel" style="display:none;">
+            <div class="ai-output" id="email-text"></div>
+            <button class="ai-gen-btn" onclick="copyText('email-text')">コピー</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="mk-strategy" style="display:none;">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">コンテンツ戦略方針</div>
+        <button class="btn btn-outline btn-sm" onclick="editStrategy()">編集</button>
+      </div>
+      <div class="card-body" id="strategy-view">
+        <div style="font-size:13px;color:var(--text2);line-height:2;" id="strategy-text">読込中...</div>
+      </div>
+      <div class="card-body" id="strategy-edit" style="display:none;">
+        <textarea class="form-input" id="strategy-input" style="min-height:160px;"></textarea>
+        <div style="display:flex;gap:8px;margin-top:10px;">
+          <button class="btn btn-gold btn-sm" onclick="saveStrategy()">保存</button>
+          <button class="btn btn-outline btn-sm" onclick="cancelStrategyEdit()">キャンセル</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ 設定 ════ -->
+<div id="page-settings" class="page">
+  <div class="page-header">
+    <div><div class="page-title">設定</div><div class="page-subtitle">GAS URL・AI・システム設定</div></div>
+  </div>
+  <!-- Deployment notice -->
+  <div style="background:var(--gold-dim);border:1px solid rgba(200,167,82,0.3);border-radius:2px;padding:14px 18px;margin-bottom:20px;font-size:13px;color:var(--text2);line-height:1.8;" id="local-file-warning">
+    <strong style="color:var(--gold);">⚠ ローカルファイルで開いています</strong><br>
+    データの永続保存には <strong>GitHub Pages へのアップロード</strong> が必要です。<br>
+    <span style="font-family:var(--mono);font-size:11px;">手順: GitHubリポジトリに index.html としてアップ → Settings → Pages → Source: main branch</span>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-header"><div class="card-title">🔌 Google Sheets連携（GAS）</div><span id="gas-badge" class="badge badge-gray">未設定</span></div>
+      <div class="card-body">
+        <div style="background:var(--surface2);border:1px solid var(--border);padding:14px;border-radius:2px;margin-bottom:16px;font-size:12px;color:var(--text2);line-height:1.9;">
+          <strong style="color:var(--gold);">設置手順（一度だけ）：</strong><br>
+          1. 「VariOrchestra_GAS.js」をダウンロード<br>
+          2. スプレッドシートを新規作成 → 拡張機能 → Apps Script<br>
+          3. コードを貼り付けて保存<br>
+          4. デプロイ → ウェブアプリ → アクセス:全員 → URLをコピー<br>
+          5. 下のフィールドに貼り付けて「初期化」
+        </div>
+        <div class="form-group"><div class="form-label">GAS Web App URL</div><input class="form-input" id="gas-url" placeholder="https://script.google.com/macros/s/.../exec"></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn btn-outline" onclick="testGAS()">接続テスト</button>
+          <button class="btn btn-gold" onclick="initAndSaveGAS()">初期化 & 保存</button>
+        </div>
+        <div id="gas-status" style="margin-top:10px;font-size:12px;font-family:var(--mono);color:var(--text3);"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">AI設定</div></div>
+      <div class="card-body">
+        <div class="form-group"><div class="form-label">使用AIエンジン</div>
+          <select class="form-input" onchange="setApiFromSelect(this.value)">
+            <option value="gemini">Gemini（推奨）</option>
+            <option value="claude">Claude</option>
+          </select>
+        </div>
+        <div class="form-group"><div class="form-label">Gemini API Key</div><input type="password" class="form-input" id="gemini-key-settings" placeholder="AIzaSy..."></div>
+        <div class="form-group"><div class="form-label">Claude API Key</div><input type="password" class="form-input" id="claude-key-settings" placeholder="sk-ant-..."></div>
+        <button class="btn btn-gold" onclick="saveApiKeys()">保存</button>
+      </div>
+    </div>
+  </div>
+  <div class="grid-2" style="margin-top:20px;">
+    <div class="card">
+      <div class="card-header"><div class="card-title">パスワード変更</div></div>
+      <div class="card-body">
+        <div style="display:flex;gap:12px;align-items:flex-end;">
+          <div class="form-group" style="flex:1;margin-bottom:0;"><div class="form-label">新しいパスワード</div><input type="password" class="form-input" id="new-pw" placeholder="新しいパスワード"></div>
+          <button class="btn btn-gold" onclick="changePw()">変更</button>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">データ管理</div></div>
+      <div class="card-body">
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <button class="btn btn-outline" onclick="syncAll()">↑↓ 全データをSheetsと同期</button>
+          <button class="btn btn-outline" onclick="exportLocalData()">📥 ローカルデータをJSON出力</button>
+          <button class="btn btn-danger btn-sm" onclick="clearLocalData()">⚠ ローカルデータをクリア</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 数値設定 -->
+  <div class="card" style="margin-top:20px;">
+    <div class="card-header"><div class="card-title">数値・目標設定</div><button class="btn btn-gold btn-sm" onclick="saveNumericSettings()">保存</button></div>
+    <div class="card-body">
+      <div class="grid-3" style="gap:12px;">
+        <div class="form-group" style="margin-bottom:0;"><div class="form-label">営業年間目標（万円）</div><input class="form-input" type="number" id="cfg-biz-target" placeholder="500"></div>
+        <div class="form-group" style="margin-bottom:0;"><div class="form-label">財務来期目標（万円）</div><input class="form-input" type="number" id="cfg-fin-target" placeholder="300"></div>
+        <div class="form-group" style="margin-bottom:0;"><div class="form-label">団体名</div><input class="form-input" id="cfg-org-name" placeholder="VariOrchestra"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<!-- MODALS -->
+<div id="concert-modal" class="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal" style="width:720px;max-height:90vh;">
+    <div class="modal-header"><div class="modal-title">公演追加 / 編集</div><button class="modal-close" onclick="closeModal('concert-modal')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="concert-id">
+      <div class="grid-2">
+        <div class="form-group"><div class="form-label">公演名</div><input class="form-input" id="concert-title" placeholder="第○回定期演奏会"></div>
+        <div class="form-group"><div class="form-label">日付</div><input class="form-input" type="date" id="concert-date"></div>
+      </div>
+      <div class="grid-2">
+        <div class="form-group"><div class="form-label">会場</div><input class="form-input" id="concert-venue" value="武蔵野市民文化会館"></div>
+        <div class="form-group"><div class="form-label">種別</div>
+          <select class="form-input" id="concert-type">
+            <option>定期演奏会</option><option>企業イベント</option><option>外部依頼</option><option>共演</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group"><div class="form-label">プログラム</div><textarea class="form-input" id="concert-program" style="min-height:72px;" placeholder="ベートーヴェン：交響曲第1番 ハ長調&#10;ブラームス：交響曲第1番 ハ短調"></textarea></div>
+      <div class="form-group"><div class="form-label">備考</div><input class="form-input" id="concert-note" placeholder="備考・メモ"></div>
+
+      <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <span style="font-size:10px;color:var(--text3);letter-spacing:0.2em;text-transform:uppercase;">チケット区分</span>
+          <button type="button" class="btn btn-outline btn-sm" onclick="addModalTicketTier()">＋ 区分追加</button>
+        </div>
+        <div style="font-size:11px;color:var(--text3);margin-bottom:8px;display:grid;grid-template-columns:1fr 90px 80px 80px 24px;gap:6px;padding:0 2px;">
+          <span>区分名</span><span>席種</span><span>単価（円）</span><span>席数</span><span></span>
+        </div>
+        <div id="modal-ticket-tiers" style="display:flex;flex-direction:column;gap:6px;"></div>
+        <div style="margin-top:10px;padding:8px 12px;background:var(--surface2);border-radius:2px;font-size:12px;color:var(--text3);display:flex;gap:20px;flex-wrap:wrap;">
+          <span>合計席数: <strong id="mts-seats">—</strong></span>
+          <span style="color:var(--green);">満席売上予測: <strong id="mts-revenue">—</strong></span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger btn-sm" id="concert-delete-btn" style="margin-right:auto;display:none;" onclick="deleteConcert()">削除</button>
+      <button class="btn btn-outline" onclick="closeModal('concert-modal')">キャンセル</button>
+      <button class="btn btn-gold" onclick="saveConcert()">保存</button>
+    </div>
+  </div>
+</div>
+<div id="player-modal" class="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">奏者追加 / 編集</div><button class="modal-close" onclick="closeModal('player-modal')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="player-id">
+      <div class="grid-2">
+        <div class="form-group"><div class="form-label">氏名</div><input class="form-input" id="player-name" placeholder="山田 花子"></div>
+        <div class="form-group"><div class="form-label">パート</div>
+          <select class="form-input" id="player-part">
+            <option>Vn.I</option><option>Vn.II</option><option>Va.</option><option>Vc.</option><option>Cb.</option>
+            <option>Fl.</option><option>Ob.</option><option>Cl.</option><option>Fg.</option>
+            <option>Hr.</option><option>Tp.</option><option>Tb.</option><option>Perc.</option><option>Pf.</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="form-group"><div class="form-label">役割</div>
+          <select class="form-input" id="player-role"><option>首席</option><option>フォア</option><option>一般</option></select>
+        </div>
+        <div class="form-group"><div class="form-label">謝礼（円/回）</div><input class="form-input" type="number" id="player-fee" placeholder="15000"></div>
+      </div>
+      <div class="grid-2">
+        <div class="form-group"><div class="form-label">所属・学校</div><input class="form-input" id="player-affil" placeholder="東京フィル / 桐朋学園大学"></div>
+        <div class="form-group"><div class="form-label">ステータス</div>
+          <select class="form-input" id="player-status"><option>確定</option><option>交渉中</option><option>未確定</option></select>
+        </div>
+      </div>
+      <div class="form-group"><div class="form-label">連絡先（LINE/メール/電話）</div><input class="form-input" id="player-contact" placeholder="連絡先"></div>
+      <div class="form-group"><div class="form-label">備考・経由ルート</div><input class="form-input" id="player-note" placeholder="例：直接 / ○○さん紹介"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger btn-sm" id="player-delete-btn" style="margin-right:auto;display:none;" onclick="deletePlayer()">削除</button>
+      <button class="btn btn-outline" onclick="closeModal('player-modal')">キャンセル</button>
+      <button class="btn btn-gold" onclick="savePlayer()">保存</button>
+    </div>
+  </div>
+</div>
+
+<div id="sched-modal" class="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">空き状況入力</div><button class="modal-close" onclick="closeModal('sched-modal')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="sched-id">
+      <div class="grid-2">
+        <div class="form-group"><div class="form-label">奏者名</div><input class="form-input" id="sched-name" placeholder="氏名"></div>
+        <div class="form-group"><div class="form-label">パート</div><input class="form-input" id="sched-part" placeholder="Hr."></div>
+      </div>
+      <div class="grid-3">
+        <div class="form-group"><div class="form-label" id="sl1">第1候補</div>
+          <select class="form-input" id="sd1"><option value="yes">○ 参加可</option><option value="maybe">△ 調整中</option><option value="no">✕ 不参加</option></select>
+        </div>
+        <div class="form-group"><div class="form-label" id="sl2">第2候補</div>
+          <select class="form-input" id="sd2"><option value="yes">○ 参加可</option><option value="maybe">△ 調整中</option><option value="no">✕ 不参加</option></select>
+        </div>
+        <div class="form-group"><div class="form-label" id="sl3">第3候補</div>
+          <select class="form-input" id="sd3"><option value="yes">○ 参加可</option><option value="maybe">△ 調整中</option><option value="no">✕ 不参加</option></select>
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:0;"><div class="form-label">備考</div><input class="form-input" id="sched-note" placeholder="午前のみ可 など"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger btn-sm" id="sched-delete-btn" style="margin-right:auto;display:none;" onclick="deleteSchedEntry()">削除</button>
+      <button class="btn btn-outline" onclick="closeModal('sched-modal')">キャンセル</button>
+      <button class="btn btn-gold" onclick="saveSchedEntry()">保存</button>
+    </div>
+  </div>
+</div>
+
+<div id="txn-modal" class="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">取引追加 / 編集</div><button class="modal-close" onclick="closeModal('txn-modal')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="txn-id">
+      <div class="grid-2">
+        <div class="form-group"><div class="form-label">日付</div><input type="date" class="form-input" id="txn-date"></div>
+        <div class="form-group"><div class="form-label">区分</div>
+          <select class="form-input" id="txn-type" onchange="updateTxnCats()"><option value="income">収入</option><option value="expense">支出</option></select>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="form-group"><div class="form-label">カテゴリ</div>
+          <select class="form-input" id="txn-cat">
+            <option>企業イベント収入</option><option>チケット収入</option><option>その他収入</option>
+          </select>
+        </div>
+        <div class="form-group"><div class="form-label">金額（円）</div><input type="number" class="form-input" id="txn-amount" placeholder="900000"></div>
+      </div>
+      <div class="grid-2">
+        <div class="form-group"><div class="form-label">公演（任意）</div>
+          <select class="form-input" id="txn-concert"><option value="">—</option></select>
+        </div>
+        <div class="form-group"><div class="form-label">摘要</div><input class="form-input" id="txn-desc" placeholder="フォーティエンス社内イベント"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger btn-sm" id="txn-delete-btn" style="margin-right:auto;display:none;" onclick="deleteTxn()">削除</button>
+      <button class="btn btn-outline" onclick="closeModal('txn-modal')">キャンセル</button>
+      <button class="btn btn-gold" onclick="saveTxn()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- biz-modal replaced by biz-deal-modal -->
+
+
+<!-- pkg-modal: パッケージ定価編集 -->
+<div id="pkg-modal" class="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal" style="width:700px;">
+    <div class="modal-header"><div class="modal-title">パッケージ定価表 編集</div><button class="modal-close" onclick="closeModal('pkg-modal')">✕</button></div>
+    <div class="modal-body">
+      <div id="pkg-editor-list"></div>
+      <button class="btn btn-outline" style="width:100%;margin-top:12px;" onclick="addPkgRow()">＋ プラン追加</button>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('pkg-modal')">キャンセル</button>
+      <button class="btn btn-gold" onclick="savePkgTable()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- biz-deal-modal: 案件追加・編集 -->
+<div id="biz-deal-modal" class="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">案件追加 / 編集</div><button class="modal-close" onclick="closeModal('biz-deal-modal')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="biz-deal-id">
+      <div class="grid-2">
+        <div class="form-group"><div class="form-label">企業名</div><input class="form-input" id="biz-company" placeholder="株式会社○○"></div>
+        <div class="form-group"><div class="form-label">担当者名</div><input class="form-input" id="biz-contact" placeholder="山田部長"></div>
+      </div>
+      <div class="grid-2">
+        <div class="form-group"><div class="form-label">プラン</div><select class="form-input" id="biz-plan"><option>S</option><option>M</option><option>L</option><option>カスタム</option></select></div>
+        <div class="form-group"><div class="form-label">金額（万円）</div><input type="number" class="form-input" id="biz-amount"></div>
+      </div>
+      <div class="grid-2">
+        <div class="form-group"><div class="form-label">ステータス</div>
+          <select class="form-input" id="biz-status"><option>リード</option><option>商談中</option><option>提案済</option><option>受注済</option><option>失注</option></select>
+        </div>
+        <div class="form-group"><div class="form-label">次アクション</div><input class="form-input" id="biz-action" placeholder="次にすること・期限"></div>
+      </div>
+      <div class="form-group"><div class="form-label">備考</div><textarea class="form-input" id="biz-note" style="min-height:60px;"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger btn-sm" id="biz-delete-btn" style="margin-right:auto;display:none;" onclick="deleteBizDeal()">削除</button>
+      <button class="btn btn-outline" onclick="closeModal('biz-deal-modal')">キャンセル</button>
+      <button class="btn btn-gold" onclick="saveBizDeal()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- roadmap-modal: 施策追加・編集 -->
+<div id="roadmap-modal" class="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">施策追加 / 編集</div><button class="modal-close" onclick="closeModal('roadmap-modal')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="rm-id">
+      <div class="form-group"><div class="form-label">施策名</div><input class="form-input" id="rm-name" placeholder="SNS一斉公開"></div>
+      <div class="grid-2">
+        <div class="form-group"><div class="form-label">ターゲット</div><input class="form-input" id="rm-target" placeholder="フォロワー・ビジネス層"></div>
+        <div class="form-group"><div class="form-label">期限</div><input class="form-input" id="rm-deadline" placeholder="4/1"></div>
+      </div>
+      <div class="grid-2">
+        <div class="form-group"><div class="form-label">想定効果</div><input class="form-input" id="rm-effect" placeholder="〜20枚"></div>
+        <div class="form-group"><div class="form-label">状況</div>
+          <select class="form-input" id="rm-status"><option>未着手</option><option>進行中</option><option>完了</option><option>中断</option></select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger btn-sm" id="rm-delete-btn" style="margin-right:auto;display:none;" onclick="deleteRoadmapItem()">削除</button>
+      <button class="btn btn-outline" onclick="closeModal('roadmap-modal')">キャンセル</button>
+      <button class="btn btn-gold" onclick="saveRoadmapItem()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- sponsor-modal: 協賛候補追加 -->
+<div id="sponsor-modal" class="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">協賛候補追加 / 編集</div><button class="modal-close" onclick="closeModal('sponsor-modal')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="sp-id">
+      <div class="grid-2">
+        <div class="form-group"><div class="form-label">企業名</div><input class="form-input" id="sp-name"></div>
+        <div class="form-group"><div class="form-label">業種</div><input class="form-input" id="sp-industry" placeholder="製造・金融・IT etc."></div>
+      </div>
+      <div class="grid-2">
+        <div class="form-group"><div class="form-label">想定金額（万円）</div><input type="number" class="form-input" id="sp-amount"></div>
+        <div class="form-group"><div class="form-label">影響度リスク</div>
+          <select class="form-input" id="sp-risk"><option>低</option><option>中</option><option>高</option></select>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="form-group"><div class="form-label">ステータス</div>
+          <select class="form-input" id="sp-status"><option>候補</option><option>打診中</option><option>交渉中</option><option>成立</option><option>見送り</option></select>
+        </div>
+        <div class="form-group"><div class="form-label">備考・条件</div><input class="form-input" id="sp-note"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger btn-sm" id="sp-delete-btn" style="margin-right:auto;display:none;" onclick="deleteSponsor()">削除</button>
+      <button class="btn btn-outline" onclick="closeModal('sponsor-modal')">キャンセル</button>
+      <button class="btn btn-gold" onclick="saveSponsor()">保存</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- casting-modal: 奏者アサイン -->
+<div id="casting-modal" class="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal" style="width:640px;">
+    <div class="modal-header"><div class="modal-title">出演者アサイン</div><button class="modal-close" onclick="closeModal('casting-modal')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="cast-edit-id">
+      <div class="form-group">
+        <div class="form-label">奏者（マスターから選択）</div>
+        <select class="form-input" id="cast-musician-sel" onchange="onCastMusicianChange()">
+          <option value="">— 選択 —</option>
+        </select>
+      </div>
+      <div id="cast-musician-info" style="background:var(--surface2);border:1px solid var(--border);padding:10px 14px;border-radius:1px;font-size:12px;color:var(--text3);margin-bottom:14px;display:none;"></div>
+      <div class="grid-2">
+        <div class="form-group">
+          <div class="form-label">パート割当</div>
+          <select class="form-input" id="cast-part-sel">
+            <option>Vn.I</option><option>Vn.II</option><option>Va.</option><option>Vc.</option><option>Cb.</option>
+            <option>Fl.</option><option>Ob.</option><option>Cl.</option><option>Fg.</option>
+            <option>Hr.</option><option>Tp.</option><option>Tb.</option><option>Perc.</option><option>Pf.</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <div class="form-label">役割</div>
+          <select class="form-input" id="cast-role-sel">
+            <option value="首席">首席</option>
+            <option value="フォア">フォア</option>
+            <option value="2nd以下">2nd以下</option>
+            <option value="Tutti（プロ）">Tutti（プロ）</option>
+            <option value="Tutti（学生）">Tutti（学生）</option>
+            <option value="エキストラ">エキストラ</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="form-group">
+          <div class="form-label">声掛け状況</div>
+          <select class="form-input" id="cast-contact-status">
+            <option value="未連絡">未連絡</option>
+            <option value="連絡済">連絡済（返答待ち）</option>
+            <option value="確定">確定（出演確約）</option>
+            <option value="交渉中">交渉中</option>
+            <option value="辞退">辞退</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <div class="form-label">謝礼（円）</div>
+          <input type="number" class="form-input" id="cast-fee-input" placeholder="マスターから自動入力">
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="form-label">備考（プログラム指定・条件など）</div>
+        <input class="form-input" id="cast-note-input" placeholder="例：第1曲のみ / 午前リハ不可">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger btn-sm" id="cast-delete-btn" style="margin-right:auto;display:none;" onclick="deleteCasting()">アサイン解除</button>
+      <button class="btn btn-outline" onclick="closeModal('casting-modal')">キャンセル</button>
+      <button class="btn btn-gold" onclick="saveCasting()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- task-modal: タスク追加 -->
+<div id="task-modal" class="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">タスク追加</div><button class="modal-close" onclick="closeModal('task-modal')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group"><div class="form-label">タスク名</div><input class="form-input" id="task-name" placeholder="タスクの内容"></div>
+      <div class="grid-2">
+        <div class="form-group"><div class="form-label">期限</div><input type="date" class="form-input" id="task-due"></div>
+        <div class="form-group"><div class="form-label">優先度</div>
+          <select class="form-input" id="task-priority">
+            <option value="normal">通常</option>
+            <option value="urgent">緊急</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('task-modal')">キャンセル</button>
+      <button class="btn btn-gold" onclick="saveTask()">追加</button>
+    </div>
+  </div>
+</div>
+<!-- TOAST -->
+<div id="toast-msg" style="position:fixed;top:60px;right:20px;z-index:9000;display:none;max-width:360px;"></div>
+
+<script>
+'use strict';
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+// ── Storage wrapper: localStorage with sessionStorage fallback (file:// safe) ──
+const Store = (() => {
+  let useSession = false;
+  try { localStorage.setItem('__vo_test__','1'); localStorage.removeItem('__vo_test__'); }
+  catch(e) { useSession = true; console.warn('[ERP] Using sessionStorage (file:// mode)'); }
+  const s = () => useSession ? sessionStorage : localStorage;
+  return {
+    get: k => { try { return s().getItem(k); } catch(e) { return null; } },
+    set: (k,v) => { try { s().setItem(k,v); return true; } catch(e) { return false; } },
+    remove: k => { try { s().removeItem(k); } catch(e) {} },
+  };
+})();
+
+const DB_KEY = 'vo_erp_v4';
+let DB = { musicians:[], concerts:[], finance:[], schedule:[], bizdeals:[] };
+let gasUrl = '';
+let currentApi = 'gemini';
+let apiKeys = { gemini:'', claude:'' };
+let syncStatus = 'idle'; // idle | loading | ok | err
+
+function loadDB() {
+  try { const s = Store.get(DB_KEY); if(s) DB = {...DB, ...JSON.parse(s)}; } catch(e){}
+}
+function saveDB() {
+  Store.set(DB_KEY, JSON.stringify(DB));
+  showSaveIndicator();
+}
+function showSaveIndicator() {
+  const el = document.getElementById('save-indicator');
+  if(!el) return;
+  el.classList.add('show');
+  clearTimeout(el._t);
+  el._t = setTimeout(()=>el.classList.remove('show'), 2000);
+}
+
+// ══════════════════════════════════════════
+// THEME
+// ══════════════════════════════════════════
+function toggleTheme() {
+  const cur = document.documentElement.getAttribute('data-theme');
+  applyTheme(cur==='light'?'dark':'light');
+  Store.set('vo_theme', cur==='light'?'dark':'light');
+}
+function applyTheme(t) {
+  if(t==='light'){
+    document.documentElement.setAttribute('data-theme','light');
+    document.documentElement.style.background='#F8F6F2';
+    document.body.style.background='#F8F6F2';
+    document.getElementById('theme-color-meta')?.setAttribute('content','#F8F6F2');
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+    document.documentElement.style.background='#0A0A0A';
+    document.body.style.background='#0A0A0A';
+    document.getElementById('theme-color-meta')?.setAttribute('content','#0A0A0A');
+  }
+  const lbl = document.getElementById('theme-label-text');
+  if(lbl) lbl.textContent = t==='light'?'LIGHT':'DARK';
+}
+
+// ══════════════════════════════════════════
+// AUTH
+// ══════════════════════════════════════════
+const SESSION_KEY = 'vo_auth_v4';
+function checkPassword() {
+  const input = document.getElementById('pw-input').value;
+  const saved = Store.get('vo_pw') || 'vario2025';
+  if(input === saved) {
+    sessionStorage.setItem(SESSION_KEY,'1');
+    const screen = document.getElementById('password-screen');
+    screen.style.opacity='0'; screen.style.transition='opacity 0.4s';
+    setTimeout(()=>screen.style.display='none', 400);
+  } else {
+    const errEl = document.getElementById('pw-error');
+    errEl.textContent = 'パスワードが正しくありません';
+    document.getElementById('pw-input').value='';
+    setTimeout(()=>errEl.textContent='', 2500);
+  }
+}
+function changePw() {
+  const pw = document.getElementById('new-pw').value;
+  if(pw.length < 4) { alert('4文字以上で設定してください'); return; }
+  Store.set('vo_pw', pw);
+  showSaveIndicator();
+  alert('パスワードを変更しました');
+}
+
+// ══════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.querySelectorAll('.bnav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+id)?.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>{
+    if(n.getAttribute('onclick')?.includes("'"+id+"'")) n.classList.add('active');
+  });
+  document.getElementById('bnav-'+id)?.classList.add('active');
+  window.scrollTo(0,0);
+  // Page-specific renders
+  if(id==='players') renderPlayers();
+  if(id==='concerts') renderConcerts();
+  if(id==='finance') renderFinance();
+  if(id==='scheduler') renderScheduler();
+  if(id==='bizdev') { renderPackages(); renderBizDeals(); const m=DB.settings?.bizMemo||''; const el=document.getElementById('biz-memo'); if(el)el.value=m; }
+  if(id==='tickets') renderRoadmap();
+  if(id==='sponsors') renderSponsors();
+  if(id==='marketing') renderStrategy();
+  if(id==='settings') loadNumericSettings();
+  if(id==='dashboard') updateDashboardKPIs();
+}
+
+// ══════════════════════════════════════════
+// GAS / SHEETS
+// ══════════════════════════════════════════
+function setSyncStatus(status, msg) {
+  syncStatus = status;
+  const dot = document.getElementById('sync-dot');
+  const label = document.getElementById('sync-label');
+  if(dot) dot.className = 'sync-dot ' + status;
+  if(label) label.textContent = msg;
+}
+
+async function gasRequest(method, params) {
+  if(!gasUrl) throw new Error('GAS URLが未設定です');
+  // GASはGETのみCORSを通過できる。POST内容もクエリパラメータとして送る。
+  // payloadパラメータにJSON文字列を乗せてGET送信する。
+  const payload = method === 'GET' ? params : { ...params, _method: 'POST' };
+  const qs = new URLSearchParams({ payload: JSON.stringify(payload) }).toString();
+  const res = await fetch(gasUrl + '?' + qs, {
+    method: 'GET',
+    redirect: 'follow',
+  });
+  return res.json();
+}
+
+async function loadFromSheets(sheet) {
+  if(!gasUrl) { alert('設定ページでGAS URLを設定してください'); showPage('settings'); return; }
+  setSyncStatus('loading', `${sheet}を読込中...`);
+  try {
+    const result = await gasRequest('GET', { sheet });
+    if(!result.ok) throw new Error(result.error);
+    DB[sheet] = result.data;
+    saveDB();
+    setSyncStatus('ok', `${sheet} — ${result.data.length}件 読込完了`);
+    // Re-render current page
+    if(sheet==='musicians') renderPlayers();
+    if(sheet==='concerts') { renderConcerts(); updateTxnConcertOptions(); }
+    if(sheet==='finance') renderFinance();
+    if(sheet==='schedule') renderScheduler();
+    updateDashboardKPIs();
+  } catch(e) {
+    setSyncStatus('err', '読込エラー: '+e.message);
+  }
+}
+
+async function saveToSheets(sheet, record) {
+  if(!gasUrl) return; // silent skip if not configured
+  try {
+    const result = await gasRequest('POST', { action:'upsert', sheet, record });
+    if(!result.ok) throw new Error(result.error);
+    setSyncStatus('ok', `✓ ${sheet} 保存完了`);
+  } catch(e) {
+    setSyncStatus('err', '保存エラー: '+e.message);
+    console.warn('Sheets sync error:', e);
+  }
+}
+
+async function deleteFromSheets(sheet, id) {
+  if(!gasUrl) return;
+  try {
+    await gasRequest('POST', { action:'delete', sheet, id });
+  } catch(e) { console.warn('Sheets delete error:', e); }
+}
+
+async function syncAll() {
+  if(!gasUrl) { alert('設定ページでGAS URLを設定してください'); showPage('settings'); return; }
+  setSyncStatus('loading', '全データ同期中...');
+  const sheets = ['musicians','concerts','finance','schedule'];
+  let errors = [];
+  for(const s of sheets) {
+    try {
+      const result = await gasRequest('GET', { sheet:s });
+      if(result.ok) {
+        // Merge: keep local additions that aren't in sheets yet, update existing
+        const remote = result.data;
+        const remoteIds = remote.map(r=>String(r.id));
+        const localOnly = DB[s].filter(r=>!remoteIds.includes(String(r.id)));
+        DB[s] = [...remote, ...localOnly];
+      }
+    } catch(e) { errors.push(s); }
+  }
+  // Push local data to sheets
+  for(const s of sheets) {
+    try { await gasRequest('POST', { action:'batch', sheet:s, records:DB[s] }); } catch(e){}
+  }
+  saveDB();
+  renderPlayers(); renderConcerts(); renderFinance(); renderScheduler(); updateDashboardKPIs();
+  if(errors.length) setSyncStatus('err', 'エラー: '+errors.join(', '));
+  else setSyncStatus('ok', '✓ 全データ同期完了 — '+new Date().toLocaleTimeString('ja-JP'));
+}
+
+async function testGAS() {
+  const url = document.getElementById('gas-url').value.trim();
+  if(!url) { alert('URLを入力してください'); return; }
+  document.getElementById('gas-status').textContent = '接続テスト中...';
+  document.getElementById('gas-status').style.color = 'var(--text3)';
+  try {
+    const res = await fetch(url+'?payload='+encodeURIComponent(JSON.stringify({action:'init'})), { redirect:'follow' });
+    const d = await res.json();
+    if(d.ok) {
+      document.getElementById('gas-status').textContent = '✓ 接続成功 — シートを初期化しました';
+      document.getElementById('gas-status').style.color = 'var(--green)';
+      document.getElementById('gas-badge').className = 'badge badge-green';
+      document.getElementById('gas-badge').textContent = '接続済';
+    } else throw new Error(d.error);
+  } catch(e) {
+    document.getElementById('gas-status').textContent = '✗ 接続失敗: '+e.message;
+    document.getElementById('gas-status').style.color = 'var(--red)';
+    document.getElementById('gas-badge').className = 'badge badge-red';
+    document.getElementById('gas-badge').textContent = 'エラー';
+  }
+}
+
+async function initAndSaveGAS() {
+  const url = document.getElementById('gas-url').value.trim();
+  if(!url) { alert('URLを入力してください'); return; }
+  gasUrl = url;
+  Store.set('vo_gas_url', url);
+  await testGAS();
+  setSyncStatus('ok', 'GAS接続済');
+  showSaveIndicator();
+}
+
+// ══════════════════════════════════════════
+// CONCERTS
+// ══════════════════════════════════════════
+function renderConcerts() {
+  const el = document.getElementById('concerts-list');
+  if(!el) return;
+  if(!DB.concerts.length) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">♩</div>公演データなし — ＋ 公演追加から登録してください</div>';
+    return;
+  }
+  el.innerHTML = DB.concerts.map((c,i)=>`
+    <div class="concert-card" onclick="showConcertDetail(${i})">
+      <div class="concert-no">${c.type||'定期演奏会'}</div>
+      <div class="concert-title">${c.title||'—'}</div>
+      <div class="concert-meta">
+        <span>📅 ${String(c.date||'').slice(0,10)||'—'}</span>
+        <span>🏛 ${c.venue||'—'}</span>
+        ${c.capacity?`<span>👥 ${c.capacity}席</span>`:''}
+        ${c.ticketPrice?`<span>💴 ¥${parseInt(c.ticketPrice).toLocaleString()}</span>`:''}
+      </div>
+      ${c.program?`<div style="font-size:12px;color:var(--text3);margin-top:8px;">${c.program}</div>`:''}
+      <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+        <span class="badge badge-${c.status==='確定'?'green':c.status==='準備中'?'yellow':'gray'}">${c.status||'計画中'}</span>
+        ${(()=>{const cast=(DB.castings||{})[c.id]||[];const conf=cast.filter(x=>x.contactStatus==='確定').length;return cast.length?`<span class="badge badge-blue">${conf}/${cast.length}名確定</span>`:''})()}
+        <button class="btn btn-outline btn-sm" onclick="event.stopPropagation();editConcert(${i})">編集</button>
+        <button class="btn btn-outline btn-sm" onclick="event.stopPropagation();openConcertToSimTab(${i})" title="チケット区分・収支を設定">¥ チケット設定</button>
+      </div>
+    </div>
+  `).join('');
+  updateTxnConcertOptions();
+}
+
+// showConcertDetail: see new version below
+
+// (replaced)) {
+  document.getElementById('concert-id').value = data.id||'';
+  document.getElementById('concert-title').value = data.title||'';
+  document.getElementById('concert-date').value = data.date||'';
+  document.getElementById('concert-venue').value = data.venue||'武蔵野市民文化会館';
+  document.getElementById('concert-type').value = data.type||'定期演奏会';
+  document.getElementById('concert-program').value = data.program||'';
+  document.getElementById('concert-capacity').value = data.capacity||'';
+  document.getElementById('concert-note').value = data.note||'';
+  openModal('concert-modal');
+}
+// (replaced)
+async function saveConcert() {
+  const id = document.getElementById('concert-id').value || Date.now().toString();
+  // Derive capacity & avg price from modal ticket tiers
+  const tiers = (typeof _modalTiers !== 'undefined' ? _modalTiers : null) || [];
+  const totalSeats = tiers.reduce((s,t)=>s+(parseInt(t.seats)||0),0);
+  const paidTiers = tiers.filter(t=>t.type!=='招待席');
+  const paidSeats = paidTiers.reduce((s,t)=>s+(parseInt(t.seats)||0),0);
+  const avgPrice = paidSeats > 0
+    ? Math.round(paidTiers.reduce((s,t)=>s+(parseInt(t.seats)||0)*(parseInt(t.price)||0),0) / paidSeats)
+    : 0;
+  const record = {
+    id, title:document.getElementById('concert-title').value,
+    date:(document.getElementById('concert-date').value||'').slice(0,10),
+    venue:document.getElementById('concert-venue').value,
+    type:document.getElementById('concert-type').value,
+    program:document.getElementById('concert-program').value,
+    capacity: totalSeats,
+    ticketPrice: avgPrice,
+    status: (DB.concerts.find(c=>String(c.id)===String(id))?.status || '準備中'),
+    note:document.getElementById('concert-note').value
+  };
+  if(!record.title) { toast('公演名を入力してください','err'); return; }
+  // Save ticket tiers alongside concert
+  if(!DB.ticketTiers) DB.ticketTiers = {};
+  if(tiers.length) DB.ticketTiers[id] = JSON.parse(JSON.stringify(tiers));
+  const idx = DB.concerts.findIndex(c=>String(c.id)===String(id));
+  const isNew = idx < 0;
+  if(idx>=0) DB.concerts[idx]=record; else DB.concerts.push(record);
+  saveDB();
+  closeModal('concert-modal');
+  showPage('concerts');
+  renderConcerts();
+  await saveToSheets('concerts', record);
+  updateDashboardKPIs();
+  updateTxnConcertOptions();
+  updateKakegoeOptions();
+  toast(record.title + 'を' + (isNew?'登録':'更新') + 'しました（' + totalSeats.toLocaleString() + '席設定）');
+}
+
+// ══════════════════════════════════════════
+// PLAYERS
+// ══════════════════════════════════════════
+function renderPlayers() {
+  const partF = document.getElementById('part-filter')?.value||'';
+  const statF = document.getElementById('status-filter')?.value||'';
+  const list = DB.musicians.filter(m=>(!partF||m.part===partF)&&(!statF||m.status===statF));
+  const tbody = document.getElementById('player-tbody');
+  if(!tbody) return;
+  if(!list.length) {
+    tbody.innerHTML=`<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">♪</div>奏者データなし — ＋ 奏者追加から登録してください</div></td></tr>`;
+  } else {
+    tbody.innerHTML = list.map(m=>`
+      <tr>
+        <td style="font-weight:500;">${m.name||'—'}</td>
+        <td><span class="badge badge-gray">${m.part||'—'}</span></td>
+        <td>${m.role||'—'}</td>
+        <td style="font-family:var(--mono);">¥${parseInt(m.fee||0).toLocaleString()}</td>
+        <td style="color:var(--text3);font-size:12px;">${m.affil||'—'}</td>
+        <td><span class="badge ${m.status==='確定'?'badge-green':m.status==='交渉中'?'badge-yellow':'badge-red'}">${m.status||'未確定'}</span></td>
+        <td style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button class="btn btn-outline btn-sm" onclick="fillKakegoe('${m.name}','${m.part} ${m.role}','${m.note||'直接'}')">声掛け文</button>
+          <button class="btn btn-outline btn-sm" onclick="editPlayer('${m.id}')">編集</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+  // KPIs
+  const total = DB.musicians.length;
+  const confirmed = DB.musicians.filter(m=>m.status==='確定').length;
+  const negotiating = DB.musicians.filter(m=>m.status==='交渉中').length;
+  const pending = DB.musicians.filter(m=>!m.status||m.status==='未確定').length;
+  document.getElementById('p-total').textContent = total;
+  document.getElementById('p-confirmed').textContent = confirmed;
+  document.getElementById('p-negotiating').textContent = negotiating;
+  document.getElementById('p-pending').textContent = pending;
+}
+
+function openPlayerModal(data={}) {
+  document.getElementById('player-id').value = data.id||'';
+  document.getElementById('player-name').value = data.name||'';
+  document.getElementById('player-part').value = data.part||'Vn.I';
+  document.getElementById('player-role').value = data.role||'首席';
+  document.getElementById('player-fee').value = data.fee||'15000';
+  document.getElementById('player-affil').value = data.affil||'';
+  document.getElementById('player-status').value = data.status||'未確定';
+  document.getElementById('player-contact').value = data.contact||'';
+  document.getElementById('player-note').value = data.note||'';
+  const delBtn = document.getElementById('player-delete-btn');
+  if(delBtn) delBtn.style.display = data.id?'':'none';
+  openModal('player-modal');
+}
+function editPlayer(id) {
+  const m = DB.musicians.find(m=>String(m.id)===String(id));
+  if(m) openPlayerModal(m);
+}
+async function savePlayer() {
+  const id = document.getElementById('player-id').value || Date.now().toString();
+  const record = {
+    id, name:document.getElementById('player-name').value,
+    part:document.getElementById('player-part').value,
+    role:document.getElementById('player-role').value,
+    fee:document.getElementById('player-fee').value,
+    affil:document.getElementById('player-affil').value,
+    status:document.getElementById('player-status').value,
+    contact:document.getElementById('player-contact').value,
+    note:document.getElementById('player-note').value
+  };
+  if(!record.name) return;
+  const idx = DB.musicians.findIndex(m=>String(m.id)===String(id));
+  const isNew = idx < 0;
+  if(idx>=0) DB.musicians[idx]=record; else DB.musicians.push(record);
+  saveDB();
+  closeModal('player-modal');
+  // Navigate to players page and render
+  showPage('players');
+  renderPlayers();
+  await saveToSheets('musicians', record);
+  updateDashboardKPIs();
+  updateKakegoeOptions();
+  toast((record.name||'奏者') + 'を' + (isNew?'登録':'更新') + 'しました');
+}
+async function deletePlayer() {
+  const id = document.getElementById('player-id').value;
+  if(!id||!confirm('この奏者を削除しますか？')) return;
+  DB.musicians = DB.musicians.filter(m=>String(m.id)!==String(id));
+  saveDB(); renderPlayers(); closeModal('player-modal');
+  await deleteFromSheets('musicians', id);
+}
+function fillKakegoe(name, part, route) {
+  document.getElementById('kakegoe-name').value = name;
+  document.getElementById('kakegoe-part').value = part;
+  document.getElementById('kakegoe-route').value = route;
+}
+function updateKakegoeOptions() {
+  const sel = document.getElementById('kakegoe-concert');
+  if(!sel) return;
+  sel.innerHTML = DB.concerts.length
+    ? DB.concerts.map(c=>`<option>${c.title}（${c.date}）</option>`).join('')
+    : '<option>第1回定期演奏会（2025/5/2）</option>';
+}
+
+// ══════════════════════════════════════════
+// SCHEDULER
+// ══════════════════════════════════════════
+function renderScheduler() {
+  const fmt = id => {
+    const v = document.getElementById(id)?.value;
+    if(!v) return '—';
+    const d = new Date(v);
+    return `${d.getMonth()+1}/${d.getDate()}`;
+  };
+  ['sl1','sl2','sl3'].forEach((id,i)=>{
+    const el = document.getElementById(id);
+    if(el) el.textContent = fmt(['cand1','cand2','cand3'][i]);
+  });
+
+  const wrap = document.getElementById('sched-grid-wrap');
+  if(!wrap) return;
+  if(!DB.schedule.length) {
+    wrap.innerHTML='<div class="empty-state"><div class="empty-icon">📅</div>空き状況を入力してください</div>';
+    document.getElementById('sched-summary').innerHTML='<div style="font-size:13px;color:var(--text3);">データ入力後に集計が表示されます</div>';
+    return;
+  }
+
+  const c1=fmt('cand1'),c2=fmt('cand2'),c3=fmt('cand3');
+  const colorMap = {yes:'rgba(76,201,122,0.12)',maybe:'rgba(232,184,64,0.1)',no:'rgba(232,85,85,0.08)'};
+  const dotColor = {yes:'var(--green)',maybe:'var(--yellow)',no:'var(--red)'};
+
+  let html = `<table style="min-width:500px;"><thead><tr>
+    <th>氏名</th><th>パート</th>
+    <th style="text-align:center;">${c1}</th>
+    <th style="text-align:center;">${c2}</th>
+    <th style="text-align:center;">${c3}</th>
+    <th>備考</th><th>操作</th>
+  </tr></thead><tbody>`;
+  DB.schedule.forEach(e=>{
+    const dot = v=>`<div style="width:10px;height:10px;border-radius:50%;background:${dotColor[v]||'var(--text3)'};margin:auto;" title="${v==='yes'?'○':v==='maybe'?'△':'✕'}"></div>`;
+    html+=`<tr>
+      <td style="font-weight:500;">${e.playerName||e.name||'—'}</td>
+      <td><span class="badge badge-gray">${e.part||'—'}</span></td>
+      <td style="text-align:center;background:${colorMap[e.date1]||''}">${dot(e.date1)}</td>
+      <td style="text-align:center;background:${colorMap[e.date2]||''}">${dot(e.date2)}</td>
+      <td style="text-align:center;background:${colorMap[e.date3]||''}">${dot(e.date3)}</td>
+      <td style="font-size:12px;color:var(--text3);">${e.note||''}</td>
+      <td><button class="btn btn-outline btn-sm" onclick="editSchedEntry('${e.id}')">編集</button></td>
+    </tr>`;
+  });
+  html+='</tbody></table>';
+  wrap.innerHTML = html;
+
+  // Summary
+  const tot = DB.schedule.length;
+  const cnt = (k)=>DB.schedule.filter(e=>e[k]==='yes').length;
+  const maybe = (k)=>DB.schedule.filter(e=>e[k]==='maybe').length;
+  const dates = [{k:'date1',label:c1},{k:'date2',label:c2},{k:'date3',label:c3}];
+  const summaryEl = document.getElementById('sched-summary');
+  if(summaryEl) summaryEl.innerHTML = dates.map(({k,label})=>{
+    const yes=cnt(k), m=maybe(k);
+    const pct=tot?Math.round(yes/tot*100):0;
+    const col=pct>80?'var(--green)':pct>60?'var(--yellow)':'var(--red)';
+    return `<div style="margin-bottom:10px;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+        <span style="font-size:13px;color:var(--text2);">${label}</span>
+        <span style="font-family:var(--mono);font-size:11px;color:${col};">○${yes} △${m} / ${tot}人</span>
+      </div>
+      <div class="progress-wrap"><div class="progress-bar" style="width:${pct}%;background:${col}"></div></div>
+    </div>`;
+  }).join('');
+}
+
+function openSchedModal(data={}) {
+  document.getElementById('sched-id').value = data.id||'';
+  document.getElementById('sched-name').value = data.playerName||data.name||'';
+  document.getElementById('sched-part').value = data.part||'';
+  document.getElementById('sd1').value = data.date1||'yes';
+  document.getElementById('sd2').value = data.date2||'yes';
+  document.getElementById('sd3').value = data.date3||'yes';
+  document.getElementById('sched-note').value = data.note||'';
+  const delBtn = document.getElementById('sched-delete-btn');
+  if(delBtn) delBtn.style.display = data.id?'':'none';
+  openModal('sched-modal');
+}
+function editSchedEntry(id) {
+  const e = DB.schedule.find(x=>String(x.id)===String(id));
+  if(e) openSchedModal(e);
+}
+async function saveSchedEntry() {
+  const id = document.getElementById('sched-id').value || Date.now().toString();
+  const record = {
+    id, playerName:document.getElementById('sched-name').value,
+    part:document.getElementById('sched-part').value,
+    date1:document.getElementById('sd1').value,
+    date2:document.getElementById('sd2').value,
+    date3:document.getElementById('sd3').value,
+    note:document.getElementById('sched-note').value
+  };
+  if(!record.playerName) return;
+  const idx = DB.schedule.findIndex(x=>String(x.id)===String(id));
+  if(idx>=0) DB.schedule[idx]=record; else DB.schedule.push(record);
+  saveDB(); renderScheduler(); closeModal('sched-modal');
+  await saveToSheets('schedule', record);
+}
+async function deleteSchedEntry() {
+  const id = document.getElementById('sched-id').value;
+  if(!id||!confirm('削除しますか？')) return;
+  DB.schedule = DB.schedule.filter(x=>String(x.id)!==String(id));
+  saveDB(); renderScheduler(); closeModal('sched-modal');
+  await deleteFromSheets('schedule', id);
+}
+
+// ══════════════════════════════════════════
+// FINANCE
+// ══════════════════════════════════════════
+const INCOME_CATS = ['企業イベント収入','チケット収入','その他収入'];
+const EXPENSE_CATS = ['奏者謝礼','会場費','制作費','広告・宣伝費','その他支出'];
+
+function updateTxnCats() {
+  const type = document.getElementById('txn-type')?.value;
+  const sel = document.getElementById('txn-cat');
+  if(!sel) return;
+  const cats = type==='income' ? INCOME_CATS : EXPENSE_CATS;
+  sel.innerHTML = cats.map(c=>`<option>${c}</option>`).join('');
+}
+function updateTxnConcertOptions() {
+  const sel = document.getElementById('txn-concert');
+  if(!sel) return;
+  sel.innerHTML = '<option value="">—</option>' + DB.concerts.map(c=>`<option>${c.title}</option>`).join('');
+}
+
+function renderFinance() {
+  const txns = DB.finance;
+  const income = txns.filter(t=>t.type==='income').reduce((s,t)=>s+parseInt(t.amount||0),0);
+  const expense = txns.filter(t=>t.type==='expense').reduce((s,t)=>s+parseInt(t.amount||0),0);
+  const balance = income - expense;
+
+  // KPIs
+  const fmt = n=>Math.round(n/10000);
+  const setKPI = (id,val,green)=>{
+    const el=document.getElementById(id);
+    if(!el) return;
+    el.innerHTML=val+'<span class="kpi-unit">万</span>';
+    el.style.color=green!=null?(green?'var(--green)':'var(--red)'):'';
+  };
+  setKPI('fin-income',fmt(income),true);
+  setKPI('fin-expense',fmt(expense),false);
+  setKPI('fin-balance',(balance>=0?'+':'')+fmt(balance),balance>=0);
+  // Also update dashboard KPIs
+  const ki=document.getElementById('kpi-income');
+  if(ki) ki.innerHTML=fmt(income)+'<span class="kpi-unit">万</span>';
+  const kb=document.getElementById('kpi-balance');
+  if(kb){ kb.innerHTML=(balance>=0?'+':'')+fmt(balance)+'<span class="kpi-unit">万</span>'; kb.style.color=balance>=0?'var(--green)':'var(--red)'; }
+
+  // Category breakdown
+  const catSum = (list,type)=>{
+    const cats={};
+    list.filter(t=>t.type===type).forEach(t=>{ cats[t.category||t.cat||'その他']=(cats[t.category||t.cat||'その他']||0)+parseInt(t.amount||0); });
+    return cats;
+  };
+  const renderCats = (cats,total,positive,containerId)=>{
+    const el=document.getElementById(containerId);
+    if(!el) return;
+    if(!Object.keys(cats).length){el.innerHTML='<div style="font-size:13px;color:var(--text3);">データなし</div>';return;}
+    el.innerHTML=Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([cat,amt])=>`
+      <div style="margin-bottom:10px;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+          <span style="font-size:12px;color:var(--text2);">${cat}</span>
+          <span style="font-family:var(--mono);font-size:12px;" class="${positive?'money-positive':'money-negative'}">¥${amt.toLocaleString()}</span>
+        </div>
+        <div class="progress-wrap"><div class="progress-bar ${positive?'progress-green':'progress-red'}" style="width:${total?Math.round(amt/total*100):0}%"></div></div>
+      </div>`).join('');
+  };
+  renderCats(catSum(txns,'income'),income,true,'income-cats');
+  renderCats(catSum(txns,'expense'),expense,false,'expense-cats');
+
+  // Transactions table
+  const tbody = document.getElementById('txn-tbody');
+  const countEl = document.getElementById('txn-count');
+  if(countEl) countEl.textContent = txns.length+'件';
+  if(!tbody) return;
+  if(!txns.length){
+    tbody.innerHTML='<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">¥</div>取引データなし — ＋ 取引追加から登録</div></td></tr>';
+    return;
+  }
+  const sorted=[...txns].sort((a,b)=>b.date>a.date?1:-1);
+  tbody.innerHTML = sorted.map(t=>`
+    <tr>
+      <td style="font-family:var(--mono);font-size:11px;">${t.date||'—'}</td>
+      <td><span class="badge ${t.type==='income'?'badge-green':'badge-red'}">${t.type==='income'?'収入':'支出'}</span></td>
+      <td><span class="badge badge-gray" style="font-size:10px;">${t.category||t.cat||'—'}</span></td>
+      <td style="color:var(--text2);">${t.description||t.desc||'—'}</td>
+      <td style="font-size:12px;color:var(--text3);">${t.concert||''}</td>
+      <td style="font-family:var(--mono);" class="${t.type==='income'?'money-positive':'money-negative'}">${t.type==='income'?'+':'-'}¥${parseInt(t.amount||0).toLocaleString()}</td>
+      <td><button class="btn btn-outline btn-sm" onclick="editTxn('${t.id}')">編集</button></td>
+    </tr>
+  `).join('');
+}
+
+function openTxnModal(data={}) {
+  document.getElementById('txn-id').value = data.id||'';
+  document.getElementById('txn-date').value = data.date||new Date().toISOString().slice(0,10);
+  document.getElementById('txn-type').value = data.type||'income';
+  updateTxnCats();
+  setTimeout(()=>{ document.getElementById('txn-cat').value = data.category||data.cat||'企業イベント収入'; },0);
+  document.getElementById('txn-amount').value = data.amount||'';
+  document.getElementById('txn-desc').value = data.description||data.desc||'';
+  document.getElementById('txn-concert').value = data.concert||'';
+  const delBtn = document.getElementById('txn-delete-btn');
+  if(delBtn) delBtn.style.display = data.id?'':'none';
+  openModal('txn-modal');
+}
+function editTxn(id) {
+  const t = DB.finance.find(x=>String(x.id)===String(id));
+  if(t) openTxnModal(t);
+}
+async function saveTxn() {
+  const id = document.getElementById('txn-id').value || Date.now().toString();
+  const record = {
+    id, date:document.getElementById('txn-date').value,
+    type:document.getElementById('txn-type').value,
+    category:document.getElementById('txn-cat').value,
+    description:document.getElementById('txn-desc').value,
+    amount:document.getElementById('txn-amount').value,
+    concert:document.getElementById('txn-concert').value
+  };
+  if(!record.amount) return;
+  const idx = DB.finance.findIndex(x=>String(x.id)===String(id));
+  if(idx>=0) DB.finance[idx]=record; else DB.finance.push(record);
+  saveDB(); renderFinance(); closeModal('txn-modal');
+  await saveToSheets('finance', record);
+  updateDashboardKPIs();
+}
+async function deleteTxn() {
+  const id = document.getElementById('txn-id').value;
+  if(!id||!confirm('削除しますか？')) return;
+  DB.finance = DB.finance.filter(x=>String(x.id)!==String(id));
+  saveDB(); renderFinance(); closeModal('txn-modal');
+  await deleteFromSheets('finance', id);
+}
+
+// BIZ DEALS: moved to new CRUD functions above
+
+// ══════════════════════════════════════════
+// DASHBOARD KPIs
+// ══════════════════════════════════════════
+function updateDashboardKPIs() {
+  // Next concert
+  const upcoming = DB.concerts.filter(c=>c.date&&c.date>new Date().toISOString().slice(0,10)).sort((a,b)=>a.date>b.date?1:-1);
+  const next = upcoming[0];
+  const daysEl = document.getElementById('kpi-days');
+  const nextEl = document.getElementById('kpi-next-concert');
+  if(next && daysEl) {
+    const days = Math.ceil((new Date(next.date)-new Date())/86400000);
+    daysEl.innerHTML = days+'<span class="kpi-unit">日</span>';
+    if(nextEl) nextEl.textContent = next.title+' '+next.date;
+  } else {
+    if(daysEl) daysEl.innerHTML='—<span class="kpi-unit">日</span>';
+    if(nextEl) nextEl.textContent='公演を登録してください';
+  }
+  // Player rate
+  const total = DB.musicians.length;
+  const confirmed = DB.musicians.filter(m=>m.status==='確定').length;
+  const pctEl = document.getElementById('kpi-player-pct');
+  const subEl = document.getElementById('kpi-player-sub');
+  if(pctEl) pctEl.innerHTML=(total?Math.round(confirmed/total*100):0)+'<span class="kpi-unit">%</span>';
+  if(subEl) subEl.textContent=confirmed+' / '+total+'人確定';
+  // Finance
+  renderFinance();
+}
+
+// ══════════════════════════════════════════
+// SIM
+// ══════════════════════════════════════════
+// calcSim: replaced by new version
+
+// ══════════════════════════════════════════
+// AI
+// ══════════════════════════════════════════
+async function callAI(prompt) {
+  const key=getApiKey();
+  if(!key) return {text:'APIキーを設定してください（サイドバー下部またはSettings）'};
+  if(currentApi==='gemini'){
+    const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-04-17:generateContent?key=${key}`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})
+    });
+    const d=await res.json();
+    if(d.error) throw new Error(d.error.message);
+    return {text:(d.candidates?.[0]?.content?.parts?.[0]?.text||'').replace(/```json|```/g,'').trim()};
+  } else {
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})
+    });
+    const d=await res.json();
+    if(d.error) throw new Error(d.error.message);
+    return {text:d.content?.[0]?.text||''};
+  }
+}
+
+async function generateAI(module) {
+  const outputs={
+    dashboard:'ai-dashboard-output',concert:'ai-concert-output',
+    bizdev:'biz-ai-output',finance:'fin-ai-output'
+  };
+  const outId=outputs[module];
+  const outEl=outId?document.getElementById(outId):null;
+  if(outEl) outEl.textContent='分析中...';
+  if(module==='finance'){
+    const panel=document.getElementById('fin-ai-panel');
+    if(panel) panel.style.display='';
+  }
+
+  const income=DB.finance.filter(t=>t.type==='income').reduce((s,t)=>s+parseInt(t.amount||0),0);
+  const expense=DB.finance.filter(t=>t.type==='expense').reduce((s,t)=>s+parseInt(t.amount||0),0);
+  const confirmed=DB.musicians.filter(m=>m.status==='確定').length;
+  const total=DB.musicians.length;
+
+  const prompts={
+    dashboard:`VariOrchestra（一般社団法人・室内オーケストラ）の現状を分析し、今週の優先アクションを提案してください。
+現状：奏者確定${confirmed}/${total}人、収入¥${income.toLocaleString()}、収支¥${(income-expense).toLocaleString()}
+公演：${DB.concerts.map(c=>c.title+'（'+c.date+'）').join('、')||'第1回定期2025/5/2'}
+判断根拠を明示しながら、優先アクション3点と注意すべきリスクを200字以内で。`,
+    bizdev:`VariOrchestraの企業イベントパッケージ（S:¥60〜80万、M:¥120〜150万、L:¥250万〜）のターゲット企業と訴求方法を提案してください。指揮者はコンサルタント兼業という強みあり。具体的に5業種・企業規模・訴求ポイントを根拠付きで。`,
+    tickets:`VariOrchestra第1回定期演奏会（2025/5/2 武蔵野市民文化会館 Beethoven/Brahms Sym.1 ¥3,000 300席）の個別DM文（LINE用）を生成。送り先：コンサル・金融業界の知人。知的・自然なトーンで120字以内。`,
+    finance:`VariOrchestra財務分析。収入¥${income.toLocaleString()}（主に企業イベント）、支出¥${expense.toLocaleString()}（奏者謝礼・会場費中心）、収支¥${(income-expense).toLocaleString()}。来期目標¥300万。費用構造の課題、改善案、来期目標達成の戦略を3点・根拠付きで。`
+  };
+
+  try {
+    const {text}=await callAI(prompts[module]||'現状を分析してください。');
+    const clean=text.replace(/```[\s\S]*?```/g,'').replace(/`/g,'').trim();
+    if(outEl){ outEl.textContent=clean; }
+    else {
+      const toast=document.createElement('div');
+      toast.style.cssText='position:fixed;top:80px;left:50%;transform:translateX(-50%);background:var(--surface2);border:1px solid var(--gold);color:var(--text);padding:16px 20px;border-radius:2px;max-width:90vw;width:520px;z-index:999;font-size:13px;line-height:1.8;white-space:pre-wrap;box-shadow:0 8px 32px rgba(0,0,0,0.5);';
+      toast.textContent=clean;
+      const close=document.createElement('button');
+      close.textContent='✕';close.style.cssText='position:absolute;top:8px;right:12px;background:none;border:none;color:var(--text3);cursor:pointer;font-size:16px;';
+      close.onclick=()=>toast.remove();
+      toast.appendChild(close);document.body.appendChild(toast);
+      setTimeout(()=>toast.remove(),15000);
+    }
+    // Show reasoning panel if applicable
+    const rEl=document.getElementById('ai-dashboard-reason');
+    const rText=document.getElementById('ai-dashboard-reason-text');
+    if(module==='dashboard'&&rEl&&rText){
+      rEl.style.display='';
+      const parts=clean.split(/判断根拠|根拠/);
+      if(parts[1]){ rText.textContent=parts[1].replace(/^[：:]/,'').trim(); outEl.textContent=parts[0].trim(); }
+    }
+  } catch(e){
+    if(outEl) outEl.textContent='エラー：'+e.message;
+  }
+}
+
+async function generateKakegoe() {
+  const name=document.getElementById('kakegoe-name').value||'奏者';
+  const part=document.getElementById('kakegoe-part').value||'—';
+  const concert=document.getElementById('kakegoe-concert').value||'第1回定期演奏会';
+  const route=document.getElementById('kakegoe-route').value||'直接';
+  const outEl=document.getElementById('kakegoe-output');
+  const copyBtn=document.getElementById('kakegoe-copy');
+  outEl.style.display='block'; outEl.textContent='生成中...';
+  const feeInfo=DB.musicians.find(m=>m.name===name);
+  const fee=feeInfo?.fee?`¥${parseInt(feeInfo.fee).toLocaleString()}`:'¥15,000';
+  const prompt=`VariOrchestra「${concert}」への出演依頼LINEメッセージを生成してください。
+対象：${name}（${part}）、経由：${route}、謝礼：${fee}
+丁寧でプロフェッショナルかつ自然なトーン。150字以内。`;
+  try{
+    const{text}=await callAI(prompt);
+    outEl.textContent=text.replace(/```[\s\S]*?```/g,'').trim();
+    if(copyBtn) copyBtn.style.display='inline-block';
+  }catch(e){outEl.textContent='エラー：'+e.message;}
+}
+
+async function generateSchedAI(){
+  const panel=document.getElementById('sched-ai-panel');
+  panel.style.display='';
+  document.getElementById('sched-ai-output').textContent='分析中...';
+  const c1=document.getElementById('cand1').value;
+  const c2=document.getElementById('cand2').value;
+  const c3=document.getElementById('cand3').value;
+  const summary=DB.schedule.map(e=>`${e.playerName||e.name}(${e.part||'—'}): ${c1}=${e.date1}, ${c2}=${e.date2}, ${c3}=${e.date3} ${e.note||''}`).join('\n');
+  const prompt=`VariOrchestra公演日程最適化。候補日: ${c1}, ${c2}, ${c3}\n奏者空き:\n${summary||'（データなし）'}\n首席優先で最適日程と理由を根拠付きで推薦。`;
+  try{const{text}=await callAI(prompt);document.getElementById('sched-ai-output').textContent=text;}
+  catch(e){document.getElementById('sched-ai-output').textContent='エラー：'+e.message;}
+}
+
+async function generateSNS(){
+  const btn=document.getElementById('mk-gen-btn');
+  const resultsEl=document.getElementById('mk-results');
+  btn.disabled=true;btn.textContent='生成中...';
+  resultsEl.innerHTML='<div style="color:var(--text3);padding:20px;">生成中...</div>';
+  const prompt=`VariOrchestra公演SNS投稿文（3プラットフォーム）を生成。
+公演:${document.getElementById('mk-concert').value}、プログラム:${document.getElementById('mk-program').value}
+コンセプト:${document.getElementById('mk-concept').value}、トーン:${document.getElementById('mk-tone').value}
+ターゲット：ビジネスエリート・コンサル層
+JSONのみ返答：{"twitter":"140字以内+ハッシュタグ","facebook":"200-400字","instagram":"キャプション+ハッシュタグ10個"}`;
+  try{
+    const{text}=await callAI(prompt);
+    const parsed=JSON.parse(text.replace(/```json|```/g,'').trim());
+    const ps=[{k:'twitter',l:'Twitter / X'},{k:'facebook',l:'Facebook'},{k:'instagram',l:'Instagram'}];
+    resultsEl.innerHTML=ps.map(p=>`<div class="card" style="margin-bottom:12px;">
+      <div class="card-header"><div class="card-title" style="font-size:13px;">${p.l}</div><span style="font-size:11px;color:var(--text3);">${(parsed[p.k]||'').length}字</span></div>
+      <div class="card-body" style="white-space:pre-wrap;font-size:13px;color:var(--text2);line-height:1.8;" id="sns-${p.k}">${parsed[p.k]||''}</div>
+      <div style="padding:0 20px 14px;"><button class="btn btn-outline btn-sm" onclick="copyText('sns-${p.k}')">コピー</button></div>
+    </div>`).join('');
+  }catch(e){resultsEl.innerHTML=`<div style="color:var(--red);">${e.message}</div>`;}
+  finally{btn.disabled=false;btn.textContent='生成する';}
+}
+
+async function generateEmail(){
+  const outEl=document.getElementById('email-output');
+  const textEl=document.getElementById('email-text');
+  outEl.style.display='block';textEl.textContent='生成中...';
+  const target=document.getElementById('email-target').value;
+  const channel=document.getElementById('email-channel').value;
+  const concert=DB.concerts[0];
+  const prompt=`VariOrchestra${concert?`「${concert.title}」（${concert.date} ${concert.venue} ¥${concert.ticketPrice||3000}）`:'第1回定期演奏会（2025/5/2 武蔵野市民文化会館 ¥3,000）'}の${channel}招待文。送り先：${target}。知的・自然なトーン。${channel==='LINE'?'120':'200'}字以内。`;
+  try{const{text}=await callAI(prompt);textEl.textContent=text;}
+  catch(e){textEl.textContent='エラー：'+e.message;}
+}
+
+// ══════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════
+function copyText(id){
+  const el=document.getElementById(id);
+  if(el) navigator.clipboard.writeText(el.textContent||el.innerText).then(()=>showSaveIndicator());
+}
+function toggleCheck(el){
+  if(el.classList.contains('done')){el.classList.remove('done');el.textContent='';el.nextElementSibling?.classList.remove('done');}
+  else{el.classList.remove('urgent');el.classList.add('done');el.textContent='✓';el.nextElementSibling?.classList.add('done');}
+}
+function switchTab(el,target){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');
+  ['mk-sns','mk-email','mk-strategy'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.display=id===target?'block':'none';});
+}
+function openModal(id){
+  document.getElementById(id).classList.add('open');
+  if(id==='pkg-modal') setTimeout(openPkgEditor,50);
+}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function closeModalOutside(e){if(e.target.classList.contains('modal-overlay'))e.target.classList.remove('open');}
+function exportLocalData(){
+  const blob=new Blob([JSON.stringify(DB,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='VariOrchestra_data.json';a.click();
+}
+function clearLocalData(){
+  if(!confirm('全ローカルデータを削除しますか？Sheetsのデータは残ります。')) return;
+  DB={musicians:[],concerts:[],finance:[],schedule:[],bizdeals:[]};
+  saveDB();renderPlayers();renderConcerts();renderFinance();renderScheduler();updateDashboardKPIs();
+}
+
+// API
+function setApi(t){
+  currentApi=t;
+  ['btn-gemini','btn-claude'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.toggle('active',id.includes(t));});
+  ['mbtn-gemini','mbtn-claude'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.toggle('active',id.includes(t));});
+  document.querySelectorAll('.ai-provider').forEach(el=>el.textContent=t==='gemini'?'Gemini':'Claude');
+}
+function setApiFromSelect(v){setApi(v);}
+function getApiKey(){
+  const sk=document.getElementById('apiKeyInput')?.value;
+  if(sk&&!sk.includes('●')) return sk;
+  return apiKeys[currentApi]||'';
+}
+function saveApiKeys(){
+  const gk=document.getElementById('gemini-key-settings')?.value;
+  const ck=document.getElementById('claude-key-settings')?.value;
+  if(gk){apiKeys.gemini=gk;Store.set('vo_gemini_key',gk);}
+  if(ck){apiKeys.claude=ck;Store.set('vo_claude_key',ck);}
+  showSaveIndicator();alert('保存しました');
+}
+
+// Mobile drawer
+function toggleApiDrawer(){
+  document.getElementById('api-drawer').classList.toggle('open');
+  document.getElementById('api-drawer-overlay').classList.toggle('open');
+}
+function saveDrawerKey(){
+  const key=document.getElementById('apiKeyInputMobile').value;
+  if(key){apiKeys[currentApi]=key;Store.set('vo_'+currentApi+'_key',key);}
+  toggleApiDrawer();
+}
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+document.addEventListener('DOMContentLoaded',()=>{
+  // Auth
+  if(sessionStorage.getItem(SESSION_KEY)==='1') document.getElementById('password-screen').style.display='none';
+  document.getElementById('pw-input').addEventListener('keydown',e=>{if(e.key==='Enter')checkPassword();});
+
+  // Theme
+  applyTheme(Store.get('vo_theme')||'dark');
+
+  // Load settings
+  loadDB();
+  gasUrl=Store.get('vo_gas_url')||'';
+  apiKeys.gemini=Store.get('vo_gemini_key')||'';
+  apiKeys.claude=Store.get('vo_claude_key')||'';
+  if(apiKeys.gemini) document.getElementById('apiKeyInput').value='●'.repeat(8);
+  if(gasUrl){
+    document.getElementById('gas-url').value=gasUrl;
+    setSyncStatus('ok','Sheets接続済');
+    document.getElementById('gas-badge').className='badge badge-green';
+    document.getElementById('gas-badge').textContent='接続済';
+  }
+
+  // Date
+  const d=new Date();
+  const dateEl=document.getElementById('dash-date');
+  if(dateEl) dateEl.textContent=d.toLocaleDateString('ja-JP',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
+
+  // TXN cats init
+  updateTxnCats();
+  updateTxnConcertOptions();
+
+  // Initial render
+  updateDashboardKPIs();
+  calcSim();
+
+  // Render editable modules
+  renderPackages();
+  renderBizDeals();
+  renderRoadmap();
+  renderSponsors();
+  renderStrategy();
+  loadNumericSettings();
+
+  // Initial page renders (run even if page not active)
+  renderPlayers();
+  renderConcerts();
+  renderFinance();
+
+  // Auto-sync if GAS configured
+  if(gasUrl) setTimeout(()=>syncAll(),1000);
+
+  // Hide local file warning if on HTTPS
+  if(window.location.protocol !== 'file:') {
+    const warn = document.getElementById('local-file-warning');
+    if(warn) warn.style.display='none';
+  }
+});
+
+// ══════════════════════════════════════════
+// TOAST NOTIFICATIONS
+// ══════════════════════════════════════════
+function toast(msg, type='ok', duration=3000) {
+  const el = document.getElementById('toast-msg');
+  if(!el) return;
+  const colors = {ok:'var(--green)',err:'var(--red)',warn:'var(--yellow)',info:'var(--gold)'};
+  el.style.cssText = `display:block;background:var(--surface2);border:1px solid ${colors[type]||colors.ok};color:${colors[type]||colors.ok};font-family:var(--mono);font-size:12px;padding:10px 16px;border-radius:2px;box-shadow:0 4px 20px rgba(0,0,0,0.4);`;
+  el.textContent = msg;
+  clearTimeout(el._t);
+  el._t = setTimeout(()=>el.style.display='none', duration);
+}
+
+// ══════════════════════════════════════════
+// PACKAGES (定価表)
+// ══════════════════════════════════════════
+function getDefaultPackages() {
+  return [
+    {id:'pkg1',name:'S ミニ弦楽',formation:'四〜六重奏（4〜6人）',duration:'30〜60分',price:'¥60〜80万',desc:'レセプション・懇親会向け'},
+    {id:'pkg2',name:'M 室内オケ',formation:'15〜20人',duration:'60〜90分',price:'¥120〜150万',desc:'周年・表彰式向け'},
+    {id:'pkg3',name:'L フル演奏会',formation:'フル編成＋指揮者トーク',duration:'120分',price:'¥250万〜',desc:'創立記念・大型イベント'},
+  ];
+}
+
+function renderPackages() {
+  const pkgs = DB.packages || getDefaultPackages();
+  const tbody = document.getElementById('pkg-tbody');
+  if(!tbody) return;
+  const badgeColor = {S:'badge-blue',M:'badge-purple',L:'badge-gold'};
+  tbody.innerHTML = pkgs.map(p=>{
+    const key = p.name.trim().charAt(0);
+    return `<tr>
+      <td><span class="badge ${badgeColor[key]||'badge-gray'}">${p.name}</span></td>
+      <td>${p.formation||'—'}</td>
+      <td>${p.duration||'—'}</td>
+      <td style="font-family:var(--mono);">${p.price||'—'}</td>
+      <td style="font-size:12px;color:var(--text3);">${p.desc||''}</td>
+    </tr>`;
+  }).join('');
+  // Update plan selector in biz-deal modal
+  const sel = document.getElementById('biz-plan');
+  if(sel) sel.innerHTML = pkgs.map(p=>`<option>${p.name.trim().charAt(0)}</option>`).join('') + '<option>カスタム</option>';
+}
+
+function openPkgEditor() {
+  const pkgs = DB.packages || getDefaultPackages();
+  const el = document.getElementById('pkg-editor-list');
+  if(!el) return;
+  el.innerHTML = pkgs.map((p,i)=>`
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr auto;gap:8px;margin-bottom:8px;align-items:center;" data-idx="${i}">
+      <input class="form-input" value="${p.name||''}" placeholder="プラン名" style="font-size:12px;" data-f="name">
+      <input class="form-input" value="${p.formation||''}" placeholder="編成" style="font-size:12px;" data-f="formation">
+      <input class="form-input" value="${p.duration||''}" placeholder="時間" style="font-size:12px;" data-f="duration">
+      <input class="form-input" value="${p.price||''}" placeholder="単価" style="font-size:12px;" data-f="price">
+      <input class="form-input" value="${p.desc||''}" placeholder="説明" style="font-size:12px;" data-f="desc">
+      <button class="btn btn-danger btn-sm" onclick="removePkgRow(${i})">✕</button>
+    </div>
+  `).join('');
+}
+
+function addPkgRow() {
+  const el = document.getElementById('pkg-editor-list');
+  if(!el) return;
+  const i = el.children.length;
+  const div = document.createElement('div');
+  div.style.cssText = 'display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr auto;gap:8px;margin-bottom:8px;align-items:center;';
+  div.setAttribute('data-idx', i);
+  div.innerHTML = `<input class="form-input" placeholder="プラン名" style="font-size:12px;" data-f="name">
+    <input class="form-input" placeholder="編成" style="font-size:12px;" data-f="formation">
+    <input class="form-input" placeholder="時間" style="font-size:12px;" data-f="duration">
+    <input class="form-input" placeholder="単価" style="font-size:12px;" data-f="price">
+    <input class="form-input" placeholder="説明" style="font-size:12px;" data-f="desc">
+    <button class="btn btn-danger btn-sm" onclick="removePkgRow(${i})">✕</button>`;
+  el.appendChild(div);
+}
+
+function removePkgRow(i) {
+  const el = document.getElementById('pkg-editor-list');
+  const rows = el.querySelectorAll('[data-idx]');
+  if(rows[i]) rows[i].remove();
+}
+
+function savePkgTable() {
+  const el = document.getElementById('pkg-editor-list');
+  const rows = el.querySelectorAll('[data-idx]');
+  const pkgs = Array.from(rows).map((row,i)=>{
+    const obj = {id:'pkg'+(Date.now()+i)};
+    row.querySelectorAll('[data-f]').forEach(inp=>{ obj[inp.getAttribute('data-f')]=inp.value; });
+    return obj;
+  }).filter(p=>p.name);
+  DB.packages = pkgs;
+  saveDB();
+  renderPackages();
+  closeModal('pkg-modal');
+  toast('パッケージ定価表を保存しました');
+}
+
+// ══════════════════════════════════════════
+// BIZ DEALS (案件パイプライン) - FULL CRUD
+// ══════════════════════════════════════════
+function renderBizDeals() {
+  const filter = document.getElementById('biz-filter')?.value||'';
+  const list = (DB.bizdeals||[]).filter(d=>!filter||d.status===filter);
+  const tbody = document.getElementById('biz-tbody');
+  if(!tbody) return;
+  if(!list.length){
+    tbody.innerHTML=`<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">◎</div>案件なし — ＋ 案件追加から登録</div></td></tr>`;
+  } else {
+    const sc = {リード:'badge-gray',商談中:'badge-yellow',提案済:'badge-blue',受注済:'badge-green',失注:'badge-red'};
+    tbody.innerHTML = list.map(d=>`
+      <tr>
+        <td style="font-weight:500;">${d.company||'—'}</td>
+        <td style="color:var(--text3);">${d.contact||'—'}</td>
+        <td><span class="badge badge-gray">${d.plan||'—'}</span></td>
+        <td style="font-family:var(--mono);" class="${d.status==='受注済'?'money-positive':''}">${d.amount?'¥'+d.amount+'万':'—'}</td>
+        <td><span class="badge ${sc[d.status]||'badge-gray'}">${d.status||'—'}</span></td>
+        <td style="font-size:12px;color:var(--text3);">${d.action||'—'}</td>
+        <td><button class="btn btn-outline btn-sm" onclick="openBizDealModal('${d.id}')">編集</button></td>
+      </tr>
+    `).join('');
+  }
+  updateBizKPIs();
+}
+
+function updateBizKPIs() {
+  const deals = DB.bizdeals||[];
+  const won = deals.filter(d=>d.status==='受注済').reduce((s,d)=>s+parseInt(d.amount||0),0);
+  const active = deals.filter(d=>d.status==='商談中'||d.status==='提案済').length;
+  const pipe = deals.filter(d=>d.status!=='受注済'&&d.status!=='失注').reduce((s,d)=>s+parseInt(d.amount||0),0);
+  const target = parseInt(DB.settings?.bizTarget||500);
+  const el=(id,v)=>{const e=document.getElementById(id);if(e)e.innerHTML=v;};
+  el('biz-won',won+'<span class="kpi-unit">万</span>');
+  el('biz-active',active+'<span class="kpi-unit">件</span>');
+  el('biz-pipe',pipe+'<span class="kpi-unit">万</span>');
+  el('biz-target',target+'<span class="kpi-unit">万</span>');
+}
+
+function openBizDealModal(id) {
+  const d = id ? (DB.bizdeals||[]).find(x=>String(x.id)===String(id)) : null;
+  document.getElementById('biz-deal-id').value = d?.id||'';
+  document.getElementById('biz-company').value = d?.company||'';
+  document.getElementById('biz-contact').value = d?.contact||'';
+  document.getElementById('biz-plan').value = d?.plan||'S';
+  document.getElementById('biz-amount').value = d?.amount||'';
+  document.getElementById('biz-status').value = d?.status||'リード';
+  document.getElementById('biz-action').value = d?.action||'';
+  document.getElementById('biz-note').value = d?.note||'';
+  const del = document.getElementById('biz-delete-btn');
+  if(del) del.style.display = d?'':'none';
+  openModal('biz-deal-modal');
+}
+
+function saveBizDeal() {
+  const id = document.getElementById('biz-deal-id').value || Date.now().toString();
+  const record = {
+    id, company:document.getElementById('biz-company').value,
+    contact:document.getElementById('biz-contact').value,
+    plan:document.getElementById('biz-plan').value,
+    amount:document.getElementById('biz-amount').value,
+    status:document.getElementById('biz-status').value,
+    action:document.getElementById('biz-action').value,
+    note:document.getElementById('biz-note').value,
+  };
+  if(!record.company) return;
+  if(!DB.bizdeals) DB.bizdeals=[];
+  const idx = DB.bizdeals.findIndex(x=>String(x.id)===String(id));
+  if(idx>=0) DB.bizdeals[idx]=record; else DB.bizdeals.push(record);
+  saveDB(); renderBizDeals(); closeModal('biz-deal-modal');
+  toast('案件を保存しました');
+}
+
+function deleteBizDeal() {
+  const id = document.getElementById('biz-deal-id').value;
+  if(!id||!confirm('この案件を削除しますか？')) return;
+  DB.bizdeals = (DB.bizdeals||[]).filter(x=>String(x.id)!==String(id));
+  saveDB(); renderBizDeals(); closeModal('biz-deal-modal');
+  toast('削除しました','warn');
+}
+
+function saveBizMemo() {
+  const memo = document.getElementById('biz-memo')?.value||'';
+  if(!DB.settings) DB.settings={};
+  DB.settings.bizMemo = memo;
+  saveDB();
+  toast('メモを保存しました');
+}
+
+// ══════════════════════════════════════════
+// ROADMAP (集客施策)
+// ══════════════════════════════════════════
+function getDefaultRoadmap() {
+  return [
+    {id:'rm1',name:'SNS一斉公開',target:'フォロワー',deadline:'今夜',effect:'〜20枚',status:'進行中'},
+    {id:'rm2',name:'個別DM（コンサル人脈）',target:'ビジネス層30人',deadline:'3/28',effect:'〜30枚',status:'未着手'},
+    {id:'rm3',name:'音楽関係者への告知',target:'業界人・奏者周辺',deadline:'4/1',effect:'〜50枚',status:'未着手'},
+    {id:'rm4',name:'プログラムノート先出し',target:'SNSフォロワー',deadline:'4/7',effect:'〜20枚',status:'未着手'},
+    {id:'rm5',name:'残席リマインド',target:'全ターゲット',deadline:'4/25',effect:'〜30枚',status:'未着手'},
+  ];
+}
+
+function renderRoadmap() {
+  const items = DB.roadmap || getDefaultRoadmap();
+  const tbody = document.getElementById('roadmap-tbody');
+  if(!tbody) return;
+  const sc = {未着手:'badge-gray',進行中:'badge-yellow',完了:'badge-green',中断:'badge-red'};
+  if(!items.length){
+    tbody.innerHTML='<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">◇</div>施策なし — ＋ 施策追加から登録</div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = items.map(r=>`
+    <tr>
+      <td>${r.name||'—'}</td>
+      <td style="color:var(--text3);">${r.target||'—'}</td>
+      <td style="font-family:var(--mono);font-size:12px;">${r.deadline||'—'}</td>
+      <td style="color:var(--text3);">${r.effect||'—'}</td>
+      <td><span class="badge ${sc[r.status]||'badge-gray'}">${r.status||'—'}</span></td>
+      <td><button class="btn btn-outline btn-sm" onclick="openRoadmapModal('${r.id}')">編集</button></td>
+    </tr>
+  `).join('');
+  // Update ticket KPIs from concert data
+  updateTicketKPIs();
+}
+
+function updateTicketKPIs() {
+  const concert = DB.concerts?.[0];
+  const price = parseInt(concert?.ticketPrice||3000);
+  const cap = parseInt(concert?.capacity||300);
+  // expenses from finance
+  const exp = (DB.finance||[]).filter(t=>t.type==='expense'&&(!t.concert||t.concert===concert?.title)).reduce((s,t)=>s+parseInt(t.amount||0),0);
+  const bie = price ? Math.ceil(exp/price) : 267;
+  const pct = cap ? Math.round(bie/cap*100) : 89;
+  const set=(id,v)=>{const e=document.getElementById(id);if(e)e.innerHTML=v;};
+  set('tkt-price',(price).toLocaleString()+'<span class="kpi-unit">円</span>');
+  set('tkt-goal-sub','目標'+cap+'枚');
+  set('tkt-bie',bie+'<span class="kpi-unit">枚</span>');
+  set('tkt-bie-sub',pct+'%達成で黒字');
+}
+
+function openRoadmapModal(id) {
+  const r = id ? (DB.roadmap||getDefaultRoadmap()).find(x=>String(x.id)===String(id)) : null;
+  document.getElementById('rm-id').value = r?.id||'';
+  document.getElementById('rm-name').value = r?.name||'';
+  document.getElementById('rm-target').value = r?.target||'';
+  document.getElementById('rm-deadline').value = r?.deadline||'';
+  document.getElementById('rm-effect').value = r?.effect||'';
+  document.getElementById('rm-status').value = r?.status||'未着手';
+  const del = document.getElementById('rm-delete-btn');
+  if(del) del.style.display = r?'':'none';
+  openModal('roadmap-modal');
+}
+
+function saveRoadmapItem() {
+  const id = document.getElementById('rm-id').value || Date.now().toString();
+  const record = {
+    id, name:document.getElementById('rm-name').value,
+    target:document.getElementById('rm-target').value,
+    deadline:document.getElementById('rm-deadline').value,
+    effect:document.getElementById('rm-effect').value,
+    status:document.getElementById('rm-status').value,
+  };
+  if(!record.name) return;
+  if(!DB.roadmap) DB.roadmap = getDefaultRoadmap();
+  const idx = DB.roadmap.findIndex(x=>String(x.id)===String(id));
+  if(idx>=0) DB.roadmap[idx]=record; else DB.roadmap.push(record);
+  saveDB(); renderRoadmap(); closeModal('roadmap-modal');
+  toast('施策を保存しました');
+}
+
+function deleteRoadmapItem() {
+  const id = document.getElementById('rm-id').value;
+  if(!id||!confirm('削除しますか？')) return;
+  if(!DB.roadmap) DB.roadmap=getDefaultRoadmap();
+  DB.roadmap = DB.roadmap.filter(x=>String(x.id)!==String(id));
+  saveDB(); renderRoadmap(); closeModal('roadmap-modal');
+  toast('削除しました','warn');
+}
+
+// ══════════════════════════════════════════
+// SPONSORS
+// ══════════════════════════════════════════
+const DEFAULT_POLICY = 'VariOrchestraは協賛ではなく企業イベントのパッケージ受託を基本とする。協賛は音楽的自律性への影響リスクがあるため、条件のない場合のみ受け入れる。助成金は原則非申請。自立した収益モデルの構築を優先する。（現時点版 2025/3）';
+
+function renderSponsors() {
+  const policy = DB.settings?.sponsorPolicy || DEFAULT_POLICY;
+  const el = document.getElementById('sponsor-policy-text');
+  if(el) el.textContent = policy;
+
+  const tbody = document.getElementById('sponsor-tbody');
+  if(!tbody) return;
+  const sponsors = DB.sponsors||[];
+  if(!sponsors.length){
+    tbody.innerHTML='<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">◆</div>候補なし — ＋ 候補追加から登録</div></td></tr>';
+    return;
+  }
+  const rc = {低:'badge-green',中:'badge-yellow',高:'badge-red'};
+  const sc = {候補:'badge-gray',打診中:'badge-blue',交渉中:'badge-yellow',成立:'badge-green',見送り:'badge-red'};
+  tbody.innerHTML = sponsors.map(s=>`
+    <tr>
+      <td style="font-weight:500;">${s.name||'—'}</td>
+      <td style="color:var(--text3);">${s.industry||'—'}</td>
+      <td style="font-family:var(--mono);">${s.amount?'¥'+s.amount+'万':'—'}</td>
+      <td><span class="badge ${rc[s.risk]||'badge-gray'}">${s.risk||'—'}</span></td>
+      <td><span class="badge ${sc[s.status]||'badge-gray'}">${s.status||'—'}</span></td>
+      <td style="font-size:12px;color:var(--text3);">${s.note||''}</td>
+      <td><button class="btn btn-outline btn-sm" onclick="openSponsorModal('${s.id}')">編集</button></td>
+    </tr>
+  `).join('');
+}
+
+function editPolicy() {
+  const policy = DB.settings?.sponsorPolicy || DEFAULT_POLICY;
+  document.getElementById('sponsor-policy-input').value = policy;
+  document.getElementById('sponsor-policy-view').style.display='none';
+  document.getElementById('sponsor-policy-edit').style.display='';
+}
+function savePolicy() {
+  if(!DB.settings) DB.settings={};
+  DB.settings.sponsorPolicy = document.getElementById('sponsor-policy-input').value;
+  saveDB();
+  document.getElementById('sponsor-policy-text').textContent = DB.settings.sponsorPolicy;
+  document.getElementById('sponsor-policy-view').style.display='';
+  document.getElementById('sponsor-policy-edit').style.display='none';
+  toast('ポリシーを保存しました');
+}
+function cancelPolicyEdit() {
+  document.getElementById('sponsor-policy-view').style.display='';
+  document.getElementById('sponsor-policy-edit').style.display='none';
+}
+
+function openSponsorModal(id) {
+  const s = id ? (DB.sponsors||[]).find(x=>String(x.id)===String(id)) : null;
+  document.getElementById('sp-id').value = s?.id||'';
+  document.getElementById('sp-name').value = s?.name||'';
+  document.getElementById('sp-industry').value = s?.industry||'';
+  document.getElementById('sp-amount').value = s?.amount||'';
+  document.getElementById('sp-risk').value = s?.risk||'低';
+  document.getElementById('sp-status').value = s?.status||'候補';
+  document.getElementById('sp-note').value = s?.note||'';
+  const del = document.getElementById('sp-delete-btn');
+  if(del) del.style.display = s?'':'none';
+  openModal('sponsor-modal');
+}
+function saveSponsor() {
+  const id = document.getElementById('sp-id').value || Date.now().toString();
+  const record = {
+    id, name:document.getElementById('sp-name').value,
+    industry:document.getElementById('sp-industry').value,
+    amount:document.getElementById('sp-amount').value,
+    risk:document.getElementById('sp-risk').value,
+    status:document.getElementById('sp-status').value,
+    note:document.getElementById('sp-note').value,
+  };
+  if(!record.name) return;
+  if(!DB.sponsors) DB.sponsors=[];
+  const idx = DB.sponsors.findIndex(x=>String(x.id)===String(id));
+  if(idx>=0) DB.sponsors[idx]=record; else DB.sponsors.push(record);
+  saveDB(); renderSponsors(); closeModal('sponsor-modal');
+  toast('協賛候補を保存しました');
+}
+function deleteSponsor() {
+  const id = document.getElementById('sp-id').value;
+  if(!id||!confirm('削除しますか？')) return;
+  DB.sponsors = (DB.sponsors||[]).filter(x=>String(x.id)!==String(id));
+  saveDB(); renderSponsors(); closeModal('sponsor-modal');
+  toast('削除しました','warn');
+}
+
+// ══════════════════════════════════════════
+// CONTENT STRATEGY (コンテンツ戦略)
+// ══════════════════════════════════════════
+const DEFAULT_STRATEGY = `基本方針：語らずに知性を見せる
+プログラム設計・プログラムノートの深さ・チクルスの思想そのものを発信の主役とする。
+
+ターゲット：クラオタではなくビジネスエリート
+コンサル・金融・起業家層を「音楽文化・教養」の世界に引き込む。Veliq Academyとの連動を意識。
+
+チクルス設計でレパートリーの深さを可視化
+Beethoven/Brahms → Mahler/Shostakovich と積み上げ、指揮者としての権威を時間軸で証明する。
+
+（現時点版 2025/3 — 随時更新）`;
+
+function renderStrategy() {
+  const text = DB.settings?.strategy || DEFAULT_STRATEGY;
+  const el = document.getElementById('strategy-text');
+  if(el) el.textContent = text;
+}
+function editStrategy() {
+  const text = DB.settings?.strategy || DEFAULT_STRATEGY;
+  document.getElementById('strategy-input').value = text;
+  document.getElementById('strategy-view').style.display='none';
+  document.getElementById('strategy-edit').style.display='';
+}
+function saveStrategy() {
+  if(!DB.settings) DB.settings={};
+  DB.settings.strategy = document.getElementById('strategy-input').value;
+  saveDB(); renderStrategy();
+  document.getElementById('strategy-view').style.display='';
+  document.getElementById('strategy-edit').style.display='none';
+  toast('戦略方針を保存しました');
+}
+function cancelStrategyEdit() {
+  document.getElementById('strategy-view').style.display='';
+  document.getElementById('strategy-edit').style.display='none';
+}
+
+// ══════════════════════════════════════════
+// NUMERIC SETTINGS
+// ══════════════════════════════════════════
+function loadNumericSettings() {
+  const s = DB.settings||{};
+  const set=(id,v)=>{const e=document.getElementById(id);if(e&&v)e.value=v;};
+  set('cfg-biz-target', s.bizTarget);
+  set('cfg-fin-target', s.finTarget);
+  set('cfg-org-name', s.orgName);
+}
+function saveNumericSettings() {
+  if(!DB.settings) DB.settings={};
+  DB.settings.bizTarget = document.getElementById('cfg-biz-target')?.value||'500';
+  DB.settings.finTarget = document.getElementById('cfg-fin-target')?.value||'300';
+  DB.settings.orgName = document.getElementById('cfg-org-name')?.value||'VariOrchestra';
+  saveDB();
+  updateBizKPIs();
+  toast('設定を保存しました');
+}
+
+
+// ══════════════════════════════════════════
+// CONCERT DETAIL: TABS + TASKS + CASTING
+// ══════════════════════════════════════════
+let activeConcertId = null;  // currently open concert
+
+// Role display helpers
+const ROLES = ['首席','フォア','2nd以下','Tutti（プロ）','Tutti（学生）','エキストラ'];
+const ROLE_ORDER = {首席:0,フォア:1,'2nd以下':2,'Tutti（プロ）':3,'Tutti（学生）':4,エキストラ:5};
+const ROLE_BADGE = {
+  '首席':'badge-gold','フォア':'badge-blue','2nd以下':'badge-gray',
+  'Tutti（プロ）':'badge-gray','Tutti（学生）':'badge-purple','エキストラ':'badge-gray'
+};
+const STATUS_BADGE = {
+  '未連絡':'badge-gray','連絡済':'badge-yellow','確定':'badge-green','交渉中':'badge-yellow','辞退':'badge-red'
+};
+const PARTS_ORDER = ['Vn.I','Vn.II','Va.','Vc.','Cb.','Fl.','Ob.','Cl.','Fg.','Hr.','Tp.','Tb.','Perc.','Pf.'];
+
+// ─ tab switcher ─────────────────────────────
+// (replaced)
+
+function closeConcertDetail() {
+  document.getElementById('concert-detail-panel').style.display='none';
+  activeConcertId = null;
+}
+
+function openConcertToSimTab(i) {
+  showConcertDetail(i);
+  // Switch to sim tab after a tick
+  setTimeout(()=>{
+    const tabs = document.querySelectorAll('#concert-tabs .tab');
+    // Find sim tab (index 2)
+    if(tabs[2]) switchConcertTab(tabs[2], 'ct-sim');
+  }, 50);
+}
+
+// ─ Show concert detail ──────────────────────
+function showConcertDetail(i) {
+  const c = DB.concerts[i];
+  if(!c) return;
+  activeConcertId = c.id;
+  const panel = document.getElementById('concert-detail-panel');
+  const header = document.getElementById('concert-detail-header');
+  panel.style.display = '';
+  header.textContent = (c.title||'公演') + ' — ' + (c.date||'') + ' / ' + (c.venue||'');
+  // Reset to tasks tab
+  document.querySelectorAll('#concert-tabs .tab').forEach((t,i)=>t.classList.toggle('active',i===0));
+  ['ct-tasks','ct-cast','ct-sim'].forEach((id,i)=>{
+    const e=document.getElementById(id);if(e)e.style.display=i===0?'':'none';
+  });
+  // Fill sim from concert data
+  if(c.capacity) document.getElementById('sim-cap').value = c.capacity;
+  if(c.ticketPrice) document.getElementById('sim-price').value = c.ticketPrice;
+  // Render tasks
+  renderTasks();
+  calcSim();
+  panel.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// ═══════════ TASKS ════════════════════════
+function getConcertTasks() {
+  if(!activeConcertId) return [];
+  return (DB.concertTasks||{})[activeConcertId] || getDefaultTasks();
+}
+function getDefaultTasks() {
+  return [
+    {id:'t1',name:'会場予約',due:'',priority:'normal',done:false},
+    {id:'t2',name:'プログラム確定',due:'',priority:'normal',done:false},
+    {id:'t3',name:'奏者全員確定',due:'',priority:'urgent',done:false},
+    {id:'t4',name:'SNS告知開始',due:'',priority:'normal',done:false},
+    {id:'t5',name:'チラシ・プログラム入稿',due:'',priority:'normal',done:false},
+    {id:'t6',name:'リハーサル日程通知',due:'',priority:'normal',done:false},
+    {id:'t7',name:'謝礼振込',due:'',priority:'normal',done:false},
+  ];
+}
+function saveConcertTasks(tasks) {
+  if(!DB.concertTasks) DB.concertTasks={};
+  DB.concertTasks[activeConcertId]=tasks;
+  saveDB();
+}
+function renderTasks() {
+  const tasks = getConcertTasks();
+  const ul = document.getElementById('concert-tasks');
+  if(!ul) return;
+  ul.innerHTML = tasks.map(t=>`
+    <li>
+      <div class="check-box ${t.done?'done':t.priority==='urgent'?'urgent':''}"
+           onclick="toggleTaskDone('${t.id}')">${t.done?'✓':t.priority==='urgent'?'!':''}</div>
+      <div class="${t.done?'check-text done':'check-text'}">${t.name}</div>
+      ${t.due?`<div class="check-meta">${t.due}</div>`:''}
+      <button style="margin-left:auto;background:none;border:none;color:var(--text3);cursor:pointer;font-size:11px;padding:2px 6px;" onclick="removeTask('${t.id}')">✕</button>
+    </li>
+  `).join('');
+}
+function toggleTaskDone(taskId) {
+  const tasks = getConcertTasks();
+  const t = tasks.find(x=>x.id===taskId);
+  if(t){ t.done=!t.done; saveConcertTasks(tasks); renderTasks(); }
+}
+function removeTask(taskId) {
+  let tasks = getConcertTasks();
+  tasks = tasks.filter(x=>x.id!==taskId);
+  saveConcertTasks(tasks); renderTasks();
+}
+function saveTask() {
+  const name = document.getElementById('task-name').value.trim();
+  if(!name) return;
+  const tasks = getConcertTasks();
+  tasks.push({
+    id:'t'+Date.now(), name,
+    due: document.getElementById('task-due').value,
+    priority: document.getElementById('task-priority').value,
+    done: false
+  });
+  saveConcertTasks(tasks); renderTasks(); closeModal('task-modal');
+  document.getElementById('task-name').value='';
+  toast('タスクを追加しました');
+}
+
+// ═══════════ CASTINGS ═════════════════════
+function getCastings() {
+  if(!activeConcertId) return [];
+  return (DB.castings||{})[activeConcertId] || [];
+}
+function saveCastings(castings) {
+  if(!DB.castings) DB.castings={};
+  DB.castings[activeConcertId] = castings;
+  saveDB();
+}
+
+function renderCast() {
+  const castings = getCastings();
+  const partF = document.getElementById('cast-part-filter')?.value||'';
+  const filtered = partF ? castings.filter(c=>c.part===partF) : castings;
+  const tbody = document.getElementById('cast-tbody');
+  if(!tbody) return;
+
+  if(!filtered.length) {
+    tbody.innerHTML=`<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">♪</div>出演者なし — ＋ 奏者をアサインから追加</div></td></tr>`;
+  } else {
+    // Sort by part order, then role order
+    const sorted = [...filtered].sort((a,b)=>{
+      const pi = PARTS_ORDER.indexOf(a.part)-PARTS_ORDER.indexOf(b.part);
+      if(pi!==0) return pi;
+      return (ROLE_ORDER[a.role]||99)-(ROLE_ORDER[b.role]||99);
+    });
+    tbody.innerHTML = sorted.map(c=>`
+      <tr>
+        <td style="font-weight:500;">${c.musicianName||'—'}</td>
+        <td><span class="badge badge-gray">${c.part||'—'}</span></td>
+        <td><span class="badge ${ROLE_BADGE[c.role]||'badge-gray'}">${c.role||'—'}</span></td>
+        <td><span class="badge ${STATUS_BADGE[c.contactStatus]||'badge-gray'}">${c.contactStatus||'未連絡'}</span></td>
+        <td>
+          <select class="form-input" style="padding:3px 6px;font-size:11px;width:100px;"
+            onchange="quickUpdateCasting('${c.id}','contactStatus',this.value)">
+            <option ${c.contactStatus==='未連絡'?'selected':''}>未連絡</option>
+            <option ${c.contactStatus==='連絡済'?'selected':''}>連絡済</option>
+            <option ${c.contactStatus==='確定'?'selected':''}>確定</option>
+            <option ${c.contactStatus==='交渉中'?'selected':''}>交渉中</option>
+            <option ${c.contactStatus==='辞退'?'selected':''}>辞退</option>
+          </select>
+        </td>
+        <td style="font-family:var(--mono);">¥${parseInt(c.fee||0).toLocaleString()}</td>
+        <td style="font-size:11px;color:var(--text3);">${c.note||''}</td>
+        <td style="display:flex;gap:4px;">
+          <button class="btn btn-outline btn-sm" onclick="openCastingModal('${c.id}')">編集</button>
+          <button class="btn btn-outline btn-sm" onclick="openKakegoeFromCast('${c.id}')">声掛け</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  // KPI update
+  const all = castings;
+  const confirmed = all.filter(c=>c.contactStatus==='確定').length;
+  const negotiating = all.filter(c=>c.contactStatus==='交渉中'||c.contactStatus==='連絡済').length;
+  const feeTotal = all.reduce((s,c)=>s+parseInt(c.fee||0),0);
+  document.getElementById('cast-total').innerHTML = all.length+'<span class="kpi-unit">名</span>';
+  document.getElementById('cast-confirmed').innerHTML = confirmed+'<span class="kpi-unit">名</span>';
+  document.getElementById('cast-negotiating').innerHTML = negotiating+'<span class="kpi-unit">名</span>';
+  document.getElementById('cast-fee-total').innerHTML = Math.round(feeTotal/10000)+'<span class="kpi-unit">万</span>';
+
+  // Part summary
+  renderPartSummary(all);
+}
+
+function renderPartSummary(castings) {
+  const el = document.getElementById('cast-part-summary');
+  if(!el) return;
+  const byPart = {};
+  castings.forEach(c=>{
+    if(!byPart[c.part]) byPart[c.part]={total:0,confirmed:0};
+    byPart[c.part].total++;
+    if(c.contactStatus==='確定') byPart[c.part].confirmed++;
+  });
+  const parts = PARTS_ORDER.filter(p=>byPart[p]);
+  if(!parts.length){el.textContent='';return;}
+  el.innerHTML = '<span style="margin-right:8px;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;">パート別</span>'
+    + parts.map(p=>`<span style="margin-right:12px;">${p}: ${byPart[p].confirmed}/${byPart[p].total}名</span>`).join('');
+}
+
+function quickUpdateCasting(id, field, value) {
+  const castings = getCastings();
+  const c = castings.find(x=>String(x.id)===String(id));
+  if(c){ c[field]=value; saveCastings(castings); renderCast(); }
+}
+
+// ─ Unassigned musicians panel ───────────────
+function renderUnassigned() {
+  const search = (document.getElementById('cast-search')?.value||'').toLowerCase();
+  const assigned = new Set(getCastings().map(c=>String(c.musicianId)));
+  const unassigned = DB.musicians.filter(m=>{
+    if(assigned.has(String(m.id))) return false;
+    if(!search) return true;
+    return (m.name||'').toLowerCase().includes(search) || (m.part||'').toLowerCase().includes(search);
+  });
+  const el = document.getElementById('unassigned-list');
+  if(!el) return;
+  if(!unassigned.length){
+    el.innerHTML='<div style="font-size:12px;color:var(--text3);padding:8px;">全員アサイン済または検索結果なし</div>';
+    return;
+  }
+  el.innerHTML = unassigned.map(m=>`
+    <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);">
+      <span style="font-size:13px;flex:1;">${m.name||'—'}</span>
+      <span class="badge badge-gray" style="font-size:10px;">${m.part||'—'}</span>
+      <span style="font-size:11px;color:var(--text3);">${m.role||''}</span>
+      <button class="btn btn-outline btn-sm" style="padding:3px 8px;font-size:11px;"
+        onclick="quickAssign('${m.id}')">＋</button>
+    </div>
+  `).join('');
+}
+
+function quickAssign(musicianId) {
+  const m = DB.musicians.find(x=>String(x.id)===String(musicianId));
+  if(!m) return;
+  const castings = getCastings();
+  castings.push({
+    id: Date.now().toString(),
+    musicianId: m.id,
+    musicianName: m.name,
+    part: m.part||'Vn.I',
+    role: m.role||'Tutti（プロ）',
+    contactStatus: '未連絡',
+    fee: m.fee||'0',
+    note: ''
+  });
+  saveCastings(castings);
+  renderCast(); renderUnassigned();
+  toast(m.name + 'をアサインしました');
+}
+
+// ─ Open casting modal ────────────────────────
+function openCastingModal(castId) {
+  const c = castId ? getCastings().find(x=>String(x.id)===String(castId)) : null;
+  document.getElementById('cast-edit-id').value = c?.id||'';
+
+  // Populate musician select from master
+  const sel = document.getElementById('cast-musician-sel');
+  sel.innerHTML = '<option value="">— 選択 —</option>'
+    + DB.musicians.map(m=>`<option value="${m.id}" ${c&&String(c.musicianId)===String(m.id)?'selected':''}>${m.name} (${m.part||'—'})</option>`).join('');
+
+  document.getElementById('cast-part-sel').value = c?.part||'Vn.I';
+  document.getElementById('cast-role-sel').value = c?.role||'Tutti（プロ）';
+  document.getElementById('cast-contact-status').value = c?.contactStatus||'未連絡';
+  document.getElementById('cast-fee-input').value = c?.fee||'';
+  document.getElementById('cast-note-input').value = c?.note||'';
+
+  const delBtn = document.getElementById('cast-delete-btn');
+  if(delBtn) delBtn.style.display = c?'':'none';
+
+  if(c) onCastMusicianChange(c.musicianId);
+  openModal('casting-modal');
+}
+
+function onCastMusicianChange(forceId) {
+  const sel = document.getElementById('cast-musician-sel');
+  const id = forceId || sel?.value;
+  const m = id ? DB.musicians.find(x=>String(x.id)===String(id)) : null;
+  const info = document.getElementById('cast-musician-info');
+  if(!m||!info){if(info)info.style.display='none';return;}
+  info.style.display='';
+  info.innerHTML = `所属: ${m.affil||'—'} ／ 通常役割: ${m.role||'—'} ／ マスター謝礼: ¥${parseInt(m.fee||0).toLocaleString()} ／ ステータス: ${m.status||'—'} ／ 連絡先: ${m.contact||'—'}`;
+  // Auto-fill part and fee from master
+  if(!forceId){
+    const partSel=document.getElementById('cast-part-sel');
+    if(partSel&&m.part) partSel.value=m.part;
+    const roleSel=document.getElementById('cast-role-sel');
+    if(roleSel&&m.role) roleSel.value=m.role;
+    const feeInput=document.getElementById('cast-fee-input');
+    if(feeInput&&!feeInput.value) feeInput.value=m.fee||'';
+  }
+}
+
+function saveCasting() {
+  const editId = document.getElementById('cast-edit-id').value;
+  const mId = document.getElementById('cast-musician-sel').value;
+  if(!mId&&!editId) { toast('奏者を選択してください','err'); return; }
+  const m = DB.musicians.find(x=>String(x.id)===String(mId));
+  const castings = getCastings();
+  const record = {
+    id: editId || Date.now().toString(),
+    musicianId: mId,
+    musicianName: m?.name || (castings.find(x=>x.id===editId)?.musicianName||'—'),
+    part: document.getElementById('cast-part-sel').value,
+    role: document.getElementById('cast-role-sel').value,
+    contactStatus: document.getElementById('cast-contact-status').value,
+    fee: document.getElementById('cast-fee-input').value,
+    note: document.getElementById('cast-note-input').value,
+  };
+  const idx = castings.findIndex(x=>String(x.id)===String(editId));
+  if(idx>=0) castings[idx]=record; else castings.push(record);
+  saveCastings(castings);
+  renderCast(); renderUnassigned(); closeModal('casting-modal');
+  toast('アサインを保存しました');
+}
+
+function deleteCasting() {
+  const editId = document.getElementById('cast-edit-id').value;
+  if(!editId||!confirm('アサインを解除しますか？')) return;
+  const castings = getCastings().filter(x=>String(x.id)!==String(editId));
+  saveCastings(castings);
+  renderCast(); renderUnassigned(); closeModal('casting-modal');
+  toast('アサインを解除しました','warn');
+}
+
+// ─ Kakegoe from cast ────────────────────────
+function openKakegoeFromCast(castId) {
+  const c = getCastings().find(x=>String(x.id)===String(castId));
+  if(!c) return;
+  const concert = DB.concerts.find(x=>String(x.id)===String(activeConcertId));
+  showPage('players');
+  setTimeout(()=>{
+    document.getElementById('kakegoe-name').value = c.musicianName||'';
+    document.getElementById('kakegoe-part').value = (c.part||'') + ' ' + (c.role||'');
+    if(concert) {
+      const sel = document.getElementById('kakegoe-concert');
+      for(let i=0;i<sel.options.length;i++) {
+        if(sel.options[i].text.includes(concert.title||'')) { sel.selectedIndex=i; break; }
+      }
+    }
+    document.querySelector('#page-players .ai-panel').scrollIntoView({behavior:'smooth'});
+  }, 100);
+}
+
+// ─ Simulate fee import from castings ────────
+// (replaced)
+
+// ─ History cross table ───────────────────────
+function renderHistoryCross() {
+  const concerts = DB.concerts||[];
+  const wrap = document.getElementById('history-cross-wrap');
+  if(!wrap) return;
+  if(concerts.length < 2) {
+    wrap.innerHTML='<div class="empty-state"><div class="empty-icon">♩</div>複数公演のデータが揃うと表示されます</div>';
+    return;
+  }
+  // Collect all musicians who appear in any casting
+  const allCastings = DB.castings||{};
+  const musicianSet = {};
+  concerts.forEach(c=>{
+    (allCastings[c.id]||[]).forEach(cast=>{
+      if(!musicianSet[cast.musicianId]) musicianSet[cast.musicianId]={name:cast.musicianName,parts:{}};
+      musicianSet[cast.musicianId].parts[c.id]={role:cast.role,status:cast.contactStatus};
+    });
+  });
+  const musicians = Object.entries(musicianSet);
+  if(!musicians.length){
+    wrap.innerHTML='<div class="empty-state"><div class="empty-icon">♩</div>出演者アサインがまだありません</div>';
+    return;
+  }
+  const statusDot = s=>{
+    const c={確定:'var(--green)',交渉中:'var(--yellow)',連絡済:'var(--yellow)',辞退:'var(--red)',未連絡:'var(--border2)'};
+    return `<div style="width:8px;height:8px;border-radius:50%;background:${c[s]||'var(--border2)'};margin:auto;" title="${s||'—'}"></div>`;
+  };
+  let html = '<table><thead><tr><th>氏名</th>'
+    + concerts.map(c=>`<th style="text-align:center;font-size:10px;">${c.title||'公演'}<br><span style="color:var(--text3);">${c.date||''}</span></th>`).join('')
+    + '</tr></thead><tbody>';
+  musicians.forEach(([mid,m])=>{
+    html += `<tr><td style="font-weight:500;white-space:nowrap;">${m.name||'—'}</td>`
+      + concerts.map(c=>{
+          const cast = m.parts[c.id];
+          if(!cast) return '<td style="text-align:center;color:var(--border2);">—</td>';
+          return `<td style="text-align:center;" title="${cast.role||''}">`
+            + statusDot(cast.status)
+            + `<div style="font-size:9px;color:var(--text3);margin-top:2px;">${cast.role?.replace('Tutti（','').replace(')','').replace('（学生）','学').replace('（プロ）','')  ||''}</div>`
+            +'</td>';
+        }).join('')
+      + '</tr>';
+  });
+  html += '</tbody></table>';
+  wrap.innerHTML = html;
+}
+
+// ─ AI cast suggestion ───────────────────────
+async function generateCastAI() {
+  const concert = DB.concerts.find(x=>String(x.id)===String(activeConcertId));
+  const outEl = document.getElementById('cast-ai-output');
+  if(outEl) outEl.textContent = '分析中...';
+  const castings = getCastings();
+  const masters = DB.musicians;
+  const prompt = `VariOrchestra「${concert?.title||'公演'}」（${concert?.program||'—'}）の出演者構成を提案してください。
+登録奏者マスター（${masters.length}名）: ${masters.map(m=>m.name+'('+m.part+'/'+m.role+'/'+m.status+')').join('、')}
+現在アサイン済（${castings.length}名）: ${castings.map(c=>c.musicianName+'('+c.part+'/'+c.role+'/'+c.contactStatus+')').join('、')||'なし'}
+首席・フォアが未確定のパートを優先し、学生tuttiと在京プロのバランス、謝礼総額を意識した提案を。根拠も示すこと。`;
+  try {
+    const {text} = await callAI(prompt);
+    if(outEl) outEl.textContent=text;
+  } catch(e) { if(outEl) outEl.textContent='エラー: '+e.message; }
+}
+
+// ─ calcSim override (now uses single fee field) ──
+// (replaces original calcSim - declared later, this one wins if placed last)
+// (replaced)
+
+
+// ══════════════════════════════════════════
+// TICKET TIERS (チケット区分)
+// ══════════════════════════════════════════
+
+const TICKET_SEAT_TYPES = ['指定席','自由席','学生席','招待席','プレミアム席','預けチケット','その他'];
+const DEFAULT_TICKET_TIERS = [
+  {id:'tk1', name:'S席',     type:'指定席', price:5000, seats:384, sold:0, color:'#4CC97A'},
+  {id:'tk2', name:'A席',     type:'指定席', price:4000, seats:568, sold:0, color:'#5B9CF6'},
+  {id:'tk3', name:'B席',     type:'指定席', price:3000, seats:56,  sold:0, color:'#E85555'},
+  {id:'tk4', name:'武蔵野預けチケット', type:'預けチケット', price:5000, seats:50, sold:0, color:'#E8B840'},
+  {id:'tk5', name:'学生席',  type:'学生席', price:2000, seats:0,   sold:0, color:'#9B7FE8'},
+  {id:'tk6', name:'招待席',  type:'招待席', price:0,    seats:0,   sold:0, color:'#706860'},
+];
+
+function getConcertTicketTiers() {
+  if(!activeConcertId) return JSON.parse(JSON.stringify(DEFAULT_TICKET_TIERS));
+  const saved = (DB.ticketTiers||{})[activeConcertId];
+  return saved ? JSON.parse(JSON.stringify(saved)) : JSON.parse(JSON.stringify(DEFAULT_TICKET_TIERS));
+}
+function saveConcertTicketTiers(tiers) {
+  if(!DB.ticketTiers) DB.ticketTiers={};
+  DB.ticketTiers[activeConcertId] = tiers;
+  saveDB();
+}
+
+function renderTicketTiers() {
+  const tiers = getConcertTicketTiers();
+  const tbody = document.getElementById('ticket-tiers-tbody');
+  if(!tbody) return;
+
+  tbody.innerHTML = tiers.map((t,i) => `
+    <tr id="tk-row-${t.id}">
+      <td><div style="width:12px;height:12px;border-radius:2px;background:${t.color};margin:auto;"></div></td>
+      <td><input class="form-input" value="${t.name}" style="padding:5px 8px;font-size:12px;"
+          onchange="updateTicketTier('${t.id}','name',this.value)" placeholder="区分名"></td>
+      <td>
+        <select class="form-input" style="padding:5px 8px;font-size:12px;" onchange="updateTicketTier('${t.id}','type',this.value)">
+          ${TICKET_SEAT_TYPES.map(s=>`<option ${t.type===s?'selected':''}>${s}</option>`).join('')}
+        </select>
+      </td>
+      <td><input class="form-input" type="number" value="${t.price}" style="padding:5px 8px;font-size:12px;width:90px;"
+          onchange="updateTicketTier('${t.id}','price',parseInt(this.value)||0)" placeholder="0"></td>
+      <td><input class="form-input" type="number" value="${t.seats}" style="padding:5px 8px;font-size:12px;width:80px;"
+          onchange="updateTicketTier('${t.id}','seats',parseInt(this.value)||0)" placeholder="0"></td>
+      <td><input class="form-input" type="number" value="${t.sold||0}" style="padding:5px 8px;font-size:12px;width:80px;"
+          onchange="updateTicketTier('${t.id}','sold',parseInt(this.value)||0)" placeholder="0"
+          ${t.type==='招待席'?'disabled style="padding:5px 8px;font-size:12px;width:80px;opacity:0.4;"':''}></td>
+      <td style="font-family:var(--mono);font-size:12px;" id="tk-revenue-${t.id}">
+        ${t.type==='招待席'?'—':'¥'+((t.seats||0)*(t.price||0)).toLocaleString()}
+      </td>
+      <td>
+        <button style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:2px 6px;"
+          onclick="removeTicketTier('${t.id}')">✕</button>
+      </td>
+    </tr>
+  `).join('');
+
+  updateTicketSummary(tiers);
+  calcSim();
+}
+
+function updateTicketTier(id, field, value) {
+  const tiers = getConcertTicketTiers();
+  const t = tiers.find(x=>x.id===id);
+  if(!t) return;
+  t[field] = value;
+  saveConcertTicketTiers(tiers);
+  // Update revenue cell
+  const rev = document.getElementById('tk-revenue-'+id);
+  if(rev) rev.textContent = t.type==='招待席'?'—':'¥'+((t.seats||0)*(t.price||0)).toLocaleString();
+  updateTicketSummary(tiers);
+  calcSim();
+}
+
+function addTicketTier() {
+  const tiers = getConcertTicketTiers();
+  const colors = ['#4CC97A','#5B9CF6','#E85555','#E8B840','#9B7FE8','#C8A752','#706860'];
+  const newTier = {
+    id: 'tk'+Date.now(),
+    name: '新区分',
+    type: '指定席',
+    price: 3000,
+    seats: 0,
+    sold: 0,
+    color: colors[tiers.length % colors.length]
+  };
+  tiers.push(newTier);
+  saveConcertTicketTiers(tiers);
+  renderTicketTiers();
+}
+
+function removeTicketTier(id) {
+  const tiers = getConcertTicketTiers().filter(x=>x.id!==id);
+  saveConcertTicketTiers(tiers);
+  renderTicketTiers();
+}
+
+function updateTicketSummary(tiers) {
+  // Total seats label
+  const totalSeats = tiers.reduce((s,t)=>s+(t.seats||0),0);
+  const el = document.getElementById('ticket-total-seats');
+  if(el) el.textContent = '合計 '+totalSeats.toLocaleString()+' 席';
+
+  // Summary bar
+  const sumEl = document.getElementById('ticket-tiers-summary');
+  if(sumEl) {
+    const totalRevFull = tiers.filter(t=>t.type!=='招待席').reduce((s,t)=>s+(t.seats||0)*(t.price||0),0);
+    const totalSold = tiers.filter(t=>t.type!=='招待席').reduce((s,t)=>s+(t.sold||0),0);
+    const soldRevenue = tiers.filter(t=>t.type!=='招待席').reduce((s,t)=>s+(t.sold||0)*(t.price||0),0);
+    const inviteSeats = tiers.filter(t=>t.type==='招待席').reduce((s,t)=>s+(t.seats||0),0);
+    sumEl.innerHTML = `
+      <span>総座席数: <strong>${totalSeats.toLocaleString()}</strong></span>
+      <span style="color:var(--green);">満席時売上: <strong>¥${totalRevFull.toLocaleString()}</strong></span>
+      <span style="color:var(--blue);">販売済: <strong>${totalSold.toLocaleString()}枚</strong> (¥${soldRevenue.toLocaleString()})</span>
+      ${inviteSeats?`<span>招待: <strong>${inviteSeats}席</strong></span>`:''}
+    `;
+  }
+}
+
+// Override calcSim to use multi-tier ticket data
+function calcSim() {
+  const tiers = getConcertTicketTiers ? getConcertTicketTiers() : [];
+  const paidTiers = tiers.filter(t=>t.type!=='招待席');
+  const inviteTiers = tiers.filter(t=>t.type==='招待席');
+
+  // Full capacity revenue
+  const ticketIncomeFull = paidTiers.reduce((s,t)=>s+(t.seats||0)*(t.price||0),0);
+  const inviteSeats = inviteTiers.reduce((s,t)=>s+(t.seats||0),0);
+  const otherIncome = parseInt(document.getElementById('sim-other-income')?.value||0);
+  const totalIncomeFull = ticketIncomeFull + otherIncome;
+
+  // Sold revenue (actual)
+  const soldRevenue = paidTiers.reduce((s,t)=>s+(t.sold||0)*(t.price||0),0);
+
+  // Expenses
+  const fees  = parseInt(document.getElementById('sim-players')?.value||0);
+  const hall  = parseInt(document.getElementById('sim-hall')?.value||200000);
+  const other = parseInt(document.getElementById('sim-other')?.value||80000);
+  const promo = parseInt(document.getElementById('sim-promo')?.value||50000);
+  const totalExpense = fees + hall + other + promo;
+
+  const balanceFull = totalIncomeFull - totalExpense;
+
+  // Break-even: use weighted average price of paid tiers
+  const totalPaidSeats = paidTiers.reduce((s,t)=>s+(t.seats||0),0);
+  const avgPrice = totalPaidSeats > 0
+    ? Math.round(paidTiers.reduce((s,t)=>s+(t.seats||0)*(t.price||0),0) / totalPaidSeats)
+    : 0;
+  const bie = avgPrice > 0 ? Math.ceil(totalExpense / avgPrice) : 0;
+  const biePct = totalPaidSeats > 0 ? Math.round(bie/totalPaidSeats*100) : 0;
+
+  // Set values
+  const set = (id,v,color)=>{
+    const el=document.getElementById(id);
+    if(!el) return;
+    el.textContent=v;
+    if(color) el.style.color=color;
+  };
+  set('sim-income','¥'+ticketIncomeFull.toLocaleString());
+  set('sim-total-income','¥'+totalIncomeFull.toLocaleString());
+  set('sim-expense','-¥'+totalExpense.toLocaleString());
+  set('sim-bie', bie>0?bie.toLocaleString()+'枚（'+biePct+'%）':'—');
+
+  const balEl = document.getElementById('sim-balance');
+  if(balEl){
+    balEl.textContent = (balanceFull>=0?'+':'')+balanceFull.toLocaleString()+'円';
+    balEl.style.color = balanceFull>=0?'var(--green)':'var(--red)';
+  }
+
+  // Income breakdown display
+  const bdownEl = document.getElementById('sim-income-breakdown');
+  if(bdownEl && paidTiers.length) {
+    bdownEl.innerHTML = paidTiers.map(t=>`
+      <div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;">
+        <div style="width:8px;height:8px;border-radius:2px;background:${t.color};flex-shrink:0;"></div>
+        <span style="flex:1;color:var(--text2);">${t.name}</span>
+        <span style="color:var(--text3);">${(t.seats||0).toLocaleString()}席 × ¥${(t.price||0).toLocaleString()}</span>
+        <span style="font-family:var(--mono);min-width:90px;text-align:right;" class="money-positive">¥${((t.seats||0)*(t.price||0)).toLocaleString()}</span>
+      </div>
+    `).join('') + (inviteSeats?`
+      <div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;">
+        <div style="width:8px;height:8px;border-radius:2px;background:var(--text3);flex-shrink:0;"></div>
+        <span style="flex:1;color:var(--text3);">招待席</span>
+        <span style="color:var(--text3);">${inviteSeats}席</span>
+        <span style="font-family:var(--mono);min-width:90px;text-align:right;color:var(--text3);">—</span>
+      </div>`:'');
+  }
+
+  // Sales progress
+  const progEl = document.getElementById('sim-sales-progress');
+  if(progEl && paidTiers.length) {
+    const totalSold = paidTiers.reduce((s,t)=>s+(t.sold||0),0);
+    const totalSeats = paidTiers.reduce((s,t)=>s+(t.seats||0),0);
+    const overallPct = totalSeats > 0 ? Math.round(totalSold/totalSeats*100) : 0;
+    progEl.innerHTML = `
+      <div style="margin-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:13px;">
+          <span>総販売進捗</span>
+          <span style="font-family:var(--mono);">${totalSold.toLocaleString()} / ${totalSeats.toLocaleString()}枚 (${overallPct}%)</span>
+        </div>
+        <div class="progress-wrap"><div class="progress-bar progress-gold" style="width:${overallPct}%"></div></div>
+      </div>
+      ${paidTiers.map(t=>{
+        const pct = t.seats>0?Math.round((t.sold||0)/t.seats*100):0;
+        return `<div style="margin-bottom:8px;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:3px;font-size:12px;">
+            <span style="display:flex;align-items:center;gap:6px;"><span style="width:8px;height:8px;border-radius:2px;background:${t.color};display:inline-block;"></span>${t.name}</span>
+            <span style="font-family:var(--mono);color:var(--text3);">${(t.sold||0)} / ${t.seats}枚</span>
+          </div>
+          <div class="progress-wrap" style="height:4px;"><div class="progress-bar" style="width:${pct}%;background:${t.color}"></div></div>
+        </div>`;
+      }).join('')}
+      <div style="border-top:1px solid var(--border);padding-top:10px;margin-top:6px;">
+        <div style="display:flex;justify-content:space-between;font-size:13px;">
+          <span style="color:var(--text2);">現在売上（実績）</span>
+          <span style="font-family:var(--mono);" class="money-positive">¥${soldRevenue.toLocaleString()}</span>
+        </div>
+        ${bie>0?`<div style="font-size:11px;color:var(--text3);margin-top:4px;">損益分岐まで残り ${Math.max(0,bie-totalSold).toLocaleString()}枚</div>`:''}
+      </div>
+    `;
+  }
+}
+
+// Override importCastFees to also trigger calcSim
+const _origImportCastFees = typeof importCastFees !== 'undefined' ? importCastFees : null;
+function importCastFees() {
+  const castings = getCastings ? getCastings() : [];
+  const feeTotal = castings.reduce((s,c)=>s+parseInt(c.fee||0),0);
+  const el = document.getElementById('sim-players');
+  if(el) el.value = feeTotal;
+
+  // Breakdown by role
+  const byRole = {};
+  castings.forEach(c=>{
+    const r = c.role||'その他';
+    if(!byRole[r]) byRole[r]={count:0,total:0};
+    byRole[r].count++;
+    byRole[r].total+=parseInt(c.fee||0);
+  });
+  const bdown = document.getElementById('sim-fee-breakdown');
+  if(bdown) {
+    if(!Object.keys(byRole).length){
+      bdown.innerHTML='<div style="font-size:13px;color:var(--text3);">出演者タブでアサインすると自動反映されます</div>';
+    } else {
+      bdown.innerHTML = Object.entries(byRole).map(([role,v])=>`
+        <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;">
+          <span style="color:var(--text2);">${role} <span style="color:var(--text3);font-size:11px;">${v.count}名</span></span>
+          <span style="font-family:var(--mono);">¥${v.total.toLocaleString()}</span>
+        </div>
+      `).join('') + `
+        <div style="display:flex;justify-content:space-between;padding:10px 0;font-size:14px;">
+          <span>合計 ${castings.length}名</span>
+          <span style="font-family:var(--mono);color:var(--gold);">¥${feeTotal.toLocaleString()}</span>
+        </div>`;
+    }
+  }
+  calcSim();
+}
+
+// Also patch switchConcertTab to render ticket tiers when opening sim tab
+const _origSwitchConcertTab = switchConcertTab;
+function switchConcertTab(el, target) {
+  document.querySelectorAll('#concert-tabs .tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  ['ct-tasks','ct-cast','ct-sim'].forEach(id=>{
+    const e=document.getElementById(id);
+    if(e) e.style.display = id===target?'':'none';
+  });
+  if(target==='ct-cast') { renderCast(); renderUnassigned(); renderHistoryCross(); }
+  if(target==='ct-sim') { renderTicketTiers(); importCastFees(); }
+}
+
+
+// ══════════════════════════════════════════
+// CONCERT MODAL: per-concert ticket tiers
+// ══════════════════════════════════════════
+
+const DEFAULT_MODAL_TIERS = () => [
+  {id:'tk1', name:'S席',     type:'指定席',   price:5000, seats:384, color:'#4CC97A'},
+  {id:'tk2', name:'A席',     type:'指定席',   price:4000, seats:568, color:'#5B9CF6'},
+  {id:'tk3', name:'B席',     type:'指定席',   price:3000, seats:56,  color:'#E85555'},
+  {id:'tk4', name:'武蔵野預けチケット', type:'預けチケット', price:5000, seats:50, color:'#E8B840'},
+  {id:'tk5', name:'学生席',  type:'学生席',   price:2000, seats:0,   color:'#9B7FE8'},
+  {id:'tk6', name:'招待席',  type:'招待席',   price:0,    seats:0,   color:'#706860'},
+];
+
+// Temp storage for tiers being edited in the modal
+let _modalTiers = [];
+
+function initModalTiers(concertId) {
+  // Load from existing concert data or use defaults
+  const existing = concertId ? (DB.ticketTiers||{})[concertId] : null;
+  _modalTiers = existing
+    ? JSON.parse(JSON.stringify(existing))
+    : DEFAULT_MODAL_TIERS();
+  renderModalTiers();
+}
+
+function renderModalTiers() {
+  const el = document.getElementById('modal-ticket-tiers');
+  if(!el) return;
+  const TYPES = ['指定席','自由席','学生席','招待席','プレミアム席','預けチケット','その他'];
+  el.innerHTML = _modalTiers.map((t,i) => `
+    <div style="display:grid;grid-template-columns:1fr 90px 80px 80px 24px;gap:6px;align-items:center;" data-idx="${i}">
+      <input class="form-input" value="${t.name||''}" style="padding:6px 8px;font-size:12px;"
+        oninput="updateModalTier(${i},'name',this.value)" placeholder="区分名">
+      <select class="form-input" style="padding:6px 6px;font-size:11px;"
+        onchange="updateModalTier(${i},'type',this.value)">
+        ${TYPES.map(s=>`<option ${t.type===s?'selected':''}>${s}</option>`).join('')}
+      </select>
+      <input class="form-input" type="number" value="${t.price||0}" style="padding:6px 8px;font-size:12px;"
+        oninput="updateModalTier(${i},'price',parseInt(this.value)||0)"
+        ${t.type==='招待席'?'disabled style="padding:6px 8px;font-size:12px;opacity:0.4;"':''}>
+      <input class="form-input" type="number" value="${t.seats||0}" style="padding:6px 8px;font-size:12px;"
+        oninput="updateModalTier(${i},'seats',parseInt(this.value)||0)">
+      <button style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;line-height:1;"
+        onclick="removeModalTier(${i})">✕</button>
+    </div>
+  `).join('');
+  updateModalTicketSummary();
+}
+
+function updateModalTier(i, field, value) {
+  if(_modalTiers[i]) {
+    _modalTiers[i][field] = value;
+    updateModalTicketSummary();
+    // Refresh type-dependent disable state
+    if(field==='type') renderModalTiers();
+  }
+}
+
+function addModalTicketTier() {
+  const colors = ['#4CC97A','#5B9CF6','#E85555','#E8B840','#9B7FE8','#C8A752','#706860','#B0A090'];
+  _modalTiers.push({
+    id: 'tk'+Date.now(),
+    name: '新区分',
+    type: '指定席',
+    price: 3000,
+    seats: 0,
+    color: colors[_modalTiers.length % colors.length]
+  });
+  renderModalTiers();
+}
+
+function removeModalTier(i) {
+  _modalTiers.splice(i, 1);
+  renderModalTiers();
+}
+
+function updateModalTicketSummary() {
+  const paid = _modalTiers.filter(t=>t.type!=='招待席');
+  const totalSeats = _modalTiers.reduce((s,t)=>s+(t.seats||0),0);
+  const revenue = paid.reduce((s,t)=>s+(t.seats||0)*(t.price||0),0);
+  const seatsEl = document.getElementById('mts-seats');
+  const revEl = document.getElementById('mts-revenue');
+  if(seatsEl) seatsEl.textContent = totalSeats.toLocaleString()+'席';
+  if(revEl) revEl.textContent = '¥'+revenue.toLocaleString();
+}
+
+// ── Override openConcertModal to init tiers ──────────────
+function openConcertModal(data) {
+  data = data || {};
+  document.getElementById('concert-id').value = data.id||'';
+  document.getElementById('concert-title').value = data.title||'';
+  document.getElementById('concert-date').value = (data.date||'').slice(0,10);
+  document.getElementById('concert-venue').value = data.venue||'武蔵野市民文化会館';
+  document.getElementById('concert-type').value = data.type||'定期演奏会';
+  document.getElementById('concert-program').value = data.program||'';
+  document.getElementById('concert-note').value = data.note||'';
+  // Show/hide delete button
+  const delBtn = document.getElementById('concert-delete-btn');
+  if(delBtn) delBtn.style.display = data.id ? '' : 'none';
+  // Init ticket tiers
+  initModalTiers(data.id||null);
+  document.getElementById('concert-modal').classList.add('open');
+}
+
+// ── deleteConcert ─────────────────────────────────────────
+async function deleteConcert() {
+  const id = document.getElementById('concert-id').value;
+  if(!id || !confirm('この公演を削除しますか？')) return;
+  DB.concerts = DB.concerts.filter(c=>String(c.id)!==String(id));
+  // Also clean up castings and tiers
+  if(DB.castings) delete DB.castings[id];
+  if(DB.ticketTiers) delete DB.ticketTiers[id];
+  if(DB.concertTasks) delete DB.concertTasks[id];
+  saveDB();
+  closeModal('concert-modal');
+  if(activeConcertId === id) {
+    activeConcertId = null;
+    document.getElementById('concert-detail-panel').style.display='none';
+  }
+  renderConcerts();
+  updateDashboardKPIs();
+  toast('公演を削除しました','warn');
+}
+
+// ── Patch editConcert to use new openConcertModal ────────
+function editConcert(i) {
+  openConcertModal(DB.concerts[i]);
+}
+
+// ── Patch "＋ 公演追加" button behavior ─────────────────
+// (button now calls openConcertModal() with no args)
+
+</script>
+</body>
+</html>

@@ -4679,7 +4679,7 @@ async function testApiKey() {
   }
 }
 
-（ページ初期化時に呼ぶ）
+// GASからAPIキーを読み込む（ページ初期化時に呼ぶ）
 async function loadApiKeysFromSheets() {
   if(!gasUrl) return;
   try {

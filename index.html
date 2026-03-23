@@ -4299,6 +4299,11 @@ function loadNumericSettings() {
   set('cfg-biz-target',s.bizTarget);
   set('cfg-fin-target',s.finTarget);
   set('cfg-org-name',s.orgName);
+  // APIキーフィールドを復元（保存済みのキーを表示）
+  const gEl = document.getElementById('gemini-key-settings');
+  const cEl = document.getElementById('claude-key-settings');
+  if(gEl && apiKeys.gemini) gEl.value = apiKeys.gemini;
+  if(cEl && apiKeys.claude) cEl.value = apiKeys.claude;
   loadSNSSettings();
 }
 function saveNumericSettings() {
@@ -4547,19 +4552,30 @@ function saveDrawerKey() {
   toggleApiDrawer();
 }
 function saveApiKeys() {
-  const gk = document.getElementById('gemini-key-settings')?.value.trim();
-  const ck = document.getElementById('claude-key-settings')?.value.trim();
-  if(gk) { apiKeys.gemini=gk; Store.set('vo_gemini_key',gk); }
-  if(ck) { apiKeys.claude=ck; Store.set('vo_claude_key',ck); }
+  const gEl = document.getElementById('gemini-key-settings');
+  const cEl = document.getElementById('claude-key-settings');
+  const gk = (gEl?.value||'').trim();
+  const ck = (cEl?.value||'').trim();
+
+  let saved = false;
+  if(gk) { apiKeys.gemini=gk; Store.set('vo_gemini_key',gk); saved=true; }
+  if(ck) { apiKeys.claude=ck; Store.set('vo_claude_key',ck); saved=true; }
+
+  if(!saved) {
+    toast('キーが入力されていません','warn'); return;
+  }
+
   // GASが設定済みならSheetsのSettingsシートにも保存
   if(gasUrl) {
     gasRequest({ action:'upsert', sheet:'Settings',
-      record:{ id:'api_keys', gemini: gk||apiKeys.gemini, claude: ck||apiKeys.claude }
-    }).then(()=>toast('APIキーを保存しました（Sheets同期済）','ok'))
-      .catch(()=>toast('APIキーをローカルに保存しました（Sheets未接続）','info'));
+      record:{ id:'api_keys', gemini: apiKeys.gemini, claude: apiKeys.claude }
+    }).then(r => {
+      if(r && r.ok) toast('APIキーを保存しました（Sheets同期済）','ok');
+      else toast('APIキーをローカルに保存しました','ok');
+    }).catch(()=>toast('APIキーをローカルに保存しました','ok'));
   } else {
     showSaveIndicator();
-    toast('APIキーをローカルに保存しました','ok');
+    toast('APIキーを保存しました','ok');
   }
 }
 

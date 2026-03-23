@@ -4391,15 +4391,16 @@ async function callAI(prompt) {
   if(!key) return { text:'APIキーを設定してください（設定ページ）' };
   try {
     if(currentApi === 'gemini') {
-      // v1 + v1beta両方試す、モデルも確実なものから順に
+      // 実際に存在するモデルを優先順で試す（v1beta固定）
       const candidates = [
-        { base:'https://generativelanguage.googleapis.com/v1/models',  model:'gemini-1.5-flash' },
-        { base:'https://generativelanguage.googleapis.com/v1beta/models', model:'gemini-1.5-flash' },
-        { base:'https://generativelanguage.googleapis.com/v1beta/models', model:'gemini-2.0-flash-001' },
-        { base:'https://generativelanguage.googleapis.com/v1beta/models', model:'gemini-2.0-flash-exp' },
+        'gemini-2.0-flash',
+        'gemini-2.0-flash-001',
+        'gemini-2.5-flash',
+        'gemini-2.0-flash-lite',
       ];
+      const base = 'https://generativelanguage.googleapis.com/v1beta/models';
       let lastErr = '';
-      for(const {base, model} of candidates) {
+      for(const model of candidates) {
         try {
           const res = await fetch(`${base}/${model}:generateContent?key=${key}`,
             { method:'POST', headers:{'Content-Type':'application/json'},
@@ -4409,9 +4410,9 @@ async function callAI(prompt) {
           const text = (d.candidates?.[0]?.content?.parts?.[0]?.text||'').trim();
           if(text) return { text };
           lastErr = `[${model}] 空レスポンス`;
-        } catch(e) { lastErr = e.message; }
+        } catch(e) { lastErr = `[${model}] ${e.message}`; }
       }
-      throw new Error('Gemini API 全モデル失敗: ' + lastErr);
+      throw new Error('Gemini API 失敗: ' + lastErr);
     } else {
       const res = await fetch('https://api.anthropic.com/v1/messages',
         { method:'POST',
@@ -4636,12 +4637,13 @@ async function testApiKey() {
 
   if(currentApi === 'gemini') {
     const candidates = [
-      { base:'https://generativelanguage.googleapis.com/v1/models',     model:'gemini-1.5-flash' },
-      { base:'https://generativelanguage.googleapis.com/v1beta/models', model:'gemini-1.5-flash' },
-      { base:'https://generativelanguage.googleapis.com/v1beta/models', model:'gemini-2.0-flash-001' },
-      { base:'https://generativelanguage.googleapis.com/v1beta/models', model:'gemini-2.0-flash-exp' },
+      'gemini-2.0-flash',
+      'gemini-2.0-flash-001',
+      'gemini-2.5-flash',
+      'gemini-2.0-flash-lite',
     ];
-    for(const {base, model} of candidates) {
+    const base = 'https://generativelanguage.googleapis.com/v1beta/models';
+    for(const model of candidates) {
       try {
         const res = await fetch(`${base}/${model}:generateContent?key=${key}`,
           { method:'POST', headers:{'Content-Type':'application/json'},

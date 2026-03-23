@@ -1629,71 +1629,82 @@ textarea.form-input { resize:vertical; min-height:80px; }
 <!-- ════ 支援会員 ════ -->
 <div id="page-members" class="page">
   <div class="page-header">
-    <div><div class="page-title">支援会員</div><div class="page-subtitle">会員登録・会費・来場履歴管理</div></div>
+    <div><div class="page-title">支援会員</div><div class="page-subtitle">SupportMembers — 新規登録・旧会員管理・Sheets同期</div></div>
     <div class="page-actions">
-      <button class="btn btn-outline btn-sm" onclick="exportMembers()">↓ CSVエクスポート</button>
-      <button class="btn btn-gold btn-sm" onclick="openMemberModal()">＋ 会員登録</button>
+      <button class="btn btn-outline btn-sm" onclick="loadFromSheets('SupportMembers')">↓ Sheets読込</button>
+      <button class="btn btn-outline btn-sm" onclick="exportMembersCSV()">↓ CSVエクスポート</button>
+      <button class="btn btn-outline btn-sm" onclick="document.getElementById('old-member-csv-input').click()">旧会員CSV取込</button>
+      <input type="file" id="old-member-csv-input" accept=".csv,.txt" style="display:none" onchange="importOldMembersCSV(this)">
+      <button class="btn btn-gold btn-sm" onclick="openMemberModal()">＋ 新規会員登録</button>
     </div>
   </div>
+
   <div class="kpi-grid">
     <div class="kpi gold"><div class="kpi-label">会員数</div><div class="kpi-value" id="mb-kpi-total">—<span class="kpi-unit">名</span></div></div>
     <div class="kpi green"><div class="kpi-label">今期会費収入</div><div class="kpi-value" id="mb-kpi-revenue">—<span class="kpi-unit">万</span></div></div>
     <div class="kpi blue"><div class="kpi-label">更新待ち</div><div class="kpi-value" id="mb-kpi-renew">—<span class="kpi-unit">名</span></div></div>
-    <div class="kpi yellow"><div class="kpi-label">平均来場回数</div><div class="kpi-value" id="mb-kpi-visits">—<span class="kpi-unit">回</span></div></div>
+    <div class="kpi yellow"><div class="kpi-label">旧会員フラグ</div><div class="kpi-value" id="mb-kpi-old">—<span class="kpi-unit">名</span></div></div>
   </div>
-  <div class="grid-65">
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title">会員一覧</div>
-        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-          <input class="form-input" style="width:160px;padding:5px 8px;font-size:12px;" id="mb-search" placeholder="氏名・連絡先で検索" oninput="renderMembers()">
-          <select class="form-input" style="width:auto;padding:5px 8px;font-size:12px;" id="mb-status-filter" onchange="renderMembers()">
-            <option value="">全ステータス</option>
-            <option>有効</option><option>更新待ち</option><option>退会</option>
-          </select>
-        </div>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>氏名</th><th>会員種別</th><th>連絡先</th><th>入会日</th><th>年会費</th><th>ステータス</th><th>来場回数</th><th>操作</th></tr></thead>
-          <tbody id="members-tbody"></tbody>
-        </table>
+
+  <div class="card" style="margin-bottom:20px;">
+    <div class="card-header">
+      <div class="card-title">会員一覧</div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <input class="form-input" style="width:180px;padding:5px 8px;font-size:12px;" id="mb-search" placeholder="氏名・メアドで検索" oninput="renderMembers()">
+        <select class="form-input" style="width:auto;padding:5px 8px;font-size:12px;" id="mb-status-filter" onchange="renderMembers()">
+          <option value="">全ステータス</option>
+          <option value="有効">有効</option>
+          <option value="更新待ち">更新待ち</option>
+          <option value="退会">退会</option>
+        </select>
+        <select class="form-input" style="width:auto;padding:5px 8px;font-size:12px;" id="mb-old-filter" onchange="renderMembers()">
+          <option value="">全会員</option>
+          <option value="old">旧会員のみ</option>
+          <option value="new">新規のみ</option>
+        </select>
       </div>
     </div>
-    <div>
-      <div class="card" style="margin-bottom:16px;">
-        <div class="card-header"><div class="card-title">来場履歴記録</div></div>
-        <div class="card-body">
-          <div class="form-group">
-            <div class="form-label">会員</div>
-            <select class="form-input" id="visit-member-sel">
-              <option value="">— 会員を選択 —</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <div class="form-label">公演</div>
-            <select class="form-input" id="visit-concert-sel">
-              <option value="">— 公演を選択 —</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <div class="form-label">席種</div>
-            <select class="form-input" id="visit-seat">
-              <option>S席</option><option>A席</option><option>B席</option><option>招待</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <div class="form-label">メモ</div>
-            <input class="form-input" id="visit-note" placeholder="任意のメモ">
-          </div>
-          <button class="btn btn-gold" style="width:100%;" onclick="addVisitRecord()">来場記録を追加</button>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>氏名</th><th>メアド</th><th>会員種別</th>
+            <th>入会日</th><th>年会費</th><th>ステータス</th>
+            <th>来場回数</th><th>住所</th><th>備考</th><th>操作</th>
+          </tr>
+        </thead>
+        <tbody id="members-tbody"></tbody>
+      </table>
+    </div>
+    <div id="mb-list-footer" style="padding:10px 20px;border-top:1px solid var(--border);font-size:12px;color:var(--text3);"></div>
+  </div>
+
+  <!-- 来場履歴紐づけ -->
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-header"><div class="card-title">来場履歴を紐づける</div></div>
+      <div class="card-body">
+        <div class="form-group"><div class="form-label">会員</div>
+          <select class="form-input" id="visit-member-sel"><option value="">— 会員を選択 —</option></select>
         </div>
+        <div class="form-group"><div class="form-label">公演</div>
+          <select class="form-input" id="visit-concert-sel"><option value="">— 公演を選択 —</option></select>
+        </div>
+        <div class="form-group"><div class="form-label">席種</div>
+          <select class="form-input" id="visit-seat">
+            <option>S席</option><option>A席</option><option>B席</option><option>招待</option>
+          </select>
+        </div>
+        <div class="form-group"><div class="form-label">メモ</div>
+          <input class="form-input" id="visit-note" placeholder="任意のメモ">
+        </div>
+        <button class="btn btn-gold" style="width:100%;" onclick="addVisitRecord()">来場記録を追加</button>
       </div>
-      <div class="card">
-        <div class="card-header"><div class="card-title">直近の来場履歴</div></div>
-        <div style="max-height:240px;overflow-y:auto;" id="recent-visits-list">
-          <div class="empty-state"><div class="empty-icon">★</div>来場記録がありません</div>
-        </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">直近の来場履歴</div></div>
+      <div style="max-height:280px;overflow-y:auto;" id="recent-visits-list">
+        <div class="empty-state"><div class="empty-icon">★</div>来場記録がありません</div>
       </div>
     </div>
   </div>
@@ -4334,27 +4345,42 @@ function setApi(t) {
 }
 function setApiFromSelect(v) { setApi(v); }
 
+// ── 統一callAI（全AI機能から呼び出す唯一の関数） ──
 async function callAI(prompt) {
-  const key=getApiKey();
-  if(!key) return {text:'APIキーを設定してください（設定ページまたはサイドバー下部）'};
-  if(currentApi==='gemini') {
-    const res=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-04-17:generateContent?key='+key,
-      {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})});
-    const d=await res.json();
-    if(d.error) throw new Error(d.error.message);
-    return {text:(d.candidates?.[0]?.content?.parts?.[0]?.text||'').trim()};
-  } else {
-    const res=await fetch('https://api.anthropic.com/v1/messages',
-      {method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-       body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
-    const d=await res.json();
-    if(d.error) throw new Error(d.error.message);
-    return {text:d.content?.[0]?.text||''};
+  const key = getApiKey();
+  if(!key) return { text:'APIキーを設定してください（設定ページ）' };
+  try {
+    if(currentApi === 'gemini') {
+      const models = ['gemini-2.5-flash-preview-04-17','gemini-1.5-flash','gemini-pro'];
+      let lastErr = '';
+      for(const model of models) {
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`,
+          { method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({contents:[{parts:[{text:prompt}]}]}) });
+        const d = await res.json();
+        if(d.error) { lastErr = d.error.message; continue; }
+        return { text:(d.candidates?.[0]?.content?.parts?.[0]?.text||'').trim() };
+      }
+      throw new Error(lastErr || 'Gemini API エラー');
+    } else {
+      const res = await fetch('https://api.anthropic.com/v1/messages',
+        { method:'POST',
+          headers:{ 'Content-Type':'application/json', 'x-api-key':key,
+                    'anthropic-version':'2023-06-01',
+                    'anthropic-dangerous-direct-browser-access':'true' },
+          body: JSON.stringify({ model:'claude-haiku-4-5-20251001', max_tokens:1200,
+                                  messages:[{role:'user',content:prompt}] }) });
+      const d = await res.json();
+      if(d.error) throw new Error(d.error.message);
+      return { text: d.content?.[0]?.text || '' };
+    }
+  } catch(e) {
+    return { text:'エラー: '+e.message };
   }
 }
 
 async function generateAI(module) {
-  const outIds={dashboard:'ai-dashboard-output',finance:'fin-ai-output',bizdev:'biz-ai-output'};
+  const outIds={dashboard:'ai-dashboard-output',finance:'fin-ai-output',bizdev:'biz-ai-output',tickets:'ticket-ai-output',rehearsals:'rh-ai-output'};
   const outEl=document.getElementById(outIds[module]||'');
   if(outEl) outEl.textContent='分析中...';
   if(module==='finance') { const p=document.getElementById('fin-ai-panel'); if(p) p.style.display=''; }
@@ -4362,17 +4388,46 @@ async function generateAI(module) {
   const expense=(DB.finance||[]).filter(t=>t.type==='expense').reduce((s,t)=>s+parseInt(t.amount||0),0);
   const confirmed=(DB.musicians||[]).filter(m=>m.status==='確定').length;
   const total=(DB.musicians||[]).length;
+  // リハーサル出席率計算
+  const rhs = DB.rehearsals||[];
+  const att = DB.attendance||{};
+  const attRates = rhs.map(r=>{
+    const cast=(DB.castings&&DB.castings[r.concertId])||[];
+    const present=Object.values(att[r.id]||{}).filter(v=>v==='○').length;
+    return cast.length ? Math.round(present/cast.length*100) : null;
+  }).filter(v=>v!==null);
+  const avgAtt = attRates.length ? Math.round(attRates.reduce((a,b)=>a+b,0)/attRates.length) : 0;
   const prompts={
     dashboard:'VariOrchestra（一般社団法人・室内オーケストラ）の現状を分析し優先アクションを提案してください。\n奏者確定'+confirmed+'/'+total+'人、収入¥'+income.toLocaleString()+'、収支¥'+(income-expense).toLocaleString()+'\n公演: '+(DB.concerts||[]).map(c=>c.title+'('+normalizeDate(c.date)+')').join('、')+'\n判断根拠を明示しながら優先アクション3点と注意リスクを200字以内で。',
     bizdev:'VariOrchestraの企業イベントパッケージ（S:¥60〜80万、M:¥120〜150万、L:¥250万〜）のターゲット企業と訴求方法を提案。指揮者はコンサルタント兼業という強みあり。5業種・企業規模・訴求ポイントを根拠付きで。',
     finance:'VariOrchestra財務分析。収入¥'+income.toLocaleString()+'、支出¥'+expense.toLocaleString()+'、収支¥'+(income-expense).toLocaleString()+'。来期目標¥300万。費用構造の課題、改善案、来期目標達成の戦略を3点・根拠付きで。',
     tickets:'VariOrchestra第1回定期演奏会の個別DM文（LINE用）を生成。送り先：コンサル・金融業界の知人。知的・自然なトーンで120字以内。',
+    rehearsals:'VariOrchestraのリハーサル管理分析。\nリハ回数:'+rhs.length+'回、平均出席率:'+avgAtt+'%、奏者数:'+total+'人。\n出席率低下のリスクと対策、リハーサル効率化のアドバイス、本番前の注意点を3点・具体的に200字以内で。',
   };
   try {
     const {text}=await callAI(prompts[module]||'現状を分析してください。');
     if(outEl) outEl.textContent=text;
     else { const t=document.createElement('div'); t.style.cssText='position:fixed;top:80px;left:50%;transform:translateX(-50%);background:var(--surface2);border:1px solid var(--gold);color:var(--text);padding:16px 20px;border-radius:2px;max-width:90vw;width:520px;z-index:999;font-size:13px;line-height:1.8;white-space:pre-wrap;box-shadow:0 8px 32px rgba(0,0,0,0.5);'; t.textContent=text; const x=document.createElement('button'); x.textContent='✕'; x.style.cssText='position:absolute;top:8px;right:12px;background:none;border:none;color:var(--text3);cursor:pointer;font-size:16px;'; x.onclick=()=>t.remove(); t.appendChild(x); document.body.appendChild(t); setTimeout(()=>t.remove(),15000); }
   } catch(e) { if(outEl) outEl.textContent='エラー: '+e.message; }
+}
+
+async function generateCastAI() {
+  const outEl = document.getElementById('cast-ai-output');
+  if(!outEl) return;
+  outEl.textContent = '提案中...';
+  const concert = (DB.concerts||[]).find(c=>c.id===activeConcertId)||{};
+  const cast = (DB.castings&&DB.castings[activeConcertId])||[];
+  const musicians = DB.musicians||[];
+  const castNames = cast.map(c=>{ const m=musicians.find(x=>x.id===c.musicianId)||{}; return `${m.name||'?'}(${c.part||m.part||'?'})${c.status||''}`; }).join('、');
+  const unassigned = musicians.filter(m=>!cast.some(c=>c.musicianId===m.id));
+  const unassignedNames = unassigned.map(m=>`${m.name}(${m.part})`).join('、');
+  const prompt = `VariOrchestra「${concert.title||'公演'}」の出演者構成を提案してください。
+プログラム: ${concert.program||'未定'}
+現在アサイン済み（${cast.length}名）: ${castNames||'なし'}
+マスター未アサイン奏者: ${unassignedNames||'なし'}
+各パートのバランス、首席・コンサートマスターの適性、謝礼コスト観点から最適な構成を提案してください。200字以内で。`;
+  const {text} = await callAI(prompt);
+  outEl.textContent = text;
 }
 
 async function generateKakegoe() {
@@ -4492,11 +4547,44 @@ function saveDrawerKey() {
   toggleApiDrawer();
 }
 function saveApiKeys() {
-  const gk=document.getElementById('gemini-key-settings')?.value;
-  const ck=document.getElementById('claude-key-settings')?.value;
-  if(gk){apiKeys.gemini=gk;Store.set('vo_gemini_key',gk);}
-  if(ck){apiKeys.claude=ck;Store.set('vo_claude_key',ck);}
-  showSaveIndicator(); alert('保存しました');
+  const gk = document.getElementById('gemini-key-settings')?.value.trim();
+  const ck = document.getElementById('claude-key-settings')?.value.trim();
+  if(gk) { apiKeys.gemini=gk; Store.set('vo_gemini_key',gk); }
+  if(ck) { apiKeys.claude=ck; Store.set('vo_claude_key',ck); }
+  // GASが設定済みならSheetsのSettingsシートにも保存
+  if(gasUrl) {
+    gasRequest({ action:'upsert', sheet:'Settings',
+      record:{ id:'api_keys', gemini: gk||apiKeys.gemini, claude: ck||apiKeys.claude }
+    }).then(()=>toast('APIキーを保存しました（Sheets同期済）','ok'))
+      .catch(()=>toast('APIキーをローカルに保存しました（Sheets未接続）','info'));
+  } else {
+    showSaveIndicator();
+    toast('APIキーをローカルに保存しました','ok');
+  }
+}
+
+// GASからAPIキーを読み込む（ページ初期化時に呼ぶ）
+async function loadApiKeysFromSheets() {
+  if(!gasUrl) return;
+  try {
+    const r = await gasRequest({ sheet:'Settings' });
+    if(!r.ok || !r.data) return;
+    const rec = r.data.find(d=>d.id==='api_keys');
+    if(!rec) return;
+    if(rec.gemini && !apiKeys.gemini) {
+      apiKeys.gemini = rec.gemini;
+      Store.set('vo_gemini_key', rec.gemini);
+      const el = document.getElementById('gemini-key-settings');
+      if(el) el.value = rec.gemini;
+    }
+    if(rec.claude && !apiKeys.claude) {
+      apiKeys.claude = rec.claude;
+      Store.set('vo_claude_key', rec.claude);
+      const el = document.getElementById('claude-key-settings');
+      if(el) el.value = rec.claude;
+    }
+    if(rec.gemini || rec.claude) toast('APIキーをSheetsから読み込みました','ok');
+  } catch(e) { console.warn('[API key load]', e); }
 }
 
 // ══════════════════════════════════════════
@@ -5118,20 +5206,31 @@ function switchConcertTab(el, target) {
 // ══════════════════════════════════════════
 // MEMBER MANAGEMENT
 // ══════════════════════════════════════════
+function autoFillFee(tier) {
+  const fees = {'一般支援':3000,'シルバー':10000,'ゴールド':30000};
+  const el = document.getElementById('mb-fee');
+  if(el && fees[tier]) el.value = fees[tier];
+}
+
 function openMemberModal(mb) {
   mb = mb || {};
   const setV = (id,v) => { const e=document.getElementById(id); if(e) e.value=v||''; };
+  const setC = (id,v) => { const e=document.getElementById(id); if(e) e.checked=!!v; };
   setV('mb-edit-id', mb.id||'');
   setV('mb-name', mb.name||'');
-  setV('mb-kana', mb.kana||'');
-  setV('mb-tier', mb.tier||'一般支援（3,000円）');
+  setV('mb-email', mb.email||'');
+  setV('mb-tier', mb.tier||'一般支援');
   setV('mb-fee', mb.fee||'3000');
-  setV('mb-contact', mb.contact||'');
+  setV('mb-phone', mb.phone||'');
+  setV('mb-address', mb.address||'');
   const dm = String(mb.joinDate||'').match(/(\d{4})[\-\/](\d{1,2})[\-\/](\d{1,2})/);
   setV('mb-join-date', dm ? dm[1]+'-'+dm[2].padStart(2,'0')+'-'+dm[3].padStart(2,'0') : '');
   setV('mb-status', mb.status||'有効');
   setV('mb-route', mb.route||'');
   setV('mb-note', mb.note||'');
+  setC('mb-is-old', mb.isOld||false);
+  const banner = document.getElementById('mb-old-flag-banner');
+  if(banner) banner.style.display = mb.isOld ? 'block' : 'none';
   const delBtn = document.getElementById('mb-delete-btn');
   if(delBtn) delBtn.style.display = mb.id ? 'inline-block' : 'none';
   openModal('member-modal');
@@ -5143,26 +5242,34 @@ function saveMember() {
   if(!name) { toast('氏名を入力してください','err'); return; }
   const rec = {
     id: id || 'mb'+Date.now(),
-    name, kana: document.getElementById('mb-kana').value,
-    tier: document.getElementById('mb-tier').value,
-    fee: parseInt(document.getElementById('mb-fee').value)||0,
-    contact: document.getElementById('mb-contact').value,
-    joinDate: document.getElementById('mb-join-date').value,
-    status: document.getElementById('mb-status').value,
-    route: document.getElementById('mb-route').value,
-    note: document.getElementById('mb-note').value,
+    name,
+    email:   document.getElementById('mb-email').value.trim().toLowerCase(),
+    tier:    document.getElementById('mb-tier').value,
+    fee:     parseInt(document.getElementById('mb-fee').value)||0,
+    phone:   document.getElementById('mb-phone').value.trim(),
+    address: document.getElementById('mb-address').value.trim(),
+    joinDate:document.getElementById('mb-join-date').value,
+    status:  document.getElementById('mb-status').value,
+    route:   document.getElementById('mb-route').value,
+    note:    document.getElementById('mb-note').value,
+    isOld:   document.getElementById('mb-is-old').checked,
+    updatedAt: new Date().toISOString().slice(0,10),
   };
   if(!DB.members) DB.members=[];
   const idx = DB.members.findIndex(m=>m.id===rec.id);
   if(idx>=0) DB.members[idx]=rec; else DB.members.push(rec);
-  saveDB(); closeModal('member-modal');
+  saveDB();
+  // Sheets同期
+  saveToSheets('SupportMembers', rec);
+  closeModal('member-modal');
   renderMembers(); updateMemberKPIs(); updateMemberSelects();
-  toast('会員情報を保存しました','ok');
+  toast('会員情報を保存しました（Sheets同期中）','ok');
 }
 
 function deleteMember() {
   const id = document.getElementById('mb-edit-id').value;
   if(!id||!confirm('この会員を削除しますか？')) return;
+  deleteFromSheets('SupportMembers', id);
   DB.members = (DB.members||[]).filter(m=>m.id!==id);
   DB.memberVisits = (DB.memberVisits||[]).filter(v=>v.memberId!==id);
   saveDB(); closeModal('member-modal');
@@ -5173,53 +5280,61 @@ function deleteMember() {
 function renderMembers() {
   const tbody = document.getElementById('members-tbody');
   if(!tbody) return;
-  const q = (document.getElementById('mb-search')?.value||'').toLowerCase();
-  const stFilter = document.getElementById('mb-status-filter')?.value||'';
+  const q       = (document.getElementById('mb-search')?.value||'').toLowerCase();
+  const stFilter= document.getElementById('mb-status-filter')?.value||'';
+  const oldFilter= document.getElementById('mb-old-filter')?.value||'';
   let members = (DB.members||[]).filter(m=>{
-    if(stFilter&&m.status!==stFilter) return false;
-    if(q&&!(m.name||'').toLowerCase().includes(q)&&!(m.contact||'').toLowerCase().includes(q)&&!(m.kana||'').toLowerCase().includes(q)) return false;
+    if(stFilter && m.status!==stFilter) return false;
+    if(oldFilter==='old' && !m.isOld) return false;
+    if(oldFilter==='new' && m.isOld) return false;
+    if(q && !normalizeStr(m.name).includes(q) && !(m.email||'').toLowerCase().includes(q)) return false;
     return true;
   });
-  if(!members.length) { tbody.innerHTML='<tr><td colspan="8" style="text-align:center;color:var(--text3);padding:24px;">会員が登録されていません</td></tr>'; return; }
+  const footer = document.getElementById('mb-list-footer');
+  if(!members.length) {
+    tbody.innerHTML='<tr><td colspan="10" style="text-align:center;color:var(--text3);padding:24px;">会員が登録されていません</td></tr>';
+    if(footer) footer.textContent='0件';
+    return;
+  }
   const visits = DB.memberVisits||[];
   tbody.innerHTML = members.map(m=>{
     const vc = visits.filter(v=>v.memberId===m.id).length;
     const stBadge = m.status==='有効'?'badge-green':m.status==='更新待ち'?'badge-yellow':'badge-gray';
+    const tierBadge = m.tier==='ゴールド'?'badge-gold':m.tier==='シルバー'?'badge-blue':'badge-gray';
+    const safeM = JSON.stringify({id:m.id,name:m.name,email:m.email||'',tier:m.tier||'',fee:m.fee||0,phone:m.phone||'',address:m.address||'',joinDate:m.joinDate||'',status:m.status||'有効',route:m.route||'',note:m.note||'',isOld:m.isOld||false});
     return `<tr>
-      <td><strong style="color:var(--text);">${m.name}</strong>${m.kana?`<div style="font-size:10px;color:var(--text3);">${m.kana}</div>`:''}</td>
-      <td><span class="badge badge-gold" style="font-size:10px;">${m.tier||'—'}</span></td>
-      <td style="font-size:12px;color:var(--text2);">${m.contact||'—'}</td>
+      <td style="color:var(--text);">${m.name}${m.isOld?'<span class="badge badge-gold" style="font-size:9px;margin-left:6px;">旧</span>':''}</td>
+      <td style="font-family:var(--mono);font-size:11px;color:var(--text3);">${m.email||'—'}</td>
+      <td><span class="badge ${tierBadge}" style="font-size:10px;">${m.tier||'—'}</span></td>
       <td style="font-family:var(--mono);font-size:11px;">${normalizeDate(m.joinDate)||'—'}</td>
       <td style="font-family:var(--mono);font-size:12px;">¥${(m.fee||0).toLocaleString()}</td>
       <td><span class="badge ${stBadge}">${m.status||'—'}</span></td>
       <td style="text-align:center;font-family:var(--mono);">${vc}</td>
-      <td><button class="btn btn-outline btn-sm" onclick='openMemberModal(${JSON.stringify(m)})'>編集</button></td>
+      <td style="font-size:11px;color:var(--text3);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${m.address||'—'}</td>
+      <td style="font-size:11px;color:var(--text3);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${m.note||'—'}</td>
+      <td><button class="btn btn-outline btn-sm" onclick='openMemberModal(${safeM})'>編集</button></td>
     </tr>`;
   }).join('');
+  if(footer) footer.textContent = members.length+'件表示';
 }
 
 function updateMemberKPIs() {
   const members = DB.members||[];
-  const visits = DB.memberVisits||[];
   const totalFee = members.filter(m=>m.status==='有効').reduce((s,m)=>s+(m.fee||0),0);
   const renew = members.filter(m=>m.status==='更新待ち').length;
-  const avgVisits = members.length ? (visits.length/members.length).toFixed(1) : 0;
+  const oldCount = members.filter(m=>m.isOld).length;
   const setK=(id,v)=>{const e=document.getElementById(id);if(e)e.innerHTML=v;};
-  setK('mb-kpi-total', members.length+'<span class="kpi-unit">名</span>');
+  setK('mb-kpi-total',   members.length+'<span class="kpi-unit">名</span>');
   setK('mb-kpi-revenue', (totalFee/10000).toFixed(1)+'<span class="kpi-unit">万</span>');
-  setK('mb-kpi-renew', renew+'<span class="kpi-unit">名</span>');
-  setK('mb-kpi-visits', avgVisits+'<span class="kpi-unit">回</span>');
+  setK('mb-kpi-renew',   renew+'<span class="kpi-unit">名</span>');
+  setK('mb-kpi-old',     oldCount+'<span class="kpi-unit">名</span>');
 }
 
 function updateMemberSelects() {
   const mbSel = document.getElementById('visit-member-sel');
-  if(mbSel) {
-    mbSel.innerHTML='<option value="">— 会員を選択 —</option>'+(DB.members||[]).filter(m=>m.status!=='退会').map(m=>`<option value="${m.id}">${m.name}</option>`).join('');
-  }
+  if(mbSel) mbSel.innerHTML='<option value="">— 会員を選択 —</option>'+(DB.members||[]).filter(m=>m.status!=='退会').map(m=>`<option value="${m.id}">${m.name}</option>`).join('');
   const cSel = document.getElementById('visit-concert-sel');
-  if(cSel) {
-    cSel.innerHTML='<option value="">— 公演を選択 —</option>'+(DB.concerts||[]).map(c=>`<option value="${c.id}">${c.title||'—'}</option>`).join('');
-  }
+  if(cSel) cSel.innerHTML='<option value="">— 公演を選択 —</option>'+(DB.concerts||[]).map(c=>`<option value="${c.id}">${c.title||'—'}</option>`).join('');
 }
 
 function addVisitRecord() {
@@ -5254,16 +5369,112 @@ function renderRecentVisits() {
   }).join('');
 }
 
-function exportMembers() {
+// ── 旧会員CSVインポート（氏名・メアド・住所・電話番号フォーマット） ──
+function importOldMembersCSV(input) {
+  const file = input.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const raw = e.target.result;
+      const tryDecode = enc => { try { return new TextDecoder(enc,{fatal:true}).decode(raw); } catch(_){ return null; } };
+      const text = tryDecode('shift_jis') || tryDecode('utf-8') || new TextDecoder('utf-8',{fatal:false}).decode(raw);
+
+      // タブ区切り or カンマ区切りを自動判定
+      const lines = text.replace(/\r\n/g,'\n').replace(/\r/g,'\n').split('\n').filter(l=>l.trim());
+      const isTab = lines[0].includes('\t');
+      const splitRow = line => isTab ? line.split('\t') : parseCSV(line+'\n')[0]||[];
+
+      const header = splitRow(lines[0]).map(h=>h.trim().replace(/^"(.*)"$/,'$1'));
+      const col = keys => { for(const k of keys){ const i=header.findIndex(h=>h===k||normalizeStr(h)===normalizeStr(k)); if(i>=0) return i; } return -1; };
+
+      const iName  = col(['氏名','名前','会員名','name']);
+      const iEmail = col(['メールアドレス','メール','email']);
+      const iAddr  = col(['住所','address']);
+      const iPhone = col(['電話番号','電話','tel','phone']);
+
+      if(iName<0) { toast('「氏名」列が見つかりません','err'); return; }
+
+      if(!DB.members) DB.members=[];
+      let added=0, skipped=0;
+
+      for(let i=1;i<lines.length;i++) {
+        const row = splitRow(lines[i]).map(c=>c.trim().replace(/^"(.*)"$/,'$1'));
+        const name = row[iName]||'';
+        if(!name||name==='\u3000') continue;
+
+        const email = iEmail>=0 ? (row[iEmail]||'').trim().toLowerCase() : '';
+        const addr  = iAddr>=0  ? row[iAddr]||'' : '';
+        const phone = iPhone>=0 ? row[iPhone]||'' : '';
+
+        // 既存チェック（氏名 or メアド一致）
+        const existing = DB.members.find(m=>
+          (email && m.email===email) || normalizeStr(m.name)===normalizeStr(name)
+        );
+        if(existing) {
+          // 旧会員フラグを付与・情報を補完
+          existing.isOld = true;
+          if(!existing.email && email) existing.email = email;
+          if(!existing.address && addr) existing.address = addr;
+          if(!existing.phone && phone) existing.phone = phone;
+          existing.updatedAt = new Date().toISOString().slice(0,10);
+          skipped++;
+        } else {
+          DB.members.push({
+            id: 'mb'+Date.now()+i,
+            name, email, address: addr, phone,
+            tier:'一般支援', fee:3000,
+            joinDate:'', status:'有効',
+            route:'旧パートナー会員', note:'',
+            isOld:true,
+            updatedAt: new Date().toISOString().slice(0,10),
+          });
+          added++;
+        }
+      }
+      saveDB();
+      // Sheets一括同期
+      if(gasUrl) {
+        gasRequest({action:'batch', sheet:'SupportMembers', records: DB.members})
+          .then(()=>setSyncStatus('ok','SupportMembers 同期完了'))
+          .catch(e=>console.warn(e));
+      }
+      renderMembers(); updateMemberKPIs(); updateMemberSelects();
+      toast(`旧会員取込完了: 新規${added}件 / フラグ更新${skipped}件`, 'ok', 5000);
+    } catch(err) { toast('取込エラー: '+err.message,'err'); console.error(err); }
+    input.value='';
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function exportMembersCSV() {
   const members = DB.members||[];
   const visits = DB.memberVisits||[];
-  const header='氏名,よみがな,会員種別,連絡先,入会日,年会費,ステータス,来場回数,備考\n';
+  const header='氏名,メアド,会員種別,入会日,年会費,ステータス,電話番号,住所,来場回数,旧会員,備考\n';
   const rows = members.map(m=>{
     const vc=visits.filter(v=>v.memberId===m.id).length;
-    return [m.name,m.kana,m.tier,m.contact,m.joinDate,m.fee,m.status,vc,m.note].map(v=>`"${String(v||'').replace(/"/g,'""')}"`).join(',');
+    return [m.name,m.email||'',m.tier,m.joinDate,m.fee,m.status,m.phone||'',m.address||'',vc,m.isOld?'○':'',m.note||'']
+      .map(v=>`"${String(v||'').replace(/"/g,'""')}"`).join(',');
   }).join('\n');
-  const blob = new Blob(['\uFEFF'+header+rows],{type:'text/csv;charset=utf-8'});
+  const blob=new Blob(['\uFEFF'+header+rows],{type:'text/csv;charset=utf-8'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='VariOrchestra_members.csv'; a.click();
+}
+
+// ── Sheets読込時にSupportMembersも対応 ──
+const _origLoadFromSheets = loadFromSheets;
+async function loadFromSheets(sheet) {
+  if(sheet==='SupportMembers') {
+    if(!gasUrl) { alert('設定でGAS URLを設定してください'); showPage('settings'); return; }
+    setSyncStatus('loading','SupportMembers 読込中...');
+    try {
+      const r = await gasRequest({sheet:'SupportMembers'});
+      if(!r.ok) throw new Error(r.error||'error');
+      DB.members = r.data;
+      saveDB(); setSyncStatus('ok','SupportMembers 読込完了 '+r.data.length+'件');
+      renderMembers(); updateMemberKPIs(); updateMemberSelects();
+    } catch(e) { setSyncStatus('err','読込エラー: '+e.message); }
+    return;
+  }
+  return _origLoadFromSheets(sheet);
 }
 
 // ══════════════════════════════════════════
@@ -5549,7 +5760,7 @@ function renderAudience() {
     const lastDate  = lastVisit ? normalizeDate(lastVisit.date||'') : '—';
     const visitNames = (a.visits||[]).map(v => { const c=concerts.find(x=>x.id===v.concertId); return c?c.title.slice(0,8)+'…':'不明'; }).join(', ')||'—';
     return `<tr>
-      <td><strong style="color:var(--text);">${a.name}</strong></td>
+      <td><span style="color:var(--text);font-weight:400;">${a.name}</span></td>
       <td style="font-family:var(--mono);font-size:11px;color:var(--text3);">${a.email}</td>
       <td><span class="badge ${segBadge(seg2)}">${segLabel(seg2)}</span>${a.segOverride?'<span style="font-size:9px;color:var(--text3);margin-left:4px;">手動</span>':''}</td>
       <td><span class="badge badge-gray" style="font-size:10px;">${{teket:'teket',partner:'旧会員',both:'両方',manual:'手動'}[a.source]||a.source}</span></td>
@@ -5754,9 +5965,8 @@ ${extra ? `【追加指示】${extra}` : ''}
 - 最後に次のアクション（チケット購入・返信など）を1つだけ入れる`;
 
   try {
-    const key = currentApi==='claude' ? apiKeys.claude : apiKeys.gemini;
-    const result = await callAI(prompt, key, currentApi);
-    outputEl.textContent = result;
+    const {text} = await callAI(prompt);
+    outputEl.textContent = text;
     const provEl = document.getElementById('seg-ai-provider');
     if(provEl) provEl.textContent = currentApi==='claude'?'Claude':'Gemini';
   } catch(e) {
@@ -5819,23 +6029,7 @@ function exportAudienceCSV() {
   link.download='VariOrchestra_audience.csv'; link.click();
 }
 
-// ── callAI ヘルパー（既存のgenerateAI関数と共存） ──
-async function callAI(prompt, key, provider) {
-  if(!key) throw new Error('APIキー未設定');
-  if(provider==='claude') {
-    const res = await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST', headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01'},
-      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1200,messages:[{role:'user',content:prompt}]})
-    });
-    const d=await res.json(); return d.content?.[0]?.text||'';
-  } else {
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`,{
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})
-    });
-    const d=await res.json(); return d.candidates?.[0]?.content?.parts?.[0]?.text||'';
-  }
-}
+// ── callAI ヘルパー削除済み（上部の統一callAIを使用） ──
 
 // ══════════════════════════════════════════
 // INIT
@@ -5880,7 +6074,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Auto-sync
-  if(gasUrl) setTimeout(()=>syncAll(), 1500);
+  if(gasUrl) {
+    setTimeout(()=>syncAll(), 1500);
+    setTimeout(()=>loadApiKeysFromSheets(), 2500);
+  }
 
   // Hide local file warning on HTTPS
   if(window.location.protocol!=='file:') {
@@ -5943,46 +6140,55 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <!-- member-modal -->
 <div id="member-modal" class="modal-overlay" onclick="closeModalOutside(event)">
-  <div class="modal" style="max-width:520px;">
+  <div class="modal" style="max-width:560px;">
     <div class="modal-header">
-      <div class="modal-title">会員登録 / 編集</div>
+      <div class="modal-title">支援会員 登録 / 編集</div>
       <button class="modal-close" onclick="closeModal('member-modal')">✕</button>
     </div>
     <div class="modal-body">
       <input type="hidden" id="mb-edit-id">
+      <!-- 旧会員フラグ表示 -->
+      <div id="mb-old-flag-banner" style="display:none;background:var(--gold-dim);border:1px solid rgba(196,164,74,0.3);border-radius:2px;padding:8px 12px;margin-bottom:14px;font-size:12px;color:var(--gold);">★ 旧パートナー会員</div>
       <div class="grid-2">
         <div class="form-group"><div class="form-label">氏名</div><input class="form-input" id="mb-name" placeholder="山田 花子"></div>
-        <div class="form-group"><div class="form-label">よみがな</div><input class="form-input" id="mb-kana" placeholder="やまだ はなこ"></div>
+        <div class="form-group"><div class="form-label">メールアドレス</div><input class="form-input" id="mb-email" type="email" placeholder="example@mail.com"></div>
       </div>
       <div class="grid-2">
         <div class="form-group"><div class="form-label">会員種別</div>
-          <select class="form-input" id="mb-tier">
-            <option>一般支援（3,000円）</option>
-            <option>シルバー（10,000円）</option>
-            <option>ゴールド（30,000円）</option>
-            <option>カスタム</option>
+          <select class="form-input" id="mb-tier" onchange="autoFillFee(this.value)">
+            <option value="一般支援">一般支援（3,000円）</option>
+            <option value="シルバー">シルバー（10,000円）</option>
+            <option value="ゴールド">ゴールド（30,000円）</option>
+            <option value="カスタム">カスタム</option>
           </select>
         </div>
         <div class="form-group"><div class="form-label">年会費（円）</div><input type="number" class="form-input" id="mb-fee" placeholder="3000"></div>
       </div>
       <div class="grid-2">
-        <div class="form-group"><div class="form-label">連絡先（メール/LINE/電話）</div><input class="form-input" id="mb-contact" placeholder="example@mail.com"></div>
+        <div class="form-group"><div class="form-label">電話番号</div><input class="form-input" id="mb-phone" placeholder="090-0000-0000"></div>
         <div class="form-group"><div class="form-label">入会日</div><input type="date" class="form-input" id="mb-join-date"></div>
       </div>
+      <div class="form-group"><div class="form-label">住所</div><input class="form-input" id="mb-address" placeholder="東京都..."></div>
       <div class="grid-2">
         <div class="form-group"><div class="form-label">ステータス</div>
           <select class="form-input" id="mb-status">
-            <option>有効</option><option>更新待ち</option><option>退会</option>
+            <option value="有効">有効</option><option value="更新待ち">更新待ち</option><option value="退会">退会</option>
           </select>
         </div>
         <div class="form-group"><div class="form-label">紹介ルート</div><input class="form-input" id="mb-route" placeholder="直接 / ○○さん紹介"></div>
       </div>
-      <div class="form-group"><div class="form-label">備考</div><textarea class="form-input" id="mb-note" style="min-height:60px;"></textarea></div>
+      <div class="form-group"><div class="form-label">配信メモ・備考</div><textarea class="form-input" id="mb-note" style="min-height:60px;"></textarea></div>
+      <div class="form-group">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+          <input type="checkbox" id="mb-is-old" style="width:16px;height:16px;">
+          <span style="font-size:13px;color:var(--text2);">旧パートナー会員フラグ</span>
+        </label>
+      </div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-danger btn-sm" id="mb-delete-btn" style="margin-right:auto;display:none;" onclick="deleteMember()">削除</button>
       <button class="btn btn-outline" onclick="closeModal('member-modal')">キャンセル</button>
-      <button class="btn btn-gold" onclick="saveMember()">保存</button>
+      <button class="btn btn-gold" onclick="saveMember()">保存 &amp; Sheets同期</button>
     </div>
   </div>
 </div>

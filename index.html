@@ -2850,8 +2850,10 @@ async function deleteFromSheets(sheet, id) {
 async function syncAll() {
   if(!gasUrl) { alert('設定でGAS URLを設定してください'); showPage('settings'); return; }
   setSyncStatus('loading', '全データ同期中...');
-  const sheets = ['musicians','concerts','finance','schedule'];
-  for(const s of sheets) {
+
+  // 基本シート（双方向マージ）
+  const basicSheets = ['musicians','concerts','finance','schedule'];
+  for(const s of basicSheets) {
     try {
       const r = await gasRequest({ sheet:s });
       if(r.ok) {
@@ -2862,6 +2864,35 @@ async function syncAll() {
     } catch(e){}
     try { await gasRequest({ action:'batch', sheet:s, records: DB[s]||[] }); } catch(e){}
   }
+
+  // 支援会員（SupportMembers）: Sheetsをマスターとして読込 → ローカルonly分を追記
+  try {
+    const r = await gasRequest({ sheet:'SupportMembers' });
+    if(r.ok && r.data) {
+      const remoteIds = r.data.map(x => String(x.id));
+      const localOnly = (DB.members||[]).filter(x => !remoteIds.includes(String(x.id)));
+      DB.members = [...r.data, ...localOnly];
+    }
+  } catch(e){}
+  try { await gasRequest({ action:'batch', sheet:'SupportMembers', records: DB.members||[] }); } catch(e){}
+
+  // 来場者（audience）: Sheetsをマスターとして読込 → ローカルonly分を追記
+  try {
+    const r = await gasRequest({ sheet:'audience' });
+    if(r.ok && r.data) {
+      const remoteIds = r.data.map(x => String(x.id));
+      const localOnly = (DB.audience||[]).filter(x => !remoteIds.includes(String(x.id)));
+      // visitsが文字列で返ってきた場合はパース
+      const merged = [...r.data, ...localOnly].map(a => {
+        if(typeof a.visits === 'string') { try { a.visits = JSON.parse(a.visits); } catch(_){a.visits=[];} }
+        if(!Array.isArray(a.visits)) a.visits = [];
+        return a;
+      });
+      DB.audience = merged;
+    }
+  } catch(e){}
+  try { await gasRequest({ action:'batch', sheet:'audience', records: DB.audience||[] }); } catch(e){}
+
   saveDB(); renderAll();
   setSyncStatus('ok', '✓ 全同期完了 '+new Date().toLocaleTimeString('ja-JP'));
 }

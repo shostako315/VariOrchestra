@@ -904,6 +904,9 @@ textarea.form-input { resize:vertical; min-height:80px; }
     <button class="pw-btn" onclick="checkPassword()">入 場</button>
     <div class="pw-error" id="pw-error"></div>
     <div class="pw-hint">authorized personnel only</div>
+    <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);">
+      <button onclick="resetPwAndEnter()" style="background:transparent;border:none;color:var(--text3);font-size:11px;cursor:pointer;font-family:var(--mono);letter-spacing:0.1em;text-decoration:underline;">パスワードをリセットして入場</button>
+    </div>
   </div>
 </div>
 
@@ -1772,6 +1775,7 @@ textarea.form-input { resize:vertical; min-height:80px; }
               <th>セグメント</th>
               <th>ソース</th>
               <th>来場回数</th>
+              <th>参加公演</th>
               <th>最高席種</th>
               <th>代表購入</th>
               <th>最終来場</th>
@@ -1897,7 +1901,7 @@ textarea.form-input { resize:vertical; min-height:80px; }
 
 <!-- ════ 来場者編集モーダル ════ -->
 <div id="audience-modal" class="modal-overlay" onclick="closeModalOutside(event)">
-  <div class="modal" style="max-width:520px;">
+  <div class="modal" style="max-width:560px;">
     <div class="modal-header">
       <div class="modal-title">来場者 編集</div>
       <button class="modal-close" onclick="closeModal('audience-modal')">✕</button>
@@ -1928,6 +1932,14 @@ textarea.form-input { resize:vertical; min-height:80px; }
         </div>
       </div>
       <div class="form-group"><div class="form-label">配信メモ</div><textarea class="form-input" id="aud-note" style="min-height:60px;" placeholder="配信時の注意・特記事項"></textarea></div>
+
+      <!-- 過去参加公演履歴 -->
+      <div style="margin-top:16px;">
+        <div style="font-size:11px;color:var(--text3);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:8px;font-family:var(--mono);">参加公演履歴</div>
+        <div id="aud-visits-list" style="border:1px solid var(--border);border-radius:var(--r);overflow:hidden;max-height:200px;overflow-y:auto;">
+          <div style="padding:12px;color:var(--text3);font-size:12px;text-align:center;">履歴なし</div>
+        </div>
+      </div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-danger btn-sm" id="aud-delete-btn" style="margin-right:auto;display:none;" onclick="deleteAudience()">削除</button>
@@ -2631,6 +2643,11 @@ const Store = (() => {
 // STATE
 // ══════════════════════════════════════════
 const DB_KEY = 'vo_erp_v4';
+// ── UID生成（Date.now + ランダム6桁で衝突回避） ──
+function uid(prefix) {
+  return (prefix||'id') + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+}
+
 let DB = { musicians:[], concerts:[], finance:[], schedule:[], bizdeals:[],
            packages:[], roadmap:[], sponsors:[], castings:{}, concertTasks:{}, ticketTiers:{},
            rehearsals:[], attendance:{}, members:[], memberVisits:[],
@@ -2667,6 +2684,14 @@ function checkPassword() {
     document.getElementById('pw-input').value = '';
     setTimeout(() => errEl.textContent='', 2500);
   }
+}
+function resetPwAndEnter() {
+  if(!confirm('パスワードを「vario2025」にリセットして入場しますか？')) return;
+  Store.set('vo_pw', 'vario2025');
+  sessionStorage.setItem(SESSION_KEY,'1');
+  const screen = document.getElementById('password-screen');
+  screen.style.opacity='0'; screen.style.transition='opacity 0.4s';
+  setTimeout(() => screen.style.display='none', 400);
 }
 function changePw() {
   const pw = document.getElementById('new-pw').value;
@@ -2827,10 +2852,26 @@ async function loadFromSheets(sheet) {
   setSyncStatus('loading', sheet+'を読込中...');
   try {
     const r = await gasRequest({ sheet });
-    if(!r.ok) throw new Error(r.error);
-    DB[sheet] = r.data;
-    saveDB(); setSyncStatus('ok', sheet+' 読込完了 '+r.data.length+'件');
-    renderAll();
+    if(!r.ok) throw new Error(r.error||'error');
+    if(sheet === 'SupportMembers') {
+      // SupportMembers → DB.members にマッピング
+      DB.members = r.data || [];
+      saveDB(); setSyncStatus('ok', 'SupportMembers 読込完了 '+DB.members.length+'件');
+      renderMembers(); updateMemberKPIs(); updateMemberSelects();
+    } else if(sheet === 'audience') {
+      // audience → visitsがJSON文字列で返ることがあるのでパース
+      DB.audience = (r.data||[]).map(a => {
+        if(typeof a.visits === 'string') { try { a.visits = JSON.parse(a.visits); } catch(_){a.visits=[];} }
+        if(!Array.isArray(a.visits)) a.visits = [];
+        return a;
+      });
+      saveDB(); setSyncStatus('ok', 'audience 読込完了 '+DB.audience.length+'件');
+      renderAudience(); updateAudienceKPIs();
+    } else {
+      DB[sheet] = r.data || [];
+      saveDB(); setSyncStatus('ok', sheet+' 読込完了 '+r.data.length+'件');
+      renderAll();
+    }
   } catch(e) { setSyncStatus('err', '読込エラー: '+e.message); }
 }
 
@@ -2891,7 +2932,13 @@ async function syncAll() {
       DB.audience = merged;
     }
   } catch(e){}
-  try { await gasRequest({ action:'batch', sheet:'audience', records: DB.audience||[] }); } catch(e){}
+  try {
+    // visitsは配列のままだとSheetsのセルに収まらないのでJSON文字列化して送る
+    const audienceForGAS = (DB.audience||[]).map(a => Object.assign({}, a, {
+      visits: JSON.stringify(a.visits||[])
+    }));
+    await gasRequest({ action:'batch', sheet:'audience', records: audienceForGAS });
+  } catch(e){ console.warn('[GAS] audience batch error:', e); }
 
   saveDB(); renderAll();
   setSyncStatus('ok', '✓ 全同期完了 '+new Date().toLocaleTimeString('ja-JP'));
@@ -4101,7 +4148,7 @@ function addPkgRow() {
 function savePkgTable() {
   const el = document.getElementById('pkg-editor-list'); if(!el) return;
   DB.packages = Array.from(el.querySelectorAll('[data-idx], div')).map((row,i)=>{
-    const obj = {id:'pkg'+(Date.now()+i)};
+    const obj = {id: uid('pkg')};
     row.querySelectorAll('[data-f]').forEach(inp=>{ obj[inp.getAttribute('data-f')]=inp.value; });
     return obj;
   }).filter(p=>p.name);
@@ -5097,7 +5144,7 @@ function saveRehearsal() {
   const date = document.getElementById('rh-date').value;
   if(!date) { toast('日付を入力してください','err'); return; }
   const rec = {
-    id: id || 'rh'+Date.now(),
+    id: id || uid('rh'),
     concertId,
     date, type: document.getElementById('rh-type').value,
     start: document.getElementById('rh-start').value,
@@ -5359,7 +5406,7 @@ function saveMember() {
   const name = document.getElementById('mb-name').value.trim();
   if(!name) { toast('氏名を入力してください','err'); return; }
   const rec = {
-    id: id || 'mb'+Date.now(),
+    id: id || uid('mb'),
     name,
     email:   document.getElementById('mb-email').value.trim().toLowerCase(),
     tier:    document.getElementById('mb-tier').value,
@@ -5462,7 +5509,7 @@ function addVisitRecord() {
   const seat = document.getElementById('visit-seat').value;
   const note = document.getElementById('visit-note').value;
   if(!DB.memberVisits) DB.memberVisits=[];
-  DB.memberVisits.push({ id:'mv'+Date.now(), memberId, concertId, seat, note, date: new Date().toISOString().slice(0,10) });
+  DB.memberVisits.push({ id:uid('mv'), memberId, concertId, seat, note, date: new Date().toISOString().slice(0,10) });
   saveDB();
   renderMembers(); updateMemberKPIs(); renderRecentVisits();
   document.getElementById('visit-note').value='';
@@ -5494,15 +5541,26 @@ function importOldMembersCSV(input) {
   reader.onload = e => {
     try {
       const raw = e.target.result;
+      const bytes = new Uint8Array(raw);
       const tryDecode = enc => { try { return new TextDecoder(enc,{fatal:true}).decode(raw); } catch(_){ return null; } };
-      const text = tryDecode('shift_jis') || tryDecode('utf-8') || new TextDecoder('utf-8',{fatal:false}).decode(raw);
+      let text;
+      // UTF-8 BOMを最優先検出
+      if (bytes[0] === 0xEF && bytes[1] === 0xBB && bytes[2] === 0xBF) {
+        text = new TextDecoder('utf-8').decode(raw.slice(3));
+      } else {
+        text = tryDecode('shift_jis') || tryDecode('utf-8') || new TextDecoder('utf-8',{fatal:false}).decode(raw);
+      }
 
       // タブ区切り or カンマ区切りを自動判定
-      const lines = text.replace(/\r\n/g,'\n').replace(/\r/g,'\n').split('\n').filter(l=>l.trim());
-      const isTab = lines[0].includes('\t');
-      const splitRow = line => isTab ? line.split('\t') : parseCSV(line+'\n')[0]||[];
+      const firstLine = text.split(/\r?\n/)[0]||'';
+      const isTab = firstLine.includes('\t');
+      // RFC4180版parseCSVを使い、タブ区切りの場合は行分割して対応
+      const allRows = isTab
+        ? text.replace(/\r\n/g,'\n').replace(/\r/g,'\n').split('\n').filter(l=>l.trim()).map(l=>l.split('\t').map(c=>c.replace(/^"(.*)"$/,'$1')))
+        : parseCSV(text);
 
-      const header = splitRow(lines[0]).map(h=>h.trim().replace(/^"(.*)"$/,'$1'));
+      if(!allRows.length) { toast('CSVが空です','err'); return; }
+      const header = allRows[0].map(h=>h.trim());
       const col = keys => { for(const k of keys){ const i=header.findIndex(h=>h===k||normalizeStr(h)===normalizeStr(k)); if(i>=0) return i; } return -1; };
 
       const iName  = col(['氏名','名前','会員名','name']);
@@ -5515,8 +5573,8 @@ function importOldMembersCSV(input) {
       if(!DB.members) DB.members=[];
       let added=0, skipped=0;
 
-      for(let i=1;i<lines.length;i++) {
-        const row = splitRow(lines[i]).map(c=>c.trim().replace(/^"(.*)"$/,'$1'));
+      for(let i=1;i<allRows.length;i++) {
+        const row = allRows[i].map(c=>String(c||'').trim());
         const name = row[iName]||'';
         if(!name||name==='\u3000') continue;
 
@@ -5538,7 +5596,7 @@ function importOldMembersCSV(input) {
           skipped++;
         } else {
           DB.members.push({
-            id: 'mb'+Date.now()+i,
+            id: uid('mb'),
             name, email, address: addr, phone,
             tier:'一般支援', fee:3000,
             joinDate:'', status:'有効',
@@ -5577,23 +5635,7 @@ function exportMembersCSV() {
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='VariOrchestra_members.csv'; a.click();
 }
 
-// ── Sheets読込時にSupportMembersも対応 ──
-const _origLoadFromSheets = loadFromSheets;
-async function loadFromSheets(sheet) {
-  if(sheet==='SupportMembers') {
-    if(!gasUrl) { alert('設定でGAS URLを設定してください'); showPage('settings'); return; }
-    setSyncStatus('loading','SupportMembers 読込中...');
-    try {
-      const r = await gasRequest({sheet:'SupportMembers'});
-      if(!r.ok) throw new Error(r.error||'error');
-      DB.members = r.data;
-      saveDB(); setSyncStatus('ok','SupportMembers 読込完了 '+r.data.length+'件');
-      renderMembers(); updateMemberKPIs(); updateMemberSelects();
-    } catch(e) { setSyncStatus('err','読込エラー: '+e.message); }
-    return;
-  }
-  return _origLoadFromSheets(sheet);
-}
+// ── loadFromSheets は上部で統合済み ──
 
 // ══════════════════════════════════════════
 // AUDIENCE MANAGEMENT（来場者管理）
@@ -5634,12 +5676,17 @@ function importTeketCSV(input) {
   const reader = new FileReader();
   reader.onload = e => {
     try {
-      // ── Shift-JIS / UTF-8 自動判定デコード ──
+      // ── エンコーディング自動判定デコード（UTF-8 BOM優先 → Shift-JIS → UTF-8） ──
       let text = '';
       const raw = e.target.result;
-      // ArrayBufferとして読み込んでいるのでTextDecoderで試す
+      const bytes = new Uint8Array(raw);
       const tryDecode = (enc) => { try { return new TextDecoder(enc, {fatal:true}).decode(raw); } catch(_){ return null; } };
-      text = tryDecode('shift_jis') || tryDecode('utf-8') || tryDecode('utf-8') || new TextDecoder('utf-8',{fatal:false}).decode(raw);
+      // BOM付きUTF-8を最優先検出
+      if (bytes[0] === 0xEF && bytes[1] === 0xBB && bytes[2] === 0xBF) {
+        text = new TextDecoder('utf-8').decode(raw.slice(3));
+      } else {
+        text = tryDecode('shift_jis') || tryDecode('utf-8') || new TextDecoder('utf-8', {fatal:false}).decode(raw);
+      }
 
       const rows = parseCSV(text);
       if(!rows.length) { toast('CSVが空です','err'); return; }
@@ -5655,17 +5702,45 @@ function importTeketCSV(input) {
         return -1;
       };
 
-      const iName   = col(['購入者','購入者名','氏名','名前']);
-      const iEmail  = col(['メールアドレス','メール','email']);
-      const iQty    = col(['合計枚数','枚数','購入枚数','数量']);
-      const iSeat   = col(['チケット','席種','サブチケット','チケット名','種別']);
-      const iDate   = col(['購入日時','購入日','date']);
-      const iConcert= col(['公演日','公演名','イベント名']);
+      const iName      = col(['購入者','購入者名','氏名','名前']);
+      const iEmail     = col(['メールアドレス','メール','email']);
+      const iQty       = col(['合計枚数','枚数','購入枚数','数量']);
+      const iSeat      = col(['チケット','席種','サブチケット','チケット名','種別']);
+      const iPurchDate = col(['購入日時','購入日','date']);          // 購入日
+      const iConcert   = col(['公演日','公演名','イベント名','公演']);  // 公演識別
 
       if(iName < 0) { toast(`「購入者」列が見つかりません。\n検出されたヘッダー: ${header.slice(0,6).join(', ')}`, 'err', 7000); return; }
 
-      // 公演をERPから選択（最新公演を自動選択）
-      const concertId = promptConcertSelect('');
+      // ── 公演選択UI（取込時に必ず確認） ──
+      // CSV内の公演列ヒントで自動候補を出し、ユーザーが確定する
+      const concerts = DB.concerts||[];
+      let defaultConcertId = '';
+      if (iConcert >= 0) {
+        // CSV先頭データ行から公演ヒントを取得して候補を探す
+        const hint = rows[1] ? String(rows[1][iConcert]||'').trim() : '';
+        defaultConcertId = promptConcertSelect(hint);
+      } else {
+        defaultConcertId = promptConcertSelect('');
+      }
+
+      // 公演プルダウン選択ダイアログ（concertが1件以上ある場合）
+      let concertId = defaultConcertId;
+      if (concerts.length > 0) {
+        const opts = concerts.map((c,idx) => `${idx+1}: ${c.title}（${normalizeDate(c.date)}）`).join('\n');
+        const defaultIdx = concerts.findIndex(c=>c.id===defaultConcertId);
+        const sel = window.prompt(
+          `取込先の公演を番号で選択してください:\n${opts}\n\n自動候補: ${defaultIdx>=0 ? defaultIdx+1 : '—'}（Enterで確定）`,
+          defaultIdx >= 0 ? String(defaultIdx+1) : '1'
+        );
+        if (sel === null) { toast('取込をキャンセルしました','err'); input.value=''; return; }
+        const selIdx = parseInt(sel||'1') - 1;
+        if (selIdx >= 0 && selIdx < concerts.length) {
+          concertId = concerts[selIdx].id;
+        } else {
+          toast('無効な番号です。最新公演を使用します。','err');
+          concertId = defaultConcertId;
+        }
+      }
 
       let imported=0, merged=0, queued=0, skippedNoEmail=0;
       if(!DB.audience) DB.audience = [];
@@ -5675,18 +5750,22 @@ function importTeketCSV(input) {
         const row = rows[i];
         if(!row || row.length < 3) continue;
 
-        const name  = String(row[iName]||'').trim().replace(/\s+/g,' ');
-        const rawEmail = iEmail>=0 ? String(row[iEmail]||'').trim() : '';
-        const email = normalizeEmail(rawEmail);
-        const qty   = parseInt(row[iQty>=0?iQty:7]||'1')||1;
-        const seat  = iSeat>=0 ? String(row[iSeat]||'').trim().replace(/^"(.*)"$/,'$1') : '';
-        const date  = iDate>=0 ? String(row[iDate]||'').trim() : '';
+        const name       = String(row[iName]||'').trim().replace(/\s+/g,' ');
+        const rawEmail   = iEmail>=0 ? String(row[iEmail]||'').trim() : '';
+        const email      = normalizeEmail(rawEmail);
+        const qty        = parseInt(row[iQty>=0?iQty:7]||'1')||1;
+        const seat       = iSeat>=0 ? String(row[iSeat]||'').trim().replace(/^"(.*)"$/,'$1') : '';
+        const purchDate  = iPurchDate>=0 ? String(row[iPurchDate]||'').trim() : ''; // 購入日（参考）
+        // 公演日: CSV公演列から取得し、なければ公演マスタから引く
+        const concertDateRaw = iConcert>=0 ? String(row[iConcert]||'').trim() : '';
+        const selectedConcert = (DB.concerts||[]).find(c=>c.id===concertId);
+        const concertDate = concertDateRaw || (selectedConcert ? selectedConcert.date : purchDate);
 
         if(!name) continue;
 
-        // メアド「非提供希望」or空 → メアドなしレコードとして処理
         const hasEmail = email && email !== '非提供希望' && email.includes('@');
-        const visitRecord = { concertId: concertId||'', seat, qty, date, source:'teket' };
+        // visitRecord: dateは公演日、purchaseDateは購入日
+        const visitRecord = { concertId: concertId||'', seat, qty, date: concertDate, purchaseDate: purchDate, source:'teket' };
 
         if(hasEmail) {
           const existing = DB.audience.find(a => normalizeEmail(a.email) === email);
@@ -5702,11 +5781,12 @@ function importTeketCSV(input) {
             // 氏名類似チェック（同名別メアドの可能性）
             const normName = normalizeStr(name);
             const similar = DB.audience.find(a => nameSimilarity(normalizeStr(a.name), normName) >= 0.85);
-            if(similar && !hasEmail) {
+            if(similar) {
+              // メアドありの新規レコードが既存の類似氏名と被る → 名寄せキューへ
               const already = DB.mergeQueue.find(q=>q.aId===similar.id&&q.bEmail===email);
-              if(!already) { DB.mergeQueue.push({id:'mq'+Date.now()+i, aId:similar.id, bName:name, bEmail:email, bVisit:visitRecord, similarity:nameSimilarity(normalizeStr(similar.name),normName)}); queued++; }
+              if(!already) { DB.mergeQueue.push({id:uid('mq'), aId:similar.id, bName:name, bEmail:email, bVisit:visitRecord, similarity:nameSimilarity(normalizeStr(similar.name),normName)}); queued++; }
             } else {
-              DB.audience.push({ id:'aud'+Date.now()+i, name, email, source:'teket',
+              DB.audience.push({ id:uid('aud'), name, email, source:'teket',
                 visits:[visitRecord], bestSeat:seat, isRep:qty>1,
                 segOverride:'', note:'', createdAt:new Date().toISOString().slice(0,10), segment:'first' });
               imported++;
@@ -5723,7 +5803,7 @@ function importTeketCSV(input) {
             existing.segment=calcSegment(existing);
             merged++;
           } else {
-            DB.audience.push({ id:'aud'+Date.now()+i, name, email:'', source:'teket',
+            DB.audience.push({ id:uid('aud'), name, email:'', source:'teket',
               visits:[visitRecord], bestSeat:seat, isRep:qty>1,
               segOverride:'', note:'メアド非提供', createdAt:new Date().toISOString().slice(0,10), segment:'first' });
             imported++; skippedNoEmail++;
@@ -5736,6 +5816,13 @@ function importTeketCSV(input) {
       renderAudience(); updateAudienceKPIs(); renderMergeQueue();
       const msg = `取込完了: 新規${imported}件 / 統合${merged}件 / 要確認${queued}件${skippedNoEmail>0?' (うちメアドなし'+skippedNoEmail+'件)':''}`;
       toast(msg, 'ok', 6000);
+      // GAS一括同期（非同期・バックグラウンド）
+      if(gasUrl) {
+        const audienceForGAS = DB.audience.map(a => Object.assign({}, a, { visits: JSON.stringify(a.visits||[]) }));
+        gasRequest({ action:'batch', sheet:'audience', records: audienceForGAS })
+          .then(()=>setSyncStatus('ok','audience GAS同期完了'))
+          .catch(e=>console.warn('[GAS] audience sync error:', e));
+      }
     } catch(err) {
       toast('CSV解析エラー: '+err.message, 'err', 6000);
       console.error('[teket import]', err);
@@ -5753,8 +5840,14 @@ function importPartnerCSV(input) {
   reader.onload = e => {
     try {
       const raw = e.target.result;
+      const bytes = new Uint8Array(raw);
       const tryDecode = (enc) => { try { return new TextDecoder(enc,{fatal:true}).decode(raw); } catch(_){ return null; } };
-      const text = tryDecode('shift_jis') || tryDecode('utf-8') || new TextDecoder('utf-8',{fatal:false}).decode(raw);
+      let text;
+      if (bytes[0] === 0xEF && bytes[1] === 0xBB && bytes[2] === 0xBF) {
+        text = new TextDecoder('utf-8').decode(raw.slice(3));
+      } else {
+        text = tryDecode('shift_jis') || tryDecode('utf-8') || new TextDecoder('utf-8',{fatal:false}).decode(raw);
+      }
 
       const rows = parseCSV(text);
       if(!rows.length) { toast('CSVが空です','err'); return; }
@@ -5780,7 +5873,7 @@ function importPartnerCSV(input) {
           updated++;
         } else {
           DB.audience.push({
-            id:'aud'+Date.now()+i,
+            id:uid('aud'),
             name, email,
             source:'partner',
             visits:[],
@@ -5798,25 +5891,57 @@ function importPartnerCSV(input) {
       saveDB();
       renderAudience(); updateAudienceKPIs();
       toast(`旧会員インポート: 新規${added}件 / 既存統合${updated}件`, 'ok', 4000);
+      // GAS一括同期
+      if(gasUrl) {
+        const audienceForGAS = DB.audience.map(a => Object.assign({}, a, { visits: JSON.stringify(a.visits||[]) }));
+        gasRequest({ action:'batch', sheet:'audience', records: audienceForGAS })
+          .then(()=>setSyncStatus('ok','audience GAS同期完了'))
+          .catch(e=>console.warn('[GAS] audience sync error:', e));
+      }
     } catch(err) { toast('CSV解析エラー: '+err.message,'err'); }
     input.value='';
   };
   reader.readAsArrayBuffer(file);
 }
 
-// ── CSVパーサー（RFC4180準拠） ──
+// ── CSVパーサー（RFC4180完全準拠・マルチライン対応） ──
 function parseCSV(text) {
-  const rows=[], lines=text.replace(/\r\n/g,'\n').replace(/\r/g,'\n').split('\n');
-  for(const line of lines) {
-    if(!line.trim()) continue;
-    const cells=[]; let cur='', inQ=false;
-    for(let i=0;i<line.length;i++) {
-      const c=line[i];
-      if(c==='"') { if(inQ&&line[i+1]==='"'){cur+='"';i++;} else inQ=!inQ; }
-      else if(c===','&&!inQ) { cells.push(cur); cur=''; }
-      else cur+=c;
+  // 改行コードを統一
+  const s = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  const rows = [];
+  let i = 0;
+  const len = s.length;
+
+  while (i < len) {
+    const cells = [];
+    // 行末または文字列末まで列を読む
+    while (i < len) {
+      let cell = '';
+      if (s[i] === '"') {
+        // クォート付きフィールド
+        i++; // 開きクォートをスキップ
+        while (i < len) {
+          if (s[i] === '"') {
+            if (s[i + 1] === '"') { cell += '"'; i += 2; } // エスケープされたクォート
+            else { i++; break; } // 閉じクォート
+          } else {
+            cell += s[i++]; // 改行も含めてそのまま取り込む
+          }
+        }
+      } else {
+        // クォートなしフィールド：カンマか改行まで
+        while (i < len && s[i] !== ',' && s[i] !== '\n') {
+          cell += s[i++];
+        }
+      }
+      cells.push(cell);
+      if (i < len && s[i] === ',') { i++; } // 次の列へ
+      else { break; } // 行末 or 文字列末
     }
-    cells.push(cur);
+    // 改行をスキップ
+    if (i < len && s[i] === '\n') i++;
+    // 完全な空行は無視
+    if (cells.length === 1 && cells[0] === '') continue;
     rows.push(cells);
   }
   return rows;
@@ -5876,17 +6001,22 @@ function renderAudience() {
     const seg2 = a.segOverride || a.segment;
     const lastVisit = (a.visits||[]).slice().sort((x,y)=>y.date>x.date?1:-1)[0];
     const lastDate  = lastVisit ? normalizeDate(lastVisit.date||'') : '—';
-    const visitNames = (a.visits||[]).map(v => { const c=concerts.find(x=>x.id===v.concertId); return c?c.title.slice(0,8)+'…':'不明'; }).join(', ')||'—';
+    const visitNames = (a.visits||[]).map(v => {
+      const c = concerts.find(x=>x.id===v.concertId);
+      return c ? c.title.slice(0,10)+(c.title.length>10?'…':'') : (v.date ? normalizeDate(v.date) : '不明');
+    }).join(', ') || '—';
+    const audId = a.id;
     return `<tr>
       <td><span style="color:var(--text);font-weight:400;">${a.name}</span></td>
-      <td style="font-family:var(--mono);font-size:11px;color:var(--text3);">${a.email}</td>
+      <td style="font-family:var(--mono);font-size:11px;color:var(--text3);">${a.email||'—'}</td>
       <td><span class="badge ${segBadge(seg2)}">${segLabel(seg2)}</span>${a.segOverride?'<span style="font-size:9px;color:var(--text3);margin-left:4px;">手動</span>':''}</td>
       <td><span class="badge badge-gray" style="font-size:10px;">${{teket:'teket',partner:'旧会員',both:'両方',manual:'手動'}[a.source]||a.source}</span></td>
       <td style="text-align:center;font-family:var(--mono);">${(a.visits||[]).length}</td>
+      <td style="font-size:11px;color:var(--text2);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${visitNames}">${visitNames}</td>
       <td>${a.bestSeat||'—'}</td>
       <td style="text-align:center;">${a.isRep?'<span class="badge badge-yellow">代表</span>':'—'}</td>
       <td style="font-family:var(--mono);font-size:11px;">${lastDate}</td>
-      <td><button class="btn btn-outline btn-sm" onclick='openAudienceModal(${JSON.stringify({id:a.id,name:a.name,email:a.email,segOverride:a.segOverride||"",source:a.source,note:a.note||""})})'>編集</button></td>
+      <td><button class="btn btn-outline btn-sm" onclick="openAudienceById('${audId}')">編集</button></td>
     </tr>`;
   }).join('');
 
@@ -5963,11 +6093,11 @@ function renderMergeQueue() {
       const visitNames = (a.visits||[]).map(v=>{ const c=(DB.concerts||[]).find(x=>x.id===v.concertId); return c?c.title:'—'; }).join(' / ')||'—';
       const totalQty = (a.visits||[]).reduce((s,v)=>s+(v.qty||1),0);
       return `<tr>
-        <td>${a.name}</td>
-        <td style="font-family:var(--mono);font-size:11px;">${a.email}</td>
-        <td style="font-size:12px;">${visitNames}</td>
+        <td>${htmlEsc(a.name)}</td>
+        <td style="font-family:var(--mono);font-size:11px;">${htmlEsc(a.email||'—')}</td>
+        <td style="font-size:12px;">${htmlEsc(visitNames)}</td>
         <td style="text-align:center;font-family:var(--mono);">${totalQty}枚</td>
-        <td><button class="btn btn-outline btn-sm" onclick='openAudienceModal(${JSON.stringify({id:a.id,name:a.name,email:a.email,segOverride:a.segOverride||"",source:a.source,note:a.note||""})})'>編集</button></td>
+        <td><button class="btn btn-outline btn-sm" onclick="openAudienceById('${a.id}')">編集</button></td>
       </tr>`;
     }).join('');
   }
@@ -5979,10 +6109,14 @@ function mergeAudienceRecord(queueId) {
   const existing = (DB.audience||[]).find(a=>a.id===q.aId);
   if(existing) {
     if(!existing.visits) existing.visits=[];
-    if(q.bVisit && !existing.visits.some(v=>v.concertId===q.bVisit.concertId)) existing.visits.push(q.bVisit);
+    if(q.bVisit && !existing.visits.some(v=>v.concertId===q.bVisit.concertId && v.date===q.bVisit.date)) {
+      existing.visits.push(q.bVisit);
+    }
     if(seatRank(q.bVisit?.seat) > seatRank(existing.bestSeat||'')) existing.bestSeat=q.bVisit.seat;
     if((q.bVisit?.qty||1)>1) existing.isRep=true;
     existing.segment = calcSegment(existing);
+    // GAS同期
+    if(gasUrl) saveToSheets('audience', Object.assign({}, existing, { visits: JSON.stringify(existing.visits||[]) }));
   }
   DB.mergeQueue = (DB.mergeQueue||[]).filter(x=>x.id!==queueId);
   saveDB(); renderMergeQueue(); renderAudience(); updateAudienceKPIs();
@@ -5990,13 +6124,18 @@ function mergeAudienceRecord(queueId) {
 }
 
 function skipMergeQueue(queueId) {
-  // スキップ＋新規レコードとして追加
   const q = (DB.mergeQueue||[]).find(x=>x.id===queueId);
   if(q) {
-    DB.audience.push({ id:'aud'+Date.now(), name:q.bName, email:q.bEmail, source:'teket',
-      visits:q.bVisit?[q.bVisit]:[], bestSeat:q.bVisit?.seat||'', isRep:(q.bVisit?.qty||1)>1,
-      segOverride:'', note:'', createdAt:new Date().toISOString().slice(0,10), segment:'first' });
-    DB.audience[DB.audience.length-1].segment = calcSegment(DB.audience[DB.audience.length-1]);
+    const newRec = {
+      id: uid('aud'), name:q.bName, email:q.bEmail, source:'teket',
+      visits:q.bVisit?[q.bVisit]:[], bestSeat:q.bVisit?.seat||'',
+      isRep:(q.bVisit?.qty||1)>1, segOverride:'', note:'',
+      createdAt:new Date().toISOString().slice(0,10), segment:'first'
+    };
+    newRec.segment = calcSegment(newRec);
+    DB.audience.push(newRec);
+    // GAS同期
+    if(gasUrl) saveToSheets('audience', Object.assign({}, newRec, { visits: JSON.stringify(newRec.visits||[]) }));
   }
   DB.mergeQueue = (DB.mergeQueue||[]).filter(x=>x.id!==queueId);
   saveDB(); renderMergeQueue(); renderAudience(); updateAudienceKPIs();
@@ -6093,6 +6232,13 @@ ${extra ? `【追加指示】${extra}` : ''}
 }
 
 // ── 来場者編集モーダル ──
+// IDでDBから直接取得してモーダルを開く（JSON.stringify onclickの排除）
+function openAudienceById(id) {
+  const a = (DB.audience||[]).find(x=>x.id===id);
+  if(!a) { toast('来場者データが見つかりません','err'); return; }
+  openAudienceModal(a);
+}
+
 function openAudienceModal(a) {
   const setV=(id,v)=>{const e=document.getElementById(id);if(e)e.value=v||'';};
   setV('aud-edit-id', a.id||'');
@@ -6103,7 +6249,53 @@ function openAudienceModal(a) {
   setV('aud-note', a.note||'');
   const delBtn=document.getElementById('aud-delete-btn');
   if(delBtn) delBtn.style.display=a.id?'inline-block':'none';
+
+  // ── 過去参加公演履歴を描画 ──
+  renderAudienceVisits(a);
   openModal('audience-modal');
+}
+
+function renderAudienceVisits(a) {
+  const container = document.getElementById('aud-visits-list');
+  if(!container) return;
+  const visits = (a.visits||[]).slice().sort((x,y)=> (y.date||'') > (x.date||'') ? 1 : -1);
+  if(!visits.length) {
+    container.innerHTML = '<div style="padding:12px;color:var(--text3);font-size:12px;text-align:center;">履歴なし</div>';
+    return;
+  }
+  const concerts = DB.concerts||[];
+  const rows = visits.map(function(v, idx) {
+    const c = concerts.find(function(x){ return x.id===v.concertId; });
+    const cTitle = c ? c.title : (v.concertId ? '【公演未登録】' : '不明');
+    const dateStr = v.date ? normalizeDate(v.date) : '—';
+    const purchStr = v.purchaseDate ? ' 購入:'+normalizeDate(v.purchaseDate) : '';
+    const audId = a.id;
+    return '<div style="display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid var(--border);font-size:12px;">'
+      + '<span style="font-family:var(--mono);font-size:10px;color:var(--text3);flex-shrink:0;width:90px;">' + dateStr + '</span>'
+      + '<span style="flex:1;color:var(--text);">' + htmlEsc(cTitle) + '</span>'
+      + '<span style="color:var(--text3);font-size:11px;">' + htmlEsc(v.seat||'席種不明') + '</span>'
+      + '<span style="font-family:var(--mono);font-size:10px;color:var(--text3);">' + (v.qty||1) + '枚</span>'
+      + '<span style="font-size:10px;color:var(--text3);">' + purchStr + '</span>'
+      + '<button class="btn btn-danger btn-sm" style="padding:2px 8px;font-size:10px;" onclick="removeAudienceVisit(\'' + audId + '\',' + idx + ')">✕</button>'
+      + '</div>';
+  });
+  container.innerHTML = rows.join('');
+}
+
+function removeAudienceVisit(audId, visitIdx) {
+  const a = (DB.audience||[]).find(x=>x.id===audId);
+  if(!a||!a.visits) return;
+  const sorted = a.visits.slice().sort((x,y)=>(y.date||'')>(x.date||'')?1:-1);
+  const target = sorted[visitIdx];
+  if(!target) return;
+  a.visits = a.visits.filter(v=>v!==target);
+  a.bestSeat = (a.visits||[]).reduce((best,v)=> seatRank(v.seat||'') > seatRank(best) ? (v.seat||'') : best, '');
+  a.isRep = (a.visits||[]).some(v=>(v.qty||1)>1);
+  if(!a.segOverride) a.segment = calcSegment(a);
+  saveDB();
+  renderAudienceVisits(a);
+  renderAudience(); updateAudienceKPIs();
+  toast('来場履歴を削除しました','ok');
 }
 
 function saveAudienceEdit() {
@@ -6117,7 +6309,13 @@ function saveAudienceEdit() {
   a.source     = document.getElementById('aud-source').value;
   a.note       = document.getElementById('aud-note').value;
   if(!a.segOverride) a.segment = calcSegment(a);
-  saveDB(); closeModal('audience-modal');
+  saveDB();
+  // GAS同期（visitsはJSON文字列化）
+  if(gasUrl) {
+    const rec = Object.assign({}, a, { visits: JSON.stringify(a.visits||[]) });
+    saveToSheets('audience', rec);
+  }
+  closeModal('audience-modal');
   renderAudience(); updateAudienceKPIs();
   toast('保存しました','ok');
 }
@@ -6135,12 +6333,23 @@ function deleteAudience() {
 function exportAudienceCSV() {
   const aud = DB.audience||[];
   const concerts = DB.concerts||[];
-  const header='氏名,メアド,セグメント,ソース,来場回数,最高席種,代表購入,最終来場,配信メモ\n';
+  const header='氏名,メアド,セグメント,ソース,来場回数,参加公演,最高席種,代表購入,最終来場日,配信メモ\n';
+  const esc = v => '"'+String(v).replace(/"/g,'""')+'"';
   const rows = aud.map(a=>{
     const seg = a.segOverride||a.segment;
-    const lastVisit = (a.visits||[]).slice().sort((x,y)=>y.date>x.date?1:-1)[0];
-    return [a.name,a.email,segLabel(seg),a.source,(a.visits||[]).length,a.bestSeat||'',a.isRep?'○':'',lastVisit?.date||'',a.note||'']
-      .map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',');
+    const sortedVisits = (a.visits||[]).slice().sort((x,y)=>(y.date||'')>(x.date||'')?1:-1);
+    const lastVisit = sortedVisits[0];
+    const visitNames = sortedVisits.map(v=>{
+      const c = concerts.find(x=>x.id===v.concertId);
+      return c ? c.title : (v.date ? normalizeDate(v.date) : '不明');
+    }).join('／');
+    return [
+      a.name, a.email||'', segLabel(seg), a.source,
+      (a.visits||[]).length, visitNames,
+      a.bestSeat||'', a.isRep?'○':'',
+      lastVisit ? normalizeDate(lastVisit.date||'') : '',
+      a.note||''
+    ].map(esc).join(',');
   }).join('\n');
   const blob=new Blob(['\uFEFF'+header+rows],{type:'text/csv;charset=utf-8'});
   const link=document.createElement('a'); link.href=URL.createObjectURL(blob);

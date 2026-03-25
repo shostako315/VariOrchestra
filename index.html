@@ -6371,6 +6371,72 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Load data
   loadDB();
+
+  // ── 初期メンバーデータ（DBが空の場合のみ投入） ──
+  if(!DB.musicians || DB.musicians.length === 0) {
+    DB.musicians = [
+      {id:'mu20260325001',name:'佐藤瑛吾',     part:'指揮',        role:'指揮', affil:'—',        status:'確定',  note:''},
+      {id:'mu20260325002',name:'（未定）',      part:'ヴァイオリン1',role:'首席', affil:'弦（首席）',status:'交渉中',note:'声掛け中'},
+      {id:'mu20260325003',name:'（未定）',      part:'ヴァイオリン1',role:'フォア',affil:'弦フォア', status:'交渉中',note:'声掛け中'},
+      {id:'mu20260325004',name:'清水咲里',      part:'ヴァイオリン1',role:'tutti',affil:'学生',     status:'確定',  note:''},
+      {id:'mu20260325005',name:'矢嶋みのり',    part:'ヴァイオリン1',role:'tutti',affil:'一般',     status:'確定',  note:''},
+      {id:'mu20260325006',name:'小川なおや',    part:'ヴァイオリン1',role:'tutti',affil:'学生',     status:'確定',  note:''},
+      {id:'mu20260325007',name:'楽れん',        part:'ヴァイオリン1',role:'tutti',affil:'学生',     status:'確定',  note:''},
+      {id:'mu20260325008',name:'斎藤なづな',    part:'ヴァイオリン1',role:'tutti',affil:'学生',     status:'確定',  note:''},
+      {id:'mu20260325009',name:'小松桜子',      part:'ヴァイオリン1',role:'tutti',affil:'学生',     status:'確定',  note:''},
+      {id:'mu20260325010',name:'水車みずき',    part:'ヴァイオリン1',role:'tutti',affil:'学生',     status:'確定',  note:''},
+      {id:'mu20260325011',name:'伊藤はるひ',    part:'ヴァイオリン1',role:'tutti',affil:'学生',     status:'確定',  note:''},
+      {id:'mu20260325012',name:'（未定）',      part:'ヴァイオリン1',role:'tutti',affil:'学生',     status:'未確定',note:''},
+      {id:'mu20260325013',name:'（未定）',      part:'ヴァイオリン2',role:'首席', affil:'弦（首席）',status:'交渉中',note:'声掛け中'},
+      {id:'mu20260325014',name:'山中（案）',    part:'ヴァイオリン2',role:'フォア',affil:'弦フォア', status:'交渉中',note:'声掛け中'},
+      {id:'mu20260325015',name:'八重田俊太郎',  part:'ヴァイオリン2',role:'tutti',affil:'一般',     status:'確定',  note:''},
+      {id:'mu20260325016',name:'高橋縁',        part:'ヴァイオリン2',role:'tutti',affil:'一般',     status:'確定',  note:''},
+      {id:'mu20260325017',name:'藤野みこと',    part:'ヴァイオリン2',role:'tutti',affil:'学生',     status:'確定',  note:''},
+      {id:'mu20260325018',name:'林かずは',      part:'ヴァイオリン2',role:'tutti',affil:'学生',     status:'確定',  note:''},
+      {id:'mu20260325019',name:'伊藤れいこ',    part:'ヴァイオリン2',role:'tutti',affil:'学生',     status:'確定',  note:''},
+      {id:'mu20260325020',name:'田中りら',      part:'ヴァイオリン2',role:'tutti',affil:'学生',     status:'確定',  note:''},
+      {id:'mu20260325021',name:'（未定）',      part:'ヴァイオリン2',role:'tutti',affil:'学生',     status:'未確定',note:''},
+      {id:'mu20260325022',name:'（未定）',      part:'ヴィオラ',     role:'首席', affil:'—',        status:'未確定',note:''},
+      {id:'mu20260325023',name:'尾崎はるの',    part:'ヴィオラ',     role:'tutti',affil:'学生',     status:'確定',  note:''},
+      {id:'mu20260325024',name:'小高あい',      part:'ヴィオラ',     role:'tutti',affil:'学生',     status:'確定',  note:''},
+      {id:'mu20260325025',name:'伊藤聖',        part:'ヴィオラ',     role:'tutti',affil:'一般',     status:'交渉中',note:'声掛け中'},
+      {id:'mu20260325026',name:'緒方裕',        part:'ヴィオラ',     role:'tutti',affil:'一般',     status:'交渉中',note:'声掛け中'},
+      {id:'mu20260325027',name:'小林龍樹',      part:'ヴィオラ',     role:'tutti',affil:'一般',     status:'確定',  note:''},
+      {id:'mu20260325028',name:'有村ゆかこ',    part:'ヴィオラ',     role:'tutti',affil:'学生',     status:'確定',  note:''},
+      {id:'mu20260325029',name:'城野ゆうか',    part:'ヴィオラ',     role:'tutti',affil:'学生',     status:'確定',  note:''},
+      {id:'mu20260325030',name:'倉上樹',        part:'チェロ',       role:'首席', affil:'弦（首席）',status:'確定',  note:''},
+      {id:'mu20260325031',name:'大森朔光',      part:'チェロ',       role:'tutti',affil:'一般',     status:'確定',  note:''},
+      {id:'mu20260325032',name:'笠木颯太',      part:'チェロ',       role:'フォア',affil:'弦フォア', status:'確定',  note:''},
+      {id:'mu20260325033',name:'梶浦まよ',      part:'チェロ',       role:'tutti',affil:'学生',     status:'確定',  note:''},
+      {id:'mu20260325034',name:'浦塚みゆ',      part:'チェロ',       role:'tutti',affil:'学生',     status:'確定',  note:''},
+      {id:'mu20260325035',name:'山田理子',      part:'チェロ',       role:'tutti',affil:'学生',     status:'確定',  note:''},
+      {id:'mu20260325036',name:'栗尾さいか',    part:'チェロ',       role:'tutti',affil:'学生',     status:'確定',  note:''},
+      {id:'mu20260325037',name:'丸池郁海',      part:'コントラバス',  role:'首席', affil:'弦（首席）',status:'確定',  note:''},
+      {id:'mu20260325038',name:'長谷川悠',      part:'コントラバス',  role:'tutti',affil:'一般',     status:'NG',    note:''},
+      {id:'mu20260325039',name:'丸地組',        part:'コントラバス',  role:'フォア',affil:'弦フォア', status:'確定',  note:''},
+      {id:'mu20260325040',name:'丸地組',        part:'コントラバス',  role:'フォア',affil:'弦フォア', status:'交渉中',note:'声掛け中'},
+      {id:'mu20260325041',name:'丸地組',        part:'コントラバス',  role:'フォア',affil:'弦フォア', status:'交渉中',note:'声掛け中'},
+      {id:'mu20260325042',name:'上畠由梨乃',    part:'フルート',     role:'首席', affil:'管（首席）',status:'確定',  note:''},
+      {id:'mu20260325043',name:'神谷咲妃',      part:'フルート',     role:'tutti',affil:'管（一般）',status:'確定',  note:''},
+      {id:'mu20260325044',name:'江波戸大樹',    part:'オーボエ',     role:'首席', affil:'管（首席）',status:'確定',  note:''},
+      {id:'mu20260325045',name:'（未定）',      part:'オーボエ',     role:'tutti',affil:'管（一般）',status:'未確定',note:''},
+      {id:'mu20260325046',name:'（未定）',      part:'クラリネット', role:'首席', affil:'管（首席）',status:'交渉中',note:'声掛け中'},
+      {id:'mu20260325047',name:'（未定）',      part:'クラリネット', role:'tutti',affil:'管（一般）',status:'未確定',note:''},
+      {id:'mu20260325048',name:'坪井祐樹',      part:'ファゴット',   role:'首席', affil:'管（首席）',status:'確定',  note:''},
+      {id:'mu20260325049',name:'（未定）',      part:'ファゴット',   role:'tutti',affil:'管（一般）',status:'未確定',note:''},
+      {id:'mu20260325050',name:'清瑛人',        part:'ホルン',       role:'首席', affil:'管（首席）',status:'確定',  note:''},
+      {id:'mu20260325051',name:'（未定）',      part:'ホルン',       role:'tutti',affil:'管（一般）',status:'交渉中',note:'声掛け中'},
+      {id:'mu20260325052',name:'（未定）',      part:'ホルン',       role:'tutti',affil:'管（一般）',status:'未確定',note:''},
+      {id:'mu20260325053',name:'（未定）',      part:'ホルン',       role:'tutti',affil:'管（一般）',status:'未確定',note:''},
+      {id:'mu20260325054',name:'黒﨑颯',        part:'トランペット', role:'首席', affil:'管（首席）',status:'確定',  note:''},
+      {id:'mu20260325055',name:'（未定）',      part:'トランペット', role:'tutti',affil:'管（一般）',status:'未確定',note:''},
+      {id:'mu20260325056',name:'（未定）',      part:'トロンボーン', role:'tutti',affil:'管（一般）',status:'未確定',note:''},
+      {id:'mu20260325057',name:'（未定）',      part:'トロンボーン', role:'tutti',affil:'管（一般）',status:'未確定',note:''},
+      {id:'mu20260325058',name:'（未定）',      part:'トロンボーン', role:'tutti',affil:'管（一般）',status:'未確定',note:''},
+      {id:'mu20260325059',name:'張原くん',      part:'ティンパニ',   role:'首席', affil:'管（首席）',status:'確定',  note:''},
+    ].map(m => Object.assign(m, {updatedAt:'2026-03-25'}));
+    saveDB();
+  }
   gasUrl = Store.get('vo_gas_url')||'';
   apiKeys.gemini = Store.get('vo_gemini_key')||'';
   apiKeys.claude = Store.get('vo_claude_key')||'';
